@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Séance 2 — IA générative et prompt : la boîte à outils RH · Théorie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2563eb;--primary-dark:#1d4ed8;--primary-light:#dbeafe;
+  --secondary:#059669;--secondary-light:#d1fae5;
+  --accent:#d97706;--accent-light:#fef3c7;
+  --danger:#dc2626;--danger-light:#fee2e2;
+  --purple:#7c3aed;--purple-light:#ede9fe;
+  --dark:#0f172a;--dark2:#1e293b;
+  --text:#1e293b;--muted:#64748b;--border:#e2e8f0;
+  --bg:#f1f5f9;--card:#ffffff;--radius:14px;
+  --sans:'Sora',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.6;font-size:15px;min-height:100vh}
+code,.mono{font-family:var(--mono)}
+code{background:#f1f5f9;border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-size:.84em}
+pre code,.key-box code,.nest.n4 code{background:transparent;border:none;padding:0;color:inherit}
+button{font-family:inherit;cursor:pointer}
+a{color:var(--primary)}
+:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+
+header{background:linear-gradient(135deg,#0f172a 0%,#4c1d95 60%,#6d28d9 100%);color:#fff;padding:42px 24px 34px;position:relative;overflow:hidden}
+header.practice{background:linear-gradient(135deg,#0f172a 0%,#6d28d9 60%,#7c3aed 100%)}
+header::after{content:"";position:absolute;right:-120px;top:-120px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(167,139,250,.25),transparent 70%)}
+.header-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:6px 14px;border-radius:999px;font-size:.8rem;font-weight:600;margin-bottom:16px}
+header h1{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;line-height:1.2;margin-bottom:10px}
+header .subtitle{color:#cbd5e1;max-width:720px;font-size:1rem}
+.meta-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.meta-pill{background:rgba(15,23,42,.45);border:1px solid rgba(255,255,255,.15);padding:6px 14px;border-radius:999px;font-size:.8rem;display:inline-flex;align-items:center;gap:6px}
+.global-progress{margin-top:24px;max-width:520px}
+.global-progress .label{display:flex;justify-content:space-between;font-size:.8rem;color:#cbd5e1;margin-bottom:6px}
+.global-progress .track{height:8px;background:rgba(255,255,255,.15);border-radius:999px;overflow:hidden}
+.global-progress .fill{height:100%;width:0;background:linear-gradient(90deg,#10b981,#34d399);border-radius:999px;transition:width .5s ease}
+.mode-flag{display:none;margin-top:14px;background:var(--accent);color:#fff;font-size:.75rem;font-weight:700;padding:4px 10px;border-radius:6px;width:max-content}
+body.formateur .mode-flag{display:block}
+
+.tabs-wrap{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--border);box-shadow:0 2px 8px rgba(15,23,42,.04)}
+.tabs{max-width:1100px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding:0 16px;scrollbar-width:thin}
+.tab{border:none;background:none;padding:15px 14px;font-size:.85rem;font-weight:600;color:var(--muted);white-space:nowrap;border-bottom:3px solid transparent;display:flex;align-items:center;gap:6px}
+.tab:hover{color:var(--primary)}
+.tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab .done-mark{display:none;color:var(--secondary)}
+.tab.done .done-mark{display:inline}
+.tab .lock-mark{font-size:.8rem}
+
+main{max-width:1100px;margin:0 auto;padding:28px 16px 80px}
+.panel{display:none}
+.panel.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.panel.active{animation:none}.global-progress .fill,.progress-fill{transition:none}}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:22px;box-shadow:0 1px 3px rgba(15,23,42,.05)}
+@media(max-width:600px){.card{padding:20px 16px}}
+.section-title{display:flex;align-items:center;gap:14px;font-size:1.3rem;font-weight:700;margin-bottom:18px;color:var(--dark)}
+.icon-bg{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:1.3rem;flex-shrink:0;background:var(--primary-light)}
+.icon-bg.green{background:var(--secondary-light)}.icon-bg.amber{background:var(--accent-light)}.icon-bg.purple{background:var(--purple-light)}.icon-bg.red{background:var(--danger-light)}
+h3{font-size:1.05rem;font-weight:700;margin:22px 0 10px;color:var(--dark)}
+p{margin-bottom:10px}
+.lead{font-size:1.05rem;color:var(--dark2)}
+.muted{color:var(--muted);font-size:.88rem}
+ul.clean{list-style:none}
+ul.clean li{padding:6px 0 6px 26px;position:relative}
+ul.clean li::before{content:"▸";position:absolute;left:6px;color:var(--primary);font-weight:700}
+ol{padding-left:22px}ol li{padding:3px 0}
+
+.objectif-box{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid var(--primary);border-radius:10px;padding:18px 20px;margin:16px 0}
+.objectif-box strong.title{display:block;color:var(--primary-dark);margin-bottom:8px}
+.instruction-box{background:#fffbeb;border:1px solid #fde68a;border-left:5px solid var(--accent);border-radius:10px;padding:18px 20px;margin:16px 0}
+.instruction-box strong.title{display:block;color:#92400e;margin-bottom:8px}
+.key-box{background:var(--dark);color:#e2e8f0;border-radius:12px;padding:22px 24px;margin:18px 0;border-left:5px solid #10b981}
+.key-box .big{font-size:1.15rem;font-weight:700;color:#fff}
+.warn-box{background:#fef2f2;border:1px solid #fecaca;border-left:5px solid var(--danger);border-radius:10px;padding:16px 20px;margin:16px 0}
+
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.grid-3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.mini-card{border:1px solid var(--border);border-radius:12px;padding:18px;background:#fff}
+.mini-card h4{font-size:1rem;margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mini-card.bad{border-color:#fecaca;background:#fef2f2}
+.mini-card.good{border-color:#a7f3d0;background:#f0fdf4}
+.mini-card pre.prompt{margin-top:8px}
+
+.famille-tag{display:inline-block;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:999px;letter-spacing:.2px}
+.f1{background:var(--primary-light);color:#1e40af}
+.f2{background:var(--secondary-light);color:#065f46}
+.f3{background:var(--accent-light);color:#92400e}
+.f4{background:var(--purple-light);color:#5b21b6}
+.f5{background:var(--danger-light);color:#991b1b}
+
+.term-item{background:var(--dark);color:#e2e8f0;font-family:var(--mono);font-size:.85rem;padding:10px 14px;border-radius:8px;display:inline-block}
+.chain .term-item,.objectif-box .term-item{padding:6px 12px}
+pre.prompt{background:var(--dark);color:#e2e8f0;font-family:var(--mono);font-size:.84rem;padding:18px 20px;border-radius:10px;white-space:pre-wrap;word-break:break-word;line-height:1.65;overflow-x:auto;position:relative;margin:12px 0}
+pre.prompt .hl{color:#34d399}
+pre.prompt .hl2{color:#fbbf24}
+pre.prompt .hl3{color:#93c5fd}
+
+.btn{border:none;border-radius:10px;padding:11px 18px;font-weight:600;font-size:.88rem;display:inline-flex;align-items:center;gap:8px;transition:transform .1s,background .2s}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-dark)}
+.btn-success{background:var(--secondary);color:#fff}.btn-success:hover{background:#047857}
+.btn-ghost{background:#fff;color:var(--dark2);border:1px solid var(--border)}.btn-ghost:hover{background:#f8fafc}
+.btn-warning{background:var(--accent);color:#fff}
+.btn-sm{padding:7px 12px;font-size:.8rem}
+.actions-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;align-items:center}
+.btn-reveal{display:none}
+body.formateur .btn-reveal{display:inline-flex}
+.reveal-content{display:none}
+.reveal-content.shown{display:block}
+
+.progress-wrap{margin:14px 0 4px}
+.progress-label{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:5px;font-weight:600}
+.progress-track{height:8px;background:#e2e8f0;border-radius:999px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#059669,#10b981);border-radius:999px;transition:width .4s ease}
+
+.result-panel{display:none;background:var(--dark);color:#e2e8f0;border-radius:12px;padding:22px 24px;margin-top:20px}
+.result-panel.show{display:block}
+.result-panel .score{font-family:var(--mono);font-size:2rem;font-weight:700;color:#34d399}
+.result-panel .msg{margin-top:6px;color:#cbd5e1}
+
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:18px 0}
+.chain-node{border:2px solid var(--border);background:#fff;border-radius:10px;padding:10px 16px;font-weight:700;font-size:.9rem;color:var(--dark2)}
+.chain-node:hover{border-color:var(--primary)}
+.chain-node.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.chain-node.seen:not(.active){border-color:#93c5fd}
+.chain-arrow{color:var(--muted);font-weight:700}
+.concept-detail{border:1px solid var(--border);border-radius:12px;padding:22px;background:#f8fafc;min-height:180px}
+.concept-detail .row{display:grid;grid-template-columns:130px 1fr;gap:10px;padding:8px 0;border-bottom:1px dashed var(--border)}
+.concept-detail .row:last-child{border-bottom:none}
+.concept-detail .k{font-weight:700;font-size:.82rem;color:var(--muted)}
+@media(max-width:600px){.concept-detail .row{grid-template-columns:1fr;gap:2px}}
+
+/* QCM */
+.qcm-q{border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:12px;background:#fff}
+.qcm-q .qt{font-weight:600;margin-bottom:10px}
+.qcm-opts{display:grid;gap:8px}
+.qcm-opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--border);border-radius:9px;padding:10px 12px;cursor:pointer;font-size:.9rem;background:#fff;text-align:left;width:100%;color:var(--text)}
+.qcm-opt:hover{background:#f8fafc;border-color:#93c5fd}
+.qcm-opt .l{font-family:var(--mono);font-weight:700;color:var(--primary);min-width:18px}
+.qcm-opt.sel{border-color:var(--primary);background:#eff6ff}
+.qcm-q.checked .qcm-opt{cursor:default}
+.qcm-opt.good{border-color:#6ee7b7;background:#ecfdf5}
+.qcm-opt.bad{border-color:#fca5a5;background:#fef2f2}
+.qcm-q.correct{border-color:#6ee7b7}
+.qcm-q.wrong{border-color:#fca5a5}
+.qcm-q .expl{display:none;margin-top:10px;font-size:.86rem;padding-top:8px;border-top:1px dashed var(--border)}
+.qcm-q.checked .expl{display:block}
+.q-num{font-family:var(--mono);font-size:.75rem;color:var(--muted);margin-right:6px}
+
+/* V/F */
+.vf-row{padding:16px;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;background:#fff}
+.vf-row .vf-q{font-weight:500;margin-bottom:10px}
+.vf-btns{display:flex;gap:8px}
+.vf-btn{border:1px solid var(--border);background:#fff;border-radius:8px;padding:7px 18px;font-weight:600;font-size:.85rem;color:var(--text)}
+.vf-btn.sel{background:var(--dark);color:#fff;border-color:var(--dark)}
+.vf-row.correct{border-color:#6ee7b7;background:#ecfdf5}
+.vf-row.wrong{border-color:#fca5a5;background:#fef2f2}
+.vf-row .expl{display:none;margin-top:10px;font-size:.85rem}
+.vf-row.checked .expl{display:block}
+
+/* Cas 1 matching */
+.match-grid{display:grid;grid-template-columns:minmax(200px,1fr) 2fr;gap:16px;margin-top:10px}
+@media(max-width:760px){.match-grid{grid-template-columns:1fr}}
+.match-col{display:flex;flex-direction:column;gap:8px}
+.match-col h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+.m-term{background:var(--dark);color:#e2e8f0;font-family:var(--mono);font-size:.84rem;padding:10px 12px;border-radius:8px;border:2px solid var(--dark);text-align:left;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.m-term:hover{border-color:#60a5fa}
+.m-term.active{border-color:#fbbf24;box-shadow:0 0 0 3px rgba(251,191,36,.35)}
+.m-def{background:#fff;border:2px solid var(--border);border-radius:8px;padding:10px 12px;font-size:.86rem;text-align:left;display:flex;gap:10px;align-items:flex-start;color:var(--text)}
+.m-def:hover{border-color:#93c5fd}
+.pair-badge{font-family:var(--mono);font-size:.72rem;font-weight:700;min-width:24px;height:24px;border-radius:6px;display:inline-grid;place-items:center;background:#e2e8f0;color:var(--muted);flex-shrink:0}
+.paired .pair-badge{background:var(--primary);color:#fff}
+.m-def.paired{border-color:#93c5fd;background:#eff6ff}
+.m-term.good,.m-def.good{border-color:#10b981}
+.m-def.good{background:#ecfdf5}
+.m-term.bad,.m-def.bad{border-color:#ef4444}
+.m-def.bad{background:#fef2f2}
+.round-pills{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 4px}
+.round-pill{font-family:var(--mono);font-size:.75rem;padding:4px 10px;border-radius:999px;background:#f1f5f9;border:1px solid var(--border);color:var(--muted)}
+.round-pill.cur{background:var(--primary);color:#fff;border-color:var(--primary)}
+.round-pill.ok{background:var(--secondary-light);color:#065f46;border-color:#6ee7b7}
+
+/* Cas 2 */
+.group{border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;background:#fff}
+.group-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.group-head strong{font-size:1rem}
+.g-label{font-size:.8rem;font-weight:700;color:var(--muted);margin:12px 0 6px;text-transform:uppercase;letter-spacing:.5px}
+.choice-row{display:flex;flex-wrap:wrap;gap:8px}
+.choice{border:1px solid var(--border);background:#fff;border-radius:999px;padding:6px 14px;font-size:.84rem;font-weight:600;color:var(--dark2)}
+.choice.sel{background:var(--dark);color:#fff;border-color:var(--dark)}
+.choice.good{background:#10b981;color:#fff;border-color:#10b981}
+.choice.bad{background:#ef4444;color:#fff;border-color:#ef4444}
+.sit{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:1px solid var(--border);border-radius:9px;padding:10px 12px;background:#f8fafc;font-size:.88rem;margin-bottom:8px;color:var(--text)}
+.sit:hover{border-color:#fbbf24}
+.sit .tag{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:999px;background:#e2e8f0;color:var(--muted);white-space:nowrap}
+.sit.sel{border-color:var(--accent);background:#fffbeb}
+.sit.sel .tag{background:var(--accent);color:#fff}
+.sit.good{border-color:#10b981;background:#ecfdf5}
+.sit.good .tag{background:#10b981;color:#fff}
+.sit.bad{border-color:#ef4444;background:#fef2f2}
+.sit.bad .tag{background:#ef4444;color:#fff}
+.group .expl{display:none;margin-top:10px;font-size:.86rem;padding-top:10px;border-top:1px dashed var(--border)}
+.group.checked .expl{display:block}
+.group.correct{border-color:#6ee7b7}
+.group.wrong{border-color:#fca5a5}
+.group.half{border-color:#fcd34d}
+
+/* forms */
+label.f-label{display:block;font-weight:600;font-size:.85rem;margin:14px 0 6px;color:var(--dark2)}
+input.f-input,textarea.f-input{width:100%;padding:11px 13px;border:1px solid var(--border);border-radius:9px;font-family:var(--sans);font-size:.9rem;background:#fff;color:var(--text)}
+textarea.f-input{min-height:78px;resize:vertical}
+
+.steps{margin:14px 0}
+.step{display:flex;gap:14px;padding:12px 0;border-bottom:1px dashed var(--border);align-items:flex-start}
+.step:last-child{border-bottom:none}
+.step input[type=checkbox]{width:20px;height:20px;accent-color:var(--secondary);margin-top:3px;flex-shrink:0}
+.step .s-num{font-family:var(--mono);font-weight:700;color:var(--primary);min-width:24px}
+.checklist label{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;cursor:pointer}
+.checklist label:hover{background:#f8fafc}
+.checklist input{width:18px;height:18px;accent-color:var(--secondary);margin-top:3px;flex-shrink:0}
+
+.table-wrap{overflow-x:auto;margin:14px 0}
+table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:520px}
+th{background:var(--dark);color:#fff;text-align:left;padding:11px 14px;font-weight:600}
+th:first-child{border-top-left-radius:10px}th:last-child{border-top-right-radius:10px}
+td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:top;background:#fff}
+tr:nth-child(even) td{background:#f8fafc}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font-size:.75rem;background:#f1f5f9;border:1px solid var(--border);padding:3px 10px;border-radius:999px;color:var(--dark2)}
+
+.route{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:14px 0}
+.route-step{background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+.route-step .n{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.route-step .t{font-weight:700;font-size:.9rem;color:var(--dark)}
+.route-step .c{font-size:.75rem;color:var(--muted)}
+.route-step.past{background:#ecfdf5;border-color:#a7f3d0}
+.route-step.here{background:var(--primary);border-color:var(--primary)}
+.route-step.here .t,.route-step.here .n,.route-step.here .c{color:#fff}
+
+.levels{display:grid;gap:8px;margin:14px 0}
+.level{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:#fff}
+.level .lv{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--primary)}
+.level .risk{font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:999px}
+@media(max-width:600px){.level{grid-template-columns:40px 1fr}.level .risk{grid-column:2;justify-self:start}}
+
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
+.pillar{border-radius:12px;padding:16px;background:#fff;border:1px solid var(--border);border-top:4px solid var(--primary)}
+.pillar:nth-child(5n+2){border-top-color:var(--purple)}
+.pillar:nth-child(5n+3){border-top-color:var(--secondary)}
+.pillar:nth-child(5n+4){border-top-color:var(--accent)}
+.pillar:nth-child(5n+5){border-top-color:var(--danger)}
+.pillar .n{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+.pillar h4{font-size:1rem;margin:4px 0 6px}
+.pillar p{font-size:.84rem;color:var(--dark2);margin:0}
+.pillar .q{font-size:.8rem;color:var(--muted);font-style:italic;margin-top:8px}
+
+details.acc{border:1px solid var(--border);border-radius:10px;margin:10px 0;background:#fff}
+details.acc summary{cursor:pointer;padding:12px 16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:10px}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary::after{content:"+";font-family:var(--mono);color:var(--primary);font-weight:700}
+details.acc[open] summary::after{content:"−"}
+details.acc[open] summary{border-bottom:1px dashed var(--border)}
+details.acc > div{padding:12px 16px;font-size:.9rem}
+
+.gloss{display:grid;gap:10px;margin-top:10px}
+.gloss-item{display:grid;grid-template-columns:190px 1fr;gap:14px;align-items:start;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:#fff}
+.gloss-item .gt{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+@media(max-width:620px){.gloss-item{grid-template-columns:1fr}}
+.lock-wrap{text-align:center;padding:30px 10px}
+.lock-wrap .big-lock{font-size:3rem}
+.lock-pills{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:16px}
+.lock-pill{font-size:.82rem;font-weight:600;padding:6px 14px;border-radius:999px;background:#f1f5f9;border:1px solid var(--border)}
+.lock-pill.ok{background:var(--secondary-light);border-color:#6ee7b7;color:#065f46}
+.filter-row{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}
+.filter-row button{border:1px solid var(--border);background:#fff;border-radius:999px;padding:5px 12px;font-size:.78rem;font-weight:600;color:var(--dark2)}
+.filter-row button.on{background:var(--dark);color:#fff;border-color:var(--dark)}
+
+.score-table td:last-child{font-family:var(--mono);font-weight:700}
+.link-card{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:#f8fafc;border:1px dashed #93c5fd;border-radius:12px;padding:16px 18px;margin-top:16px}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--dark);color:#fff;padding:10px 18px;border-radius:10px;font-size:.85rem;opacity:0;pointer-events:none;transition:all .25s;z-index:100;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.nav-bottom{display:flex;justify-content:space-between;gap:10px;margin-top:10px;flex-wrap:wrap}
+footer{text-align:center;color:var(--muted);font-size:.78rem;padding:30px 16px 50px}
+@media print{.tabs-wrap,.actions-row,.nav-bottom{display:none}.panel{display:block!important}}
+
+
+
+/* ===== Identité module SIRH ===== */
+header{background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 55%,#0e7490 100%)}
+header.practice{background:linear-gradient(135deg,#0f172a 0%,#0e7490 55%,#0891b2 100%)}
+header::after{background:radial-gradient(circle,rgba(103,232,249,.22),transparent 70%)}
+.route.r10{grid-template-columns:repeat(5,1fr)}
+@media(max-width:640px){.route.r10{grid-template-columns:repeat(2,1fr)}}
+/* Fil rouge */
+.company{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:18px 20px;margin:14px 0}
+.company .logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#0e7490,#059669);display:grid;place-items:center;font-size:1.7rem;color:#fff}
+.company h4{font-size:1.05rem;margin-bottom:4px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px}
+.fact{background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.fact .v{font-family:var(--mono);font-weight:700;font-size:1.05rem;color:var(--dark)}
+.fact .l{font-size:.75rem;color:var(--muted)}
+/* Fonctions du SI */
+.flow4{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:16px 0;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.flow4 > div{padding:14px;background:#fff;border-right:1px solid var(--border);position:relative}
+.flow4 > div:last-child{border-right:none}
+.flow4 .n{font-family:var(--mono);font-size:.72rem;color:var(--primary);font-weight:700}
+.flow4 h4{margin:2px 0 4px;font-size:.98rem}
+.flow4 p{font-size:.82rem;color:var(--dark2);margin:0}
+@media(max-width:720px){.flow4{grid-template-columns:1fr 1fr}.flow4 > div:nth-child(2){border-right:none}.flow4 > div:nth-child(-n+2){border-bottom:1px solid var(--border)}}
+/* Pyramide donnée -> décision */
+.dikw{display:grid;gap:6px;margin:16px auto;max-width:620px}
+.dikw > div{border-radius:8px;padding:10px 14px;color:#fff;display:flex;justify-content:space-between;gap:12px;font-size:.88rem;margin:0 auto;width:100%}
+.dikw > div strong{white-space:nowrap}
+.dikw .d1{width:58%;background:#0f172a}.dikw .d2{width:72%;background:#1e3a8a}.dikw .d3{width:86%;background:#0e7490}.dikw .d4{width:100%;background:#059669}
+@media(max-width:620px){.dikw > div{width:100%!important;flex-direction:column}}
+/* Timeline */
+.timeline{position:relative;margin:16px 0 8px;padding-left:22px;border-left:3px solid #bfdbfe}
+.timeline .t-item{position:relative;margin-bottom:14px}
+.timeline .t-item::before{content:"";position:absolute;left:-30px;top:5px;width:13px;height:13px;border-radius:50%;background:var(--primary);border:3px solid #fff;box-shadow:0 0 0 2px #bfdbfe}
+.timeline .t-item.now::before{background:var(--secondary)}
+.timeline .when{font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--primary)}
+.timeline .t-item.now .when{color:var(--secondary)}
+/* Architecture SIRH */
+.archi{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:12px;align-items:stretch;margin:16px 0}
+.archi .col{display:grid;gap:8px;align-content:start}
+.archi .mod{background:#fff;border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:.84rem}
+.archi .mod b{display:block;font-size:.88rem}
+.archi .core{background:var(--dark);color:#e2e8f0;border-radius:14px;padding:18px;display:flex;flex-direction:column;justify-content:center;text-align:center;gap:8px}
+.archi .core b{color:#fff;font-size:1.05rem}
+.archi .core small{color:#94a3b8}
+.archi .ext{border-style:dashed;background:#f8fafc}
+.archi .when-s{font-family:var(--mono);font-size:.7rem;color:var(--muted)}
+@media(max-width:760px){.archi{grid-template-columns:1fr}}
+/* Couloirs (swimlane) */
+.swim-wrap{overflow-x:auto;margin:16px 0;border:1px solid var(--border);border-radius:12px}
+.swim{border-collapse:separate;border-spacing:0;min-width:860px;width:100%}
+.swim th.lane{background:var(--dark2);color:#fff;font-size:.78rem;width:130px;text-align:left;padding:10px;position:sticky;left:0;z-index:1}
+.swim td{border-bottom:1px dashed var(--border);border-right:1px dashed #eef2f7;padding:8px;vertical-align:middle;background:#fff;min-width:118px}
+.swim tr:nth-child(even) td{background:#f8fafc}
+.swim .stephead th{background:#f1f5f9;color:var(--muted);font-family:var(--mono);font-size:.72rem;padding:6px;border-bottom:1px solid var(--border)}
+.task{display:block;border-radius:8px;padding:7px 9px;font-size:.76rem;line-height:1.35;background:var(--primary-light);border:1px solid #93c5fd;color:#1e3a8a}
+.task.paper{background:var(--accent-light);border-color:#fcd34d;color:#78350f}
+.task.risk{background:var(--danger-light);border-color:#fca5a5;color:#7f1d1d}
+.task.evt{background:var(--secondary-light);border-color:#6ee7b7;color:#064e3b;border-radius:999px;text-align:center}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.legend .task{display:inline-block}
+/* Matrice / BPMN symboles */
+.symbols{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:14px 0}
+.symbol{border:1px solid var(--border);border-radius:10px;padding:12px;background:#fff;text-align:center;font-size:.82rem}
+.symbol .shape{height:46px;display:grid;place-items:center;margin-bottom:6px}
+.sh-evt{width:40px;height:40px;border-radius:50%;border:3px solid var(--secondary)}
+.sh-end{width:40px;height:40px;border-radius:50%;border:5px solid var(--danger)}
+.sh-task{width:70px;height:38px;border-radius:8px;border:2px solid var(--primary);background:var(--primary-light)}
+.sh-gw{width:32px;height:32px;transform:rotate(45deg);border:2px solid var(--accent);background:var(--accent-light)}
+.sh-flow{width:80px;height:2px;background:var(--dark2);position:relative}
+.sh-flow::after{content:"";position:absolute;right:-2px;top:-5px;border-left:9px solid var(--dark2);border-top:6px solid transparent;border-bottom:6px solid transparent}
+.sh-doc{width:46px;height:40px;border:2px solid var(--purple);background:var(--purple-light);border-radius:4px 4px 12px 4px}
+/* Indicateurs de processus */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:14px 0}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;border-left:4px solid var(--accent)}
+.kpi .v{font-family:var(--mono);font-size:1.4rem;font-weight:700;color:var(--dark)}
+.kpi .l{font-size:.8rem;color:var(--muted)}
+@media print{header{background:#0f172a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <span class="badge">🏢 SIRH &amp; exploitation de la Data — IA · Séance 2 · Support théorique</span>
+    <h1>IA générative et prompt : la boîte à outils RH</h1>
+    <p class="subtitle">Comprendre ce qu'est l'IA générative, distinguer les briques de l'écosystème, choisir le bon outil pour chaque usage RH, structurer ses prompts et utiliser l'IA dans le respect du RGPD et de l'AI Act.</p>
+    <div class="meta-pills"><span class="meta-pill">🧭 Séance 2 sur 10</span><span class="meta-pill">📚 Support théorique</span><span class="meta-pill">📖 6 chapitres</span><span class="meta-pill">❓ 30 questions de QCM</span><span class="meta-pill">🏠 Fil rouge : Groupe Habitéo</span></div>
+    <div class="global-progress">
+      <div class="label"><span>QCM de chapitre validés</span><span id="globalPct">0 / 6</span></div>
+      <div class="track"><div class="fill" id="globalFill"></div></div>
+    </div>
+    <div class="mode-flag">Mode formateur actif — boutons « Révéler » visibles</div>
+  </div>
+</header>
+<div class="tabs-wrap"><nav class="tabs" role="tablist" aria-label="Chapitres de la séance"><button class="tab active" data-tab="0" role="tab">🚀 Démarrage</button><button class="tab" data-tab="c0" data-act="ch0" role="tab">🌐 Panorama de l&#x27;IA <span class="done-mark">✅</span></button><button class="tab" data-tab="c1" data-act="ch1" role="tab">🧠 Écosystème IA <span class="done-mark">✅</span></button><button class="tab" data-tab="c2" data-act="ch2" role="tab">🧰 Boîte à outils RH <span class="done-mark">✅</span></button><button class="tab" data-tab="c3" data-act="ch3" role="tab">🏛️ Les 5 Piliers <span class="done-mark">✅</span></button><button class="tab" data-tab="c4" data-act="ch4" role="tab">🗂️ Contexte &amp; agents <span class="done-mark">✅</span></button><button class="tab" data-tab="c5" data-act="ch5" role="tab">⚖️ Usage responsable <span class="done-mark">✅</span></button><button class="tab" data-tab="syn" role="tab">🏁 Synthèse</button></nav></div>
+<main>
+<section class="panel active" data-panel="0">
+  <div class="card">
+    <div class="section-title"><span class="icon-bg">🎯</span>Où en est-on dans le parcours ?</div>
+    <div class="key-box"><div class="big">Je sais choisir le bon outil IA et lui parler.</div><p style="margin:8px 0 0">À partir d'aujourd'hui, l'IA devient un outil de travail pour toutes les séances. Encore faut-il savoir ce qu'elle est, laquelle utiliser, comment lui parler et ce qu'on n'a pas le droit de lui confier.</p></div>
+    <div class="route r10"><div class="route-step past"><div class="n">S1</div><div class="t">Lire</div><div class="c">SI, data, processus</div></div><div class="route-step here"><div class="n">S2</div><div class="t">Outiller</div><div class="c">IA générative</div></div><div class="route-step "><div class="n">S3</div><div class="t">Automatiser</div><div class="c">Workflow + LLM</div></div><div class="route-step "><div class="n">S4</div><div class="t">Socle</div><div class="c">Core RH, paie, GTA</div></div><div class="route-step "><div class="n">S5</div><div class="t">Talents</div><div class="c">ATS, LMS, PMS</div></div><div class="route-step "><div class="n">S6</div><div class="t">Marché</div><div class="c">Solutions, acteurs</div></div><div class="route-step "><div class="n">S7</div><div class="t">Projet</div><div class="c">CDC, déploiement</div></div><div class="route-step "><div class="n">S8</div><div class="t">Data</div><div class="c">KPI, tableaux de bord</div></div><div class="route-step "><div class="n">S9</div><div class="t">Prédire</div><div class="c">Scénarios, virage RH</div></div><div class="route-step "><div class="n">S10</div><div class="t">Évaluer</div><div class="c">Révision + CCF</div></div></div>
+    <p class="muted">En vert : la séance franchie. En bleu : la séance d'aujourd'hui.</p>
+    <h3>Le fil pédagogique</h3>
+    <div class="table-wrap"><table><tr><th>Séance</th><th>Ce que vous saurez faire</th></tr><tr><td>Séance 1</td><td>Je sais lire le SI RH d&#x27;une entreprise.</td></tr><tr><td><strong>Séance 2</strong> — aujourd&#39;hui</td><td><strong>Je sais choisir le bon outil IA et lui parler.</strong></td></tr><tr><td>Séance 3</td><td>Je sais concevoir un workflow RH augmenté par l&#x27;IA.</td></tr><tr><td>Séance 4</td><td>Je sais relier les données du planning à la DSN.</td></tr><tr><td>Séance 5</td><td>Je sais évaluer ce qu&#x27;un module automatise, et ses risques.</td></tr><tr><td>Séance 6</td><td>Je sais positionner une solution et ses acteurs.</td></tr><tr><td>Séance 7</td><td>Je sais cadrer et piloter un projet SIRH.</td></tr><tr><td>Séance 8</td><td>Je sais transformer un export en KPI de climat social.</td></tr><tr><td>Séance 9</td><td>Je sais construire un scénario décisionnel.</td></tr><tr><td>Séance 10</td><td>Je sais mobiliser l&#x27;ensemble du module.</td></tr></table></div>
+  </div>
+  <div class="card">
+    <div class="section-title"><span class="icon-bg green">🏠</span>Le fil rouge : où en est Habitéo ?</div>
+    <p class="lead">En séance 1, vous avez cartographié et diagnostiqué l'intégration d'un technicien. La DRH, Nadia Ferreira, vous pose maintenant une nouvelle question.</p>
+    <div class="instruction-box"><strong class="title">La demande de la DRH</strong>« Mon équipe utilise déjà ChatGPT chacun dans son coin, parfois avec des fichiers de salariés. Je veux savoir quels outils d'IA nous pourrions utiliser pour la mission SIRH, à quoi chacun sert, comment bien s'en servir, et quelles règles poser. »</div>
+    <p>L'atelier pratique vous fera refaire votre cartographie de la séance 1 avec un assistant IA, comparer, puis rédiger les premières règles d'usage de l'IA pour l'équipe RH d'Habitéo.</p>
+  </div>
+  <div class="card">
+    <div class="section-title"><span class="icon-bg green">✅</span>Objectifs de la séance</div>
+    <div class="objectif-box"><strong class="title">À la fin de cette séance, vous serez capable de :</strong><ul class="clean"><li>Situer l&#x27;IA générative dans l&#x27;ensemble de l&#x27;IA et la distinguer de l&#x27;IA prédictive, avec des exemples RH ;</li><li>Distinguer LLM, chatbot, agent, API, MCP, RAG et workflow, et reconnaître la brique en jeu dans une situation ;</li><li>Choisir l&#x27;outil adapté à un usage RH : rédiger, rechercher, analyser un corpus, schématiser, présenter ;</li><li>Structurer un prompt avec les 5 Piliers, itérer, vérifier et se faire interviewer par l&#x27;IA ;</li><li>Gérer le contexte d&#x27;un outil IA (conversation, projet, mémoire) et choisir entre conversation et agent ;</li><li>Utiliser l&#x27;IA en RH dans le respect des données personnelles, du RGPD et de l&#x27;AI Act.</li></ul></div>
+    <div class="grid grid-2">
+      <div class="mini-card"><h4>🎒 À avoir avec vous</h4><ul class="clean"><li>Un compte sur au moins un assistant IA (ChatGPT, Claude, Gemini ou Le Chat), idéalement deux pour comparer.</li><li>Un accès à Perplexity, NotebookLM et Napkin (versions gratuites suffisantes).</li><li>Vos deux fiches Markdown de la séance 1 : fiche processus AS-IS et diagnostic.</li></ul></div>
+      <div class="mini-card"><h4>🧩 Les 5 familles de notions</h4><div class="chips" style="margin-top:4px"><span class="famille-tag f1">Panorama IA</span><span class="famille-tag f2">Écosystème</span><span class="famille-tag f3">Boîte à outils</span><span class="famille-tag f4">Prompting</span><span class="famille-tag f5">Usage responsable</span></div><p class="muted" style="margin-top:10px">Ces familles organisent les chapitres, les cas pratiques et le glossaire.</p></div>
+    </div>
+    <div class="warn-box"><strong>⛔ Règle de la séance</strong> Aucune donnée personnelle réelle (salarié, candidat, collègue d'alternance) ne doit être saisie dans un outil d'IA pendant les exercices. Le cas Habitéo est fictif : utilisez-le.</div>
+    <div class="instruction-box"><strong class="title">Comment utiliser ce support</strong>Chaque onglet est un chapitre. Lisez-le, explorez les éléments interactifs, puis répondez au <strong>QCM de fin de chapitre</strong> : sa validation fait avancer la barre de progression. La mise en application se fait dans le <strong>support pratique</strong>, avec vos outils IA ouverts à côté.</div>
+    <div class="link-card"><span><strong>🛠️ Support pratique associé</strong><br><span class="muted">Cas pratiques, atelier Habitéo et glossaire de la séance.</span></span><a class="btn btn-success" href="seance-2-ia-generative-prompt-rh-pratique.html">Ouvrir le support pratique ▸</a></div>
+    <div class="nav-bottom"><span></span><button class="btn btn-primary" data-goto="c0">Commencer : 🌐 Panorama de l'IA ▸</button></div>
+  </div>
+</section>
+<section class="panel" data-panel="c0">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 1 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">🌐</span>Qu'est-ce que l'intelligence artificielle ?</div>
+  <p class="lead">L'intelligence artificielle regroupe les techniques qui permettent à une machine de réaliser des tâches demandant habituellement l'intelligence humaine : percevoir, comprendre, prédire, décider… et, plus récemment, créer.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Situer l'IA générative dans l'ensemble de l'IA, la distinguer de l'IA prédictive à l'aide d'exemples RH, et comprendre pourquoi elle peut se tromper avec aplomb.</div>
+  <h3>Des poupées russes <span class="famille-tag f1">Panorama IA</span></h3>
+  <div class="dikw">
+    <div class="d4"><strong>Intelligence artificielle</strong><span>Toute technique qui imite une capacité humaine, y compris des règles écrites à la main.</span></div>
+    <div class="d3"><strong>Machine learning</strong><span>La machine apprend à partir d'exemples au lieu de suivre des règles écrites.</span></div>
+    <div class="d2"><strong>Deep learning</strong><span>Apprentissage par réseaux de neurones profonds : images, voix, langage.</span></div>
+    <div class="d1"><strong>IA générative</strong><span>Produit un contenu nouveau : texte, image, son, vidéo.</span></div>
+  </div>
+  <div class="grid grid-3">
+    <div class="mini-card"><h4>📐 IA à base de règles</h4><p class="muted">Un humain écrit les règles « si… alors… ». Exemple RH : chatbot à menus, contrôle automatique « heures &gt; 48 → alerte ». Prévisible, mais rigide.</p></div>
+    <div class="mini-card"><h4>📈 Machine learning</h4><p class="muted">Le modèle déduit des régularités à partir de données. Exemple RH : prévoir l'absentéisme d'une agence à partir de l'historique.</p></div>
+    <div class="mini-card"><h4>🧠 Deep learning</h4><p class="muted">Réseaux de neurones profonds, à l'origine de la reconnaissance vocale, de la traduction moderne… puis de l'IA générative.</p></div>
+  </div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">⚖️</span>Prédire ou créer : deux familles d'usages RH</div>
+  <div class="table-wrap"><table>
+    <tr><th></th><th>🔎 IA prédictive</th><th>✨ IA générative</th></tr>
+    <tr><td>Ce qu'elle fait</td><td>Classe, détecte, prédit, recommande à partir de données existantes.</td><td>Produit un contenu nouveau à partir d'une consigne (le prompt).</td></tr>
+    <tr><td>Sortie</td><td>Un score, une probabilité, un classement.</td><td>Un texte, une image, un tableau, un code.</td></tr>
+    <tr><td>Exemples RH</td><td>Risque de départ, matching candidat-poste, prévision d'absentéisme, recommandation de formation.</td><td>Offre d'emploi, synthèse d'enquête, trame d'entretien, FAQ salariés, support de formation.</td></tr>
+    <tr><td>Risque principal</td><td>Biais : reproduire les discriminations présentes dans les données passées.</td><td>Hallucination : une réponse plausible mais fausse.</td></tr>
+    <tr><td>Dans le module</td><td>Séances 5, 8 et 9.</td><td>Toutes les séances, dès aujourd'hui.</td></tr>
+  </table></div>
+  <p>Les deux familles se combinent de plus en plus dans les SIRH : un ATS peut classer des candidatures (prédictif) puis rédiger un message de réponse (génératif).</p>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">⚙️</span>Comment ça marche, en version simplifiée</div>
+  <p class="lead">Un grand modèle de langage découpe le texte en petits morceaux (les tokens) et prédit, l'un après l'autre, le token le plus probable compte tenu de tout ce qui précède. Il ne cherche pas la vérité : il produit la suite la plus vraisemblable.</p>
+  <div class="grid grid-2">
+    <div class="mini-card good"><h4>✅ D'où sa puissance</h4><p class="muted">Il rédige, reformule, résume, structure et traduit avec une aisance remarquable, dans le ton demandé.</p></div>
+    <div class="mini-card bad"><h4>❌ D'où les hallucinations</h4><p class="muted">Un article du Code du travail, une étude chiffrée ou une fonctionnalité d'éditeur peuvent être inventés avec un aplomb total.</p></div>
+  </div>
+  <h3>Les modalités</h3>
+  <p>On classe aussi les IA génératives selon ce qu'elles produisent : texte, image, audio, vidéo. Les grands modèles actuels sont <strong>multimodaux</strong> : ils lisent un PDF, une capture d'écran ou un tableau, et produisent du texte, un tableau ou un schéma.</p>
+  <h3>Modèles propriétaires ou ouverts</h3>
+  <div class="table-wrap"><table>
+    <tr><th></th><th>Propriétaires</th><th>Ouverts (open-weight)</th></tr>
+    <tr><td>Principe</td><td>Accessibles par une application ou une API ; le modèle reste chez l'éditeur.</td><td>Les poids sont publiés : on peut exécuter le modèle sur son propre serveur.</td></tr>
+    <tr><td>Exemples</td><td>GPT (OpenAI), Claude (Anthropic), Gemini (Google)</td><td>Llama (Meta), certains modèles Mistral, Qwen, DeepSeek</td></tr>
+    <tr><td>Enjeu RH</td><td>Performance immédiate ; données transmises à un tiers, à encadrer par contrat.</td><td>Données gardées en interne ; mise en place plus technique.</td></tr>
+  </table></div>
+  <div class="key-box"><div class="big">Plausible n'est pas vrai.</div><p style="margin:8px 0 0">Tout ce qu'une IA générative affirme sur le droit, les chiffres ou les éditeurs se vérifie avant d'être utilisé.</p></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 1</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm0"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt0">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill0"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="0">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="0">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="0">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres0"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="0">◂ Précédent</button><button class="btn btn-primary" data-goto="c1">Suite : 🧠 Écosystème IA ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="c1">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 2 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">🧠</span>L'écosystème IA : qui fait quoi ?</div>
+  <p class="lead">« IA », « ChatGPT », « agent », « bot » : ces mots sont souvent employés l'un pour l'autre. Ils désignent pourtant des briques différentes, qui s'empilent. Un manager RH doit savoir les nommer pour dialoguer avec un éditeur ou une DSI.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Nommer précisément chaque brique et reconnaître celle qui est en jeu dans une situation RH donnée.</div>
+</div>
+<div class="card" data-explorer="x1">
+  <div class="section-title"><span class="icon-bg purple">🧩</span>Explorateur — les 7 briques de l&#x27;écosystème</div>
+  <p class="muted">Cliquez sur chaque notion pour afficher sa fiche.</p>
+  <div class="chain"></div>
+  <div class="concept-detail"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Notions consultées</span><span>0 / 7</span></div><div class="progress-track"><div class="progress-fill"></div></div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">🚗</span>Une analogie pour tout retenir</div>
+  <div class="table-wrap"><table>
+    <tr><th>Brique <span class="famille-tag f2">Écosystème</span></th><th>Dans l'analogie de la voiture</th><th>Dans le module</th></tr>
+    <tr><td>LLM</td><td>Le moteur : puissant, mais il ne va nulle part tout seul.</td><td>Derrière tous les outils</td></tr>
+    <tr><td>Chatbot</td><td>La voiture autour du moteur : volant, tableau de bord, sièges.</td><td>Séance 2</td></tr>
+    <tr><td>Agent</td><td>Le chauffeur : vous lui donnez une destination, il conduit et corrige sa trajectoire.</td><td>Séance 2, puis 8</td></tr>
+    <tr><td>API</td><td>Le moteur livré seul, à installer dans votre propre véhicule.</td><td>Séance 3</td></tr>
+    <tr><td>MCP</td><td>La prise standard qui permet de brancher n'importe quel accessoire.</td><td>Séance 3</td></tr>
+    <tr><td>RAG</td><td>Le GPS chargé avec vos propres cartes avant de partir.</td><td>Séances 2 et 4</td></tr>
+    <tr><td>Workflow</td><td>La ligne de bus : un trajet fixe, où l'IA n'est qu'un arrêt.</td><td>Séance 3</td></tr>
+  </table></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">🏢</span>Et dans les SIRH ?</div>
+  <p class="lead">Les grands éditeurs de SIRH intègrent désormais ces briques dans leurs solutions : assistants conversationnels pour les salariés, aide à la rédaction d'offres et d'objectifs, résumés de dossiers, agents qui préparent des tâches à valider.</p>
+  <div class="grid grid-2">
+    <div class="mini-card"><h4>💬 L'IA dans le SIRH</h4><p class="muted">Intégrée au logiciel, elle lit les données du SIRH avec les droits de l'utilisateur. Avantage : contexte riche. Vigilance : comprendre ce qu'elle fait, et ce que l'éditeur fait des données.</p></div>
+    <div class="mini-card"><h4>🧰 L'IA à côté du SIRH</h4><p class="muted">Assistants généralistes utilisés par l'équipe RH. Avantage : souplesse. Vigilance : ne pas y copier de données personnelles sans cadre.</p></div>
+  </div>
+  <p>Savoir distinguer ces briques vous permettra, en séance 6, de poser les bonnes questions aux éditeurs : « votre assistant est-il un RAG sur nos documents ? », « vos agents agissent-ils sans validation ? », « où nos données sont-elles traitées ? ».</p>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 2</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm1"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt1">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill1"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="1">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="1">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="1">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres1"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c0">◂ Précédent</button><button class="btn btn-primary" data-goto="c2">Suite : 🧰 Boîte à outils RH ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="c2">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 3 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">🧰</span>La boîte à outils du module</div>
+  <p class="lead">Il n'existe pas un outil d'IA qui fait tout bien. On choisit selon l'usage, comme on choisit entre un tableur et un traitement de texte. Voici les outils que vous utiliserez au fil du module.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Associer chaque usage RH à l'outil le plus adapté, et connaître la vigilance propre à chacun.</div>
+  <div class="table-wrap"><table>
+    <tr><th>Usage RH <span class="famille-tag f3">Boîte à outils</span></th><th>Outil(s) de référence</th><th>Utilisé en</th></tr>
+    <tr><td>Rédiger, reformuler, structurer, analyser un fichier</td><td>Assistant conversationnel : ChatGPT, Claude, Gemini, Le Chat</td><td>Toutes les séances</td></tr>
+    <tr><td>Rechercher avec des sources : veille réglementaire, benchmark</td><td>Perplexity</td><td>Séances 2, 4, 6</td></tr>
+    <tr><td>Interroger un corpus interne avec citations</td><td>NotebookLM</td><td>Séances 2, 4, 7</td></tr>
+    <tr><td>Transformer un texte en schéma</td><td>Napkin</td><td>Séances 2, 3, 7</td></tr>
+    <tr><td>Produire une présentation à partir d'un plan</td><td>Gamma</td><td>Séances 6, 9</td></tr>
+    <tr><td>Travailler dans les outils bureautiques de l'entreprise</td><td>Microsoft 365 Copilot, Gemini dans Google Workspace</td><td>Démonstration</td></tr>
+    <tr><td>Automatiser un processus avec un appel au modèle</td><td>Make ou n8n + API d'un LLM</td><td>Séances 3, 5</td></tr>
+  </table></div>
+  <p class="muted">Le marché évolue chaque mois : les noms changent, les catégories d'usage restent. Retenez la catégorie, pas seulement la marque.</p>
+</div>
+<div class="card" data-explorer="x2">
+  <div class="section-title"><span class="icon-bg purple">🧰</span>Explorateur — les outils, un par un</div>
+  <p class="muted">Cliquez sur chaque notion pour afficher sa fiche.</p>
+  <div class="chain"></div>
+  <div class="concept-detail"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Notions consultées</span><span>0 / 9</span></div><div class="progress-track"><div class="progress-fill"></div></div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">🧭</span>Choisir un outil en entreprise</div>
+  <p class="lead">En entreprise, le meilleur outil n'est pas celui qui donne la plus belle réponse en démonstration. Cinq critères comptent.</p>
+  <div class="pillars">
+    <div class="pillar"><div class="n">Critère 1</div><h4>Usage</h4><p>Rédiger, rechercher, analyser un corpus, schématiser ?</p></div>
+    <div class="pillar"><div class="n">Critère 2</div><h4>Données</h4><p>Que fait l'éditeur des données saisies ? Où sont-elles traitées ? Existe-t-il un contrat ?</p></div>
+    <div class="pillar"><div class="n">Critère 3</div><h4>Intégration</h4><p>S'insère-t-il dans les outils existants (Microsoft 365, Google Workspace, SIRH) ?</p></div>
+    <div class="pillar"><div class="n">Critère 4</div><h4>Coût</h4><p>Gratuit, abonnement par utilisateur, facturation à l'usage de l'API ?</p></div>
+    <div class="pillar"><div class="n">Critère 5</div><h4>Gouvernance</h4><p>Qui l'administre, qui y a accès, quelles règles d'usage ?</p></div>
+  </div>
+  <div class="warn-box"><strong>⛔ Version personnelle ou version entreprise</strong> Les offres professionnelles prévoient généralement des engagements contractuels sur les données (non-réutilisation pour l'entraînement, localisation, sous-traitance au sens du RGPD). Ces engagements se vérifient dans le contrat, jamais sur la page d'accueil. Une version gratuite ou personnelle ne doit recevoir aucune donnée personnelle de salarié ou de candidat.</div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 3</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm2"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt2">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill2"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="2">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="2">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="2">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres2"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c1">◂ Précédent</button><button class="btn btn-primary" data-goto="c3">Suite : 🏛️ Les 5 Piliers ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="c3">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 4 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">🏛️</span>Prompting : la méthode des 5 Piliers</div>
+  <p class="lead">Un modèle ne lit pas dans vos pensées. Tout ce que vous ne dites pas, il le devine, et il devine « en moyenne », pour une entreprise qui n'est pas la vôtre. Les 5 Piliers réduisent la part de devinette.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Structurer un prompt RH avec les 5 Piliers, puis appliquer les deux réflexes systématiques : itérer et vérifier.</div>
+  <div class="pillars"><div class="pillar"><div class="n">Pilier 1</div><h4>Contexte</h4><p>La situation : qui vous êtes, dans quelle entreprise, pour quel public, avec quelles contraintes existantes.</p><div class="q">« Qu&#x27;est-ce que l&#x27;IA doit savoir pour comprendre ma situation ? »</div></div><div class="pillar"><div class="n">Pilier 2</div><h4>Rôle</h4><p>L&#x27;expertise que l&#x27;IA doit adopter : juriste en droit social, chargé de recrutement, consultant SIRH, formateur.</p><div class="q">« Qui serait le meilleur interlocuteur pour cette tâche ? »</div></div><div class="pillar"><div class="n">Pilier 3</div><h4>Objectif / Action</h4><p>Ce qui doit être produit, avec un verbe d&#x27;action précis : rédige, compare, synthétise, liste, critique.</p><div class="q">« Quel résultat exact j&#x27;attends ? »</div></div><div class="pillar"><div class="n">Pilier 4</div><h4>Contraintes</h4><p>Format, longueur, ton, public, éléments obligatoires, ce qu&#x27;il ne faut pas faire.</p><div class="q">« Quelles limites doit respecter la réponse ? »</div></div><div class="pillar"><div class="n">Pilier 5</div><h4>Exemple</h4><p>Un modèle de sortie, une trame, un extrait : montrer vaut mieux qu&#x27;expliquer.</p><div class="q">« À quoi ressemble une bonne réponse ? »</div></div></div>
+  <h3>Avant / après, sur une tâche Habitéo <span class="famille-tag f4">Prompting</span></h3>
+  <div class="grid grid-2">
+    <div class="mini-card bad"><h4>❌ Prompt faible</h4><pre class="prompt">Rédige une offre d'emploi de technicien.</pre><p class="muted">Résultat : une offre générique, sans entreprise, sans salaire, sans les habilitations, au ton passe-partout.</p></div>
+    <div class="mini-card good"><h4>✅ Prompt structuré</h4><pre class="prompt"><span class="hl3">Contexte</span> : Habitéo, ETI de 820 salariés spécialisée dans la rénovation énergétique, recrute un technicien pompes à chaleur pour son agence de Grenoble. CDI, 35 h, véhicule de service.
+<span class="hl3">Rôle</span> : agis comme un chargé de recrutement spécialisé dans les métiers du bâtiment.
+<span class="hl">Objectif</span> : rédige l'offre d'emploi.
+<span class="hl2">Contraintes</span> : 300 mots maximum ; ton direct et concret ; rubriques missions, profil, conditions ; une fourchette de salaire [à compléter] ; langage inclusif ; aucune mention d'âge.
+<span class="hl2">Exemple</span> : structure attendue : accroche de deux lignes, puis les trois rubriques en listes courtes.</pre></div>
+  </div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">🔁</span>Les deux réflexes : itérer et vérifier</div>
+  <div class="grid grid-2">
+    <div class="mini-card"><h4>🔁 Itérer</h4><p class="muted">Le premier jet est un brouillon. On affine par corrections ciblées plutôt que de tout redemander.</p><ul class="clean"><li>« Garde la structure, réduis chaque point à une phrase. »</li><li>« Le ton est trop formel pour des techniciens. »</li><li>« Propose trois accroches différentes. »</li><li>« Qu'est-ce qui manque pour que ce soit publiable ? »</li></ul></div>
+    <div class="mini-card"><h4>🔎 Vérifier</h4><p class="muted">Une réponse plausible n'est pas une réponse vraie.</p><ul class="clean"><li>L'article de loi cité existe-t-il, et dit-il cela ?</li><li>Le chiffre a-t-il une source que je peux ouvrir ?</li><li>La fonctionnalité attribuée à l'éditeur existe-t-elle ?</li><li>Le texte contient-il un critère discriminatoire ?</li></ul></div>
+  </div>
+  <div class="instruction-box"><strong class="title">Astuce</strong>Ajoutez à vos prompts : « Indique les points dont tu n'es pas sûr et ce que je dois vérifier. » L'IA fait alors apparaître ses propres zones de fragilité.</div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">🎤</span>Prompt Magic : se faire interviewer par l'IA</div>
+  <p class="lead">Quand le besoin est flou, il est impossible de remplir correctement les 5 Piliers. On inverse alors les rôles : c'est l'IA qui pose les questions.</p>
+  <pre class="prompt">Avant de réaliser la tâche, <span class="hl">pose-moi les questions nécessaires</span> pour clarifier mon besoin.
+<span class="hl2">Pose-les une par une</span> et propose-moi des options quand j'hésite.
+Quand tu as assez d'informations, <span class="hl3">reformule le besoin et demande-moi de le valider</span>.</pre>
+  <div class="grid grid-3">
+    <div class="mini-card"><h4>🧩 Pourquoi ça marche</h4><p class="muted">L'IA connaît les questions qu'un consultant poserait : cible, contraintes, priorités, format.</p></div>
+    <div class="mini-card"><h4>🎯 Quand l'utiliser</h4><p class="muted">Cadrage d'un projet SIRH, rédaction d'un cahier des charges, conception d'un processus cible.</p></div>
+    <div class="mini-card"><h4>⚠️ À surveiller</h4><p class="muted">C'est vous qui décidez : si une question oriente vers une solution non souhaitée, dites-le.</p></div>
+  </div>
+  <div class="key-box"><div class="big">Contexte → Rôle → Objectif → Contraintes → Exemple. Puis itérer et vérifier.</div><p style="margin:8px 0 0">Un prompt structuré est un brief : c'est une compétence de manager, pas de technicien.</p></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 4</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm3"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt3">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill3"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="3">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="3">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="3">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres3"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c2">◂ Précédent</button><button class="btn btn-primary" data-goto="c4">Suite : 🗂️ Contexte & agents ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="c4">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 5 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">🗂️</span>Contexte, projets et mémoire</div>
+  <p class="lead">La qualité d'une réponse dépend de ce que le modèle « voit » au moment où il répond. Organiser ce qu'il voit, c'est ce qu'on appelle le Context Engineering.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Organiser son travail avec un outil IA (conversations, projets, mémoire) et choisir le bon niveau d'autonomie, de la conversation à l'agent.</div>
+  <div class="table-wrap"><table>
+    <tr><th>Notion <span class="famille-tag f4">Prompting</span></th><th>Ce que c'est</th><th>Bonne pratique pour la mission Habitéo</th></tr>
+    <tr><td>Fenêtre de contexte</td><td>Tout ce que le modèle lit à un instant donné : messages, réponses, fichiers, instructions. Elle est limitée.</td><td>Dans une très longue conversation, la réponse dérive : repartir d'une nouvelle conversation.</td></tr>
+    <tr><td>Conversation</td><td>Un fil de discussion, unité de travail. Rien ne passe d'une conversation à l'autre.</td><td>Une conversation = une tâche : l'offre d'emploi, puis la cartographie, puis la charte.</td></tr>
+    <tr><td>Projet</td><td>Espace qui regroupe des conversations autour d'instructions et de documents communs.</td><td>Un projet « Mission SIRH Habitéo » avec la présentation de l'entreprise et vos fiches de séance 1.</td></tr>
+    <tr><td>Mémoire</td><td>Informations que l'outil retient sur vous d'une conversation à l'autre.</td><td>La relire et la nettoyer : elle influence toutes les réponses.</td></tr>
+    <tr><td>Assistant personnalisé</td><td>Assistant configuré une fois (instructions + documents de référence) : GPT, Gem, projet.</td><td>Un « assistant offres d'emploi Habitéo » qui applique toujours la même charte.</td></tr>
+  </table></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">🤝</span>Conversation ou agent : quel niveau d'autonomie ?</div>
+  <p class="lead">Plus on délègue, plus on gagne du temps, et plus le contrôle doit être organisé. En RH, le niveau d'autonomie se choisit selon la réversibilité de l'action et son effet sur les personnes.</p>
+  <div class="levels">
+    <div class="level"><span class="lv">N1</span><span><strong>Je fais, l'IA conseille.</strong> Elle explique, reformule, propose ; vous écrivez et décidez.</span><span class="risk f2">Contrôle maximal</span></div>
+    <div class="level"><span class="lv">N2</span><span><strong>L'IA propose, je valide.</strong> Elle rédige une offre, une synthèse, un message ; vous relisez avant tout usage.</span><span class="risk f1">Recommandé en RH</span></div>
+    <div class="level"><span class="lv">N3</span><span><strong>L'IA agit, je supervise.</strong> Un agent collecte, compare, prépare des brouillons ; vous validez avant tout envoi ou toute modification.</span><span class="risk f4">Sous conditions</span></div>
+    <div class="level"><span class="lv">N4</span><span><strong>L'IA agit seule.</strong> Elle envoie, modifie, décide sans validation.</span><span class="risk f5">À proscrire sur les personnes</span></div>
+  </div>
+  <div class="warn-box"><strong>⚖️ Le lien avec le droit</strong> Une décision qui produit des effets significatifs sur une personne (refus de candidature, sanction, augmentation) ne peut pas reposer exclusivement sur un traitement automatisé (article 22 du RGPD). Le niveau N4 est donc exclu pour ce type de décision.</div>
+  <div class="key-box"><div class="big">Déléguer la tâche, pas la décision.</div><p style="margin:8px 0 0">L'IA prépare, compare, rédige. Un humain identifié valide ce qui engage l'entreprise ou touche une personne.</p></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 5</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm4"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt4">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill4"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="4">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="4">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="4">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres4"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c3">◂ Précédent</button><button class="btn btn-primary" data-goto="c5">Suite : ⚖️ Usage responsable ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="c5">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 6 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">⚖️</span>Utiliser l'IA en RH de façon responsable</div>
+  <p class="lead">Les RH manipulent les données les plus sensibles de l'entreprise et prennent des décisions qui touchent directement des personnes. L'usage de l'IA y est donc encadré par le RGPD, par l'AI Act européen, et par les règles internes que la DRH doit fixer.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Identifier les risques propres à l'IA en RH, connaître le cadre légal à jour, et savoir formuler des règles d'usage pour une équipe.</div>
+  <h3>Quatre risques à maîtriser <span class="famille-tag f5">Usage responsable</span></h3>
+  <div class="grid grid-2">
+    <div class="mini-card"><h4>🔓 Exposition des données</h4><p class="muted">Copier un fichier de salaires, des CV ou un e-mail d'arrêt maladie dans un outil non validé. Réponse : outils sous contrat, données anonymisées ou agrégées.</p></div>
+    <div class="mini-card"><h4>🎭 Hallucination</h4><p class="muted">Article de loi, jurisprudence ou chiffre inventé. Réponse : vérification systématique sur une source officielle.</p></div>
+    <div class="mini-card"><h4>⚖️ Biais</h4><p class="muted">Un modèle reproduit les déséquilibres de ses données : formulations genrées, critères indirectement discriminants. Réponse : relecture, critères explicites, tests.</p></div>
+    <div class="mini-card"><h4>🤖 Décision automatisée</h4><p class="muted">Laisser l'outil trancher seul sur une candidature ou une évaluation. Réponse : validation humaine, information des personnes (RGPD, art. 22).</p></div>
+  </div>
+  <h3>Anonymiser ou pseudonymiser ?</h3>
+  <div class="table-wrap"><table>
+    <tr><th></th><th>Pseudonymisation</th><th>Anonymisation</th></tr>
+    <tr><td>Principe</td><td>Remplacer les noms par des codes (« Salarié 12 »).</td><td>Rendre toute réidentification impossible, de façon irréversible.</td></tr>
+    <tr><td>Statut</td><td>Les données restent personnelles : le RGPD s'applique.</td><td>Les données ne sont plus personnelles.</td></tr>
+    <tr><td>Exemple</td><td>Verbatims d'enquête avec agence et ancienneté : un petit effectif permet de reconnaître la personne.</td><td>Indicateurs agrégés par agence au-dessus d'un seuil minimal d'effectif.</td></tr>
+  </table></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg red">🇪🇺</span>L'AI Act : le calendrier à jour</div>
+  <p class="lead">Le règlement européen sur l'IA classe les systèmes selon leur niveau de risque. Son calendrier a été modifié par le règlement (UE) 2026/1744, dit « omnibus numérique IA », entré en vigueur le 27 juillet 2026.</p>
+  <div class="table-wrap"><table>
+    <tr><th>Niveau de risque</th><th>Exemples RH</th><th>Ce qui s'applique</th></tr>
+    <tr><td><strong>Inacceptable</strong> (interdit)</td><td>Reconnaissance des émotions sur le lieu de travail ou en entretien (sauf raisons médicales ou de sécurité), notation sociale.</td><td>Interdit depuis le 2 février 2025.</td></tr>
+    <tr><td><strong>Haut risque</strong></td><td>Tri et évaluation de candidatures, décisions de promotion ou de licenciement, attribution de tâches, évaluation des performances.</td><td>Obligations (gestion des risques, qualité des données, supervision humaine, information) reportées au <strong>2 décembre 2027</strong>.</td></tr>
+    <tr><td><strong>Risque de transparence</strong></td><td>Chatbot RH, contenus générés par IA.</td><td>Informer qu'on échange avec une IA ou que le contenu est généré : applicable depuis le 2 août 2026.</td></tr>
+    <tr><td><strong>Risque minimal</strong></td><td>Correcteur orthographique, aide à la rédaction interne.</td><td>Pas d'obligation spécifique au-delà de la maîtrise de l'IA.</td></tr>
+  </table></div>
+  <div class="instruction-box"><strong class="title">Article 4 — Maîtrise de l'IA</strong>Depuis février 2025, les entreprises qui déploient de l'IA doivent agir pour que leur personnel sache l'utiliser. L'omnibus de 2026 a réécrit l'article : il s'agit désormais de « prendre des mesures pour favoriser » cette maîtrise, sans obligation de garantir un niveau précis pour chaque personne. Former l'équipe RH et formaliser des règles d'usage reste la meilleure façon d'y répondre.</div>
+  <div class="warn-box"><strong>⛔ Le report n'est pas une dispense</strong> Le report du haut risque à fin 2027 ne suspend ni le RGPD, ni l'article 22, ni le droit de la non-discrimination. Un outil de tri de CV biaisé expose l'entreprise dès aujourd'hui.</div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">📜</span>La charte d'usage de l'IA</div>
+  <p class="lead">La réponse managériale à ces risques est une charte courte, connue de tous, qui dit ce qui est permis, interdit et obligatoire. Vous en rédigerez une première version pour Habitéo dans l'atelier.</p>
+  <div class="table-wrap"><table>
+    <tr><th>Rubrique</th><th>Question à trancher</th></tr>
+    <tr><td>Outils autorisés</td><td>Quels outils, dans quelle version (personnelle ou entreprise) ?</td></tr>
+    <tr><td>Données</td><td>Quelles catégories de données sont interdites, autorisées après anonymisation, autorisées ?</td></tr>
+    <tr><td>Usages</td><td>Quelles tâches sont encouragées, encadrées, interdites ?</td></tr>
+    <tr><td>Vérification</td><td>Que doit-on vérifier avant d'utiliser un résultat ?</td></tr>
+    <tr><td>Décisions</td><td>Qui valide ce qui touche une personne ?</td></tr>
+    <tr><td>Transparence et traçabilité</td><td>Quand informe-t-on qu'un contenu est généré ? Que consigne-t-on ?</td></tr>
+    <tr><td>Référent et formation</td><td>Qui répond aux questions ? Comment l'équipe est-elle formée ?</td></tr>
+  </table></div>
+  <div class="key-box"><div class="big">L'IA en RH : outils validés, données protégées, résultats vérifiés, décisions humaines.</div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 6</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm5"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt5">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill5"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="5">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="5">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="5">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres5"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c4">◂ Précédent</button><button class="btn btn-primary" data-goto="syn">Synthèse de la séance ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="syn">
+  <div class="card">
+    <div class="section-title"><span class="icon-bg green">📊</span>Vos résultats aux QCM</div>
+    <div class="table-wrap score-table"><table><tr><th>Chapitre</th><th>Thème</th><th>Meilleur score</th></tr><tr><td>Chapitre 1</td><td>🌐 Panorama de l&#x27;IA</td><td id="score0">—</td></tr><tr><td>Chapitre 2</td><td>🧠 Écosystème IA</td><td id="score1">—</td></tr><tr><td>Chapitre 3</td><td>🧰 Boîte à outils RH</td><td id="score2">—</td></tr><tr><td>Chapitre 4</td><td>🏛️ Les 5 Piliers</td><td id="score3">—</td></tr><tr><td>Chapitre 5</td><td>🗂️ Contexte &amp; agents</td><td id="score4">—</td></tr><tr><td>Chapitre 6</td><td>⚖️ Usage responsable</td><td id="score5">—</td></tr><tr><td colspan="2"><strong>Total</strong></td><td id="scoreTotal">0 / 30</td></tr></table></div>
+    <p class="muted">Un chapitre sous 4 / 5 ? Relisez-le et refaites son QCM avant de passer au support pratique.</p>
+  </div>
+  <div class="card">
+    <div class="section-title"><span class="icon-bg">🔑</span>Le message clé</div>
+    <div class="key-box"><div class="big">Le bon outil, le bon prompt, les bonnes données, et une décision humaine.</div></div>
+    <div class="table-wrap"><table>
+      <tr><th>Notion</th><th>À retenir en une phrase</th></tr>
+      <tr><td>IA générative</td><td>Elle produit un contenu plausible, pas forcément vrai ; l'IA prédictive produit un score, avec un risque de biais.</td></tr>
+      <tr><td>Écosystème</td><td>LLM, chatbot, agent, API, MCP, RAG, workflow : sept briques à ne pas confondre.</td></tr>
+      <tr><td>Boîte à outils</td><td>Un outil par usage : rédiger, chercher avec sources, interroger un corpus, schématiser, présenter.</td></tr>
+      <tr><td>5 Piliers</td><td>Contexte, rôle, objectif, contraintes, exemple ; puis itérer et vérifier.</td></tr>
+      <tr><td>Contexte et autonomie</td><td>Une conversation par tâche, un projet par mission ; l'IA propose, l'humain valide.</td></tr>
+      <tr><td>Usage responsable</td><td>Pas de données personnelles hors cadre, AI Act à jour, charte d'usage.</td></tr>
+    </table></div>
+    <div class="objectif-box"><strong class="title">À la fin de cette séance, vous êtes capable de :</strong><ul class="clean"><li>Situer l&#x27;IA générative dans l&#x27;ensemble de l&#x27;IA et la distinguer de l&#x27;IA prédictive, avec des exemples RH ;</li><li>Distinguer LLM, chatbot, agent, API, MCP, RAG et workflow, et reconnaître la brique en jeu dans une situation ;</li><li>Choisir l&#x27;outil adapté à un usage RH : rédiger, rechercher, analyser un corpus, schématiser, présenter ;</li><li>Structurer un prompt avec les 5 Piliers, itérer, vérifier et se faire interviewer par l&#x27;IA ;</li><li>Gérer le contexte d&#x27;un outil IA (conversation, projet, mémoire) et choisir entre conversation et agent ;</li><li>Utiliser l&#x27;IA en RH dans le respect des données personnelles, du RGPD et de l&#x27;AI Act.</li></ul></div>
+  </div>
+  <div class="card">
+    <div class="section-title"><span class="icon-bg amber">📦</span>À la fin de la séance, vous devez avoir</div>
+    <div class="checklist" id="finCheck"><label><input type="checkbox"> Validé les six QCM de chapitre ;</label><label><input type="checkbox"> Réalisé les trois cas pratiques et débloqué le glossaire ;</label><label><input type="checkbox"> Refait la cartographie de la séance 1 avec un assistant IA et comparé les résultats ;</label><label><input type="checkbox"> Produit un schéma du processus avec Napkin ou un diagramme généré ;</label><label><input type="checkbox"> Rédigé la première version de la charte d'usage de l'IA pour l'équipe RH d'Habitéo.</label></div>
+    <div class="link-card"><span><strong>🛠️ Passez à la pratique</strong><br><span class="muted">Cas 1, 2, 3, atelier Habitéo et glossaire à débloquer.</span></span><a class="btn btn-success" href="seance-2-ia-generative-prompt-rh-pratique.html">Ouvrir le support pratique ▸</a></div>
+    <div class="objectif-box"><strong class="title">Prochaine séance — Je sais concevoir un workflow RH augmenté par l'IA</strong>Vous concevrez le processus cible (TO-BE) de l'intégration d'un technicien, puis vous l'automatiserez avec Make, en y intégrant un appel à un LLM. Apportez votre diagnostic de la séance 1 et votre charte : le workflow devra la respecter.</div>
+  </div>
+</section>
+</main>
+<footer>SIRH &amp; exploitation de la Data — IA — Séance 2 — IA générative et prompt — Théorie<br>Mode formateur : ajoutez <code>?formateur</code> à l'adresse de la page.</footer>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+"use strict";
+const FAMILIES={"f1": "Panorama IA", "f2": "Écosystème", "f3": "Boîte à outils", "f4": "Prompting", "f5": "Usage responsable"};
+const EXPLORERS={"x1": {"items": [{"id": "LLM", "fam": "f2", "rows": [["Définition", "Grand modèle de langage : le « moteur » qui prédit la suite d'un texte, entraîné sur d'immenses volumes de données."], ["Exemple RH", "Le modèle qui se trouve derrière ChatGPT, Claude, Gemini ou Le Chat."], ["À retenir", "Seul, il ne connaît ni votre entreprise, ni l'actualité postérieure à son entraînement, et il n'agit pas."]]}, {"id": "Chatbot", "fam": "f2", "rows": [["Définition", "Interface conversationnelle construite autour d'un LLM : fenêtre de discussion, historique, fichiers joints."], ["Exemple RH", "Une chargée RH demande à ChatGPT une trame d'entretien de recrutement."], ["À retenir", "Il répond, mais c'est vous qui copiez, vérifiez et agissez."]]}, {"id": "Agent", "fam": "f2", "rows": [["Définition", "Système qui reçoit un objectif, découpe le travail en étapes et utilise des outils (fichiers, navigateur, messagerie) pour l'atteindre."], ["Exemple RH", "« Compare les 10 offres de technicien de nos concurrents et produis un tableau » : l'agent cherche, lit, compile."], ["À retenir", "Plus d'autonomie = plus de contrôle nécessaire. On valide avant toute action irréversible."]]}, {"id": "API", "fam": "f2", "rows": [["Définition", "Porte d'accès programmable à un modèle ou à un logiciel, pour l'appeler depuis un autre outil."], ["Exemple RH", "Make envoie le texte d'une candidature au modèle via son API et récupère un résumé."], ["À retenir", "C'est par l'API que l'IA entre dans les automatisations de la séance 3."]]}, {"id": "MCP", "fam": "f2", "rows": [["Définition", "Model Context Protocol : standard ouvert qui permet de connecter un assistant IA à des outils et des données (agenda, documents, bases)."], ["Exemple RH", "Un assistant connecté à Google Drive et à Notion retrouve la dernière version de la procédure d'intégration."], ["À retenir", "La « prise universelle » qui évite de développer une connexion spécifique pour chaque outil."]]}, {"id": "RAG", "fam": "f2", "rows": [["Définition", "Retrieval-Augmented Generation : l'IA recherche d'abord dans vos documents, puis rédige sa réponse à partir des passages trouvés."], ["Exemple RH", "Un assistant RH qui répond aux salariés sur le télétravail en citant l'article de l'accord d'entreprise."], ["À retenir", "Réduit les hallucinations et permet de citer la source ; dépend de la qualité des documents chargés."]]}, {"id": "Workflow", "fam": "f2", "rows": [["Définition", "Enchaînement automatisé d'étapes, déclenché par un événement, où l'IA n'est qu'une étape parmi d'autres."], ["Exemple RH", "Chaque candidature reçue est résumée par un LLM puis envoyée au manager d'agence."], ["À retenir", "Trajet fixe et prévisible : c'est le sujet de la séance 3, avec Make ou n8n."]]}]}, "x2": {"items": [{"id": "ChatGPT", "fam": "f3", "rows": [["Éditeur", "OpenAI (États-Unis)."], ["Points forts RH", "Polyvalent : rédaction, reformulation, analyse de fichiers et de tableaux, assistants personnalisés."], ["Vigilance", "Version gratuite ou personnelle : aucune donnée nominative de salarié ou de candidat."]]}, {"id": "Claude", "fam": "f3", "rows": [["Éditeur", "Anthropic (États-Unis)."], ["Points forts RH", "Rédaction nuancée, analyse de longs documents (accords, conventions), projets avec documents de référence."], ["Vigilance", "Même règle sur les données personnelles ; vérifier les références juridiques citées."]]}, {"id": "Gemini", "fam": "f3", "rows": [["Éditeur", "Google (États-Unis)."], ["Points forts RH", "Intégré à Google Workspace (Gmail, Docs, Sheets) ; assistants personnalisés."], ["Vigilance", "Intéressant si l'entreprise est déjà sous Google Workspace avec une offre professionnelle."]]}, {"id": "Le Chat", "fam": "f3", "rows": [["Éditeur", "Mistral AI (France)."], ["Points forts RH", "Alternative européenne, modèles en partie ouverts, argument de souveraineté."], ["Vigilance", "La nationalité de l'éditeur ne dispense pas de vérifier le contrat et l'hébergement."]]}, {"id": "Copilot", "fam": "f3", "rows": [["Éditeur", "Microsoft (États-Unis)."], ["Points forts RH", "Intégré à Word, Excel, Outlook et Teams dans Microsoft 365 : résumés de réunions, aide aux tableaux."], ["Vigilance", "Il accède aux documents auxquels l'utilisateur a accès : les droits mal réglés deviennent visibles."]]}, {"id": "Perplexity", "fam": "f3", "rows": [["Éditeur", "Perplexity AI (États-Unis)."], ["Points forts RH", "Recherche sur le web avec sources citées : veille réglementaire, benchmark d'éditeurs SIRH."], ["Vigilance", "Ouvrir et lire les sources : une source citée n'est pas une source vérifiée."]]}, {"id": "NotebookLM", "fam": "f3", "rows": [["Éditeur", "Google (États-Unis)."], ["Points forts RH", "Répond uniquement à partir des documents que vous chargez, avec citations ; synthèses audio."], ["Vigilance", "Idéal pour un corpus interne (accords, procédures) ; ne charger que des documents autorisés."]]}, {"id": "Napkin", "fam": "f3", "rows": [["Éditeur", "Napkin AI."], ["Points forts RH", "Transforme un texte en schéma ou en visuel : processus, comparaisons, chronologies."], ["Vigilance", "Vérifier que le schéma dit la même chose que le texte, sans simplification abusive."]]}, {"id": "Gamma", "fam": "f3", "rows": [["Éditeur", "Gamma."], ["Points forts RH", "Génère une présentation ou un document mis en page à partir d'un plan ou d'un texte."], ["Vigilance", "Le fond reste le vôtre : relire chaque slide, supprimer le remplissage générique."]]}]}};
+const QCMS=[[{"q": "Un modèle qui attribue à chaque technicien un score de risque de départ dans les six mois relève de :", "o": ["l'IA générative de texte", "l'IA prédictive", "l'IA à base de règles", "l'automatisation simple"], "a": 1, "e": "Il produit un score à partir de données existantes : c'est de l'IA prédictive. L'IA générative, elle, produit un contenu nouveau."}, {"q": "Quelle relation entre ces notions est exacte ?", "o": ["Le deep learning englobe le machine learning.", "L'IA générative est une branche du deep learning, lui-même branche du machine learning.", "Le machine learning et l'IA générative sont deux domaines sans lien.", "L'IA à base de règles est une forme d'IA générative."], "a": 1, "e": "Les notions s'emboîtent : IA ⊃ machine learning ⊃ deep learning ⊃ IA générative."}, {"q": "Pourquoi un LLM peut-il « halluciner » ?", "o": ["Parce qu'il est connecté à des sites peu fiables.", "Parce qu'il produit la suite de texte la plus probable, sans vérifier qu'elle est vraie.", "Parce que l'utilisateur a mal configuré sa mémoire.", "Parce qu'il a été piraté."], "a": 1, "e": "Le modèle prédit des tokens plausibles. Une référence juridique ou un chiffre peut donc être parfaitement crédible et totalement inventé."}, {"q": "Un chatbot RH à arbre de décision (« Votre question concerne : 1. congés, 2. paie… ») est :", "o": ["une IA générative", "une IA à base de règles", "un agent autonome", "un système de RAG"], "a": 1, "e": "Les réponses sont écrites à l'avance par un humain : la machine applique des règles, elle n'apprend ni ne génère rien."}, {"q": "Quel est l'intérêt principal d'un modèle open-weight pour une DRH ?", "o": ["Il est toujours plus performant.", "Il peut être exécuté sur une infrastructure maîtrisée par l'entreprise, ce qui garde les données en interne.", "Il est exempté du RGPD.", "Il ne peut pas halluciner."], "a": 1, "e": "Les poids publiés permettent un hébergement interne : c'est un argument de maîtrise des données, au prix d'une mise en place plus technique."}], [{"q": "Un assistant interne répond aux questions des salariés sur l'accord télétravail en citant l'article concerné. Quelle brique est déterminante ?", "o": ["Le RAG", "Le workflow", "L'API seule", "La mémoire de l'outil"], "a": 0, "e": "L'assistant cherche dans les documents de l'entreprise avant de répondre : c'est le principe du RAG, qui permet aussi de citer la source."}, {"q": "Quelle est la différence essentielle entre un chatbot et un agent ?", "o": ["L'agent utilise un modèle plus récent.", "L'agent poursuit un objectif en plusieurs étapes et utilise des outils pour agir ; le chatbot répond dans la conversation.", "Le chatbot est gratuit, l'agent payant.", "Il n'y en a pas."], "a": 1, "e": "Le chatbot produit une réponse que vous exploitez. L'agent planifie et agit : lire des fichiers, naviguer, envoyer, modifier."}, {"q": "Chaque lundi, Make récupère des articles de veille RH, les fait résumer par un LLM et envoie un digest par e-mail. C'est :", "o": ["un agent autonome", "un workflow intégrant un appel à un LLM", "un système de RAG", "un chatbot"], "a": 1, "e": "Le trajet est fixe et déclenché par un événement (le lundi) : c'est un workflow, dans lequel le LLM n'est qu'une étape."}, {"q": "À quoi sert le protocole MCP ?", "o": ["À chiffrer les données envoyées à l'IA.", "À connecter de façon standard un assistant IA à des outils et des sources de données.", "À mesurer la performance d'un modèle.", "À entraîner un modèle sur les données RH."], "a": 1, "e": "MCP est une sorte de prise universelle : un même assistant peut se brancher sur un agenda, un drive ou une base sans développement spécifique."}, {"q": "Par quelle brique l'IA entrera-t-elle dans les automatisations Make ou n8n de la séance 3 ?", "o": ["Par l'interface du chatbot", "Par l'API du modèle", "Par la mémoire de l'outil", "Par une extension de navigateur"], "a": 1, "e": "L'outil d'automatisation appelle le modèle par son API : il envoie un texte et récupère la réponse, sans interface de conversation."}], [{"q": "Vous devez faire un point sur les obligations de l'employeur à l'embauche, avec des sources vérifiables. Quel outil est le plus adapté pour démarrer ?", "o": ["Gamma", "Perplexity", "Napkin", "Un générateur d'images"], "a": 1, "e": "Perplexity cherche sur le web et cite ses sources. Il reste à ouvrir ces sources et à privilégier les sites officiels."}, {"q": "Vous voulez interroger uniquement l'accord d'entreprise, le règlement intérieur et le livret d'accueil, avec citations. Quel outil ?", "o": ["NotebookLM", "Gamma", "Napkin", "Un moteur de recherche web"], "a": 0, "e": "NotebookLM répond à partir des seules sources chargées et indique les passages utilisés : idéal pour un corpus interne autorisé."}, {"q": "Quel usage correspond le mieux à Napkin ?", "o": ["Rédiger un contrat de travail", "Transformer la description d'un processus en schéma", "Calculer une paie", "Rechercher des candidats"], "a": 1, "e": "Napkin transforme un texte en visuel. Il complète la cartographie de la séance 1 sans la remplacer."}, {"q": "Pourquoi Microsoft 365 Copilot impose-t-il de revoir les droits d'accès aux documents ?", "o": ["Parce qu'il supprime les documents anciens.", "Parce qu'il peut retrouver et résumer tout document auquel l'utilisateur a accès, y compris des fichiers mal protégés.", "Parce qu'il envoie les documents à tous les salariés.", "Parce qu'il n'est pas compatible avec Excel."], "a": 1, "e": "L'assistant exploite les droits existants. Un dossier de rémunérations mal protégé devient trouvable en une question."}, {"q": "Quel critère n'est PAS pertinent pour choisir un outil d'IA en entreprise ?", "o": ["L'usage visé", "Le traitement contractuel des données saisies", "La notoriété de l'outil sur les réseaux sociaux", "L'intégration aux outils déjà utilisés"], "a": 2, "e": "On choisit selon l'usage, les garanties sur les données, l'intégration et le coût. La popularité ne dit rien de l'adéquation."}], [{"q": "Dans la méthode des 5 Piliers, à quoi sert le pilier « Contexte » ?", "o": ["À fixer la longueur de la réponse.", "À donner à l'IA la situation : qui vous êtes, pour quelle entreprise, quel public, quelles contraintes existantes.", "À choisir l'outil d'IA.", "À fournir un modèle de réponse."], "a": 1, "e": "Le contexte réduit la part de devinette : sans lui, l'IA répond « en moyenne », pour une entreprise qui n'est pas la vôtre."}, {"q": "« Rédige une offre d'emploi. » Quel pilier manque le plus ?", "o": ["Uniquement l'exemple", "Contexte, rôle et contraintes", "Aucun, c'est suffisant", "Uniquement le rôle"], "a": 1, "e": "Sans entreprise, poste, public, longueur ni ton, la réponse sera générique et inutilisable."}, {"q": "Que faire quand le besoin est encore flou et qu'on ne sait pas remplir les 5 Piliers ?", "o": ["Laisser l'IA deviner.", "Demander à l'IA de vous interviewer, question par question, puis de reformuler le besoin à valider.", "Renoncer à utiliser l'IA.", "Copier un prompt trouvé en ligne."], "a": 1, "e": "C'est le « Prompt Magic » : l'IA pose les questions qu'un consultant poserait, et vous gardez la décision."}, {"q": "La première réponse est correcte mais trop longue. Quel est le meilleur réflexe ?", "o": ["Recommencer une conversation avec le même prompt.", "Demander une correction ciblée : « garde la structure, réduis chaque point à une phrase ».", "Accepter la réponse telle quelle.", "Changer d'outil."], "a": 1, "e": "On itère par petites corrections ciblées sur une base qui convient, plutôt que de tout redemander."}, {"q": "Quelle consigne aide le plus à repérer les erreurs d'une réponse ?", "o": ["« Sois sûr de toi. »", "« Indique les points dont tu n'es pas sûr et ce que je dois vérifier. »", "« Réponds plus vite. »", "« N'invente rien. »"], "a": 1, "e": "Demander explicitement les incertitudes fait apparaître les zones à vérifier. « N'invente rien » ne suffit pas à empêcher une hallucination."}], [{"q": "Que se passe-t-il quand une conversation devient très longue ?", "o": ["La réponse s'améliore toujours.", "Les éléments anciens pèsent moins ou sont résumés, et la réponse peut dériver.", "L'outil efface automatiquement les données personnelles.", "L'IA devient un agent."], "a": 1, "e": "La fenêtre de contexte est limitée. Pour une nouvelle tâche, mieux vaut une nouvelle conversation, idéalement dans un projet qui conserve le socle."}, {"q": "À quoi sert un « projet » dans ChatGPT ou Claude ?", "o": ["À partager la conversation sur les réseaux sociaux.", "À regrouper des conversations autour d'instructions et de documents communs, réutilisés à chaque nouvelle conversation.", "À entraîner un nouveau modèle.", "À désactiver la mémoire."], "a": 1, "e": "Le projet évite de recoller à chaque fois le contexte de la mission : présentation d'Habitéo, fiche processus, charte."}, {"q": "Pourquoi relire régulièrement la mémoire d'un outil IA ?", "o": ["Parce qu'elle est facturée.", "Parce que ce qu'elle retient influence toutes les réponses, et peut contenir des informations à ne pas conserver.", "Parce qu'elle s'efface chaque jour.", "Parce qu'elle est publique."], "a": 1, "e": "La mémoire est pratique mais silencieuse : une préférence ou une information obsolète oriente toutes les réponses suivantes."}, {"q": "Pour une tâche RH qui modifie des données ou envoie des messages, quel niveau d'autonomie recommander ?", "o": ["L'IA agit seule, sans validation.", "L'IA propose, un humain valide avant toute action.", "Aucun usage de l'IA.", "L'IA agit seule mais envoie un rapport le mois suivant."], "a": 1, "e": "Une action irréversible (envoi à un candidat, modification d'un dossier) se valide humainement. C'est aussi l'esprit de l'article 22 du RGPD."}, {"q": "Quelle situation justifie plutôt un agent qu'une conversation ?", "o": ["Reformuler un paragraphe.", "Collecter et comparer dix offres d'emploi en ligne, puis produire un tableau.", "Traduire une phrase.", "Trouver un synonyme."], "a": 1, "e": "La tâche est multi-étapes et suppose de naviguer, lire et compiler : c'est le terrain d'un agent, sous supervision."}], [{"q": "Une assistante RH colle le fichier nominatif des salaires dans la version gratuite d'un chatbot. Quel est le problème principal ?", "o": ["Le fichier est trop long.", "Des données personnelles sont transmises à un tiers sans base contractuelle ni maîtrise de leur usage.", "Le chatbot ne sait pas lire Excel.", "Aucun, si le résultat est correct."], "a": 1, "e": "C'est une exposition de données personnelles. On utilise un outil validé par l'entreprise, ou des données anonymisées ou agrégées."}, {"q": "Que change la pseudonymisation d'un jeu de verbatims avant de le faire analyser ?", "o": ["Rien, c'est interdit dans tous les cas.", "Les noms sont remplacés par des codes : le risque baisse, mais les données restent personnelles si la réidentification est possible.", "Les données deviennent anonymes au sens strict.", "Le RGPD ne s'applique plus."], "a": 1, "e": "Pseudonymiser réduit le risque sans faire sortir les données du RGPD. Seule une anonymisation irréversible le permet."}, {"q": "Depuis le 2 février 2025, l'AI Act interdit sur le lieu de travail :", "o": ["l'usage de ChatGPT par les RH", "les systèmes de reconnaissance des émotions, sauf raisons médicales ou de sécurité", "tout logiciel de recrutement", "les chatbots RH"], "a": 1, "e": "C'est une pratique interdite par l'article 5. Analyser les émotions d'un candidat en visio pour le noter est donc exclu."}, {"q": "Selon le calendrier modifié par l'omnibus de juillet 2026, les obligations applicables aux systèmes d'IA à haut risque utilisés en recrutement s'appliquent à partir du :", "o": ["2 février 2025", "2 août 2026", "2 décembre 2027", "1er janvier 2030"], "a": 2, "e": "Le règlement (UE) 2026/1744 a reporté au 2 décembre 2027 les obligations des systèmes à haut risque de l'annexe III, dont le recrutement et la gestion des travailleurs. Les interdictions et la maîtrise de l'IA restent applicables."}, {"q": "Que demande l'article 4 de l'AI Act (maîtrise de l'IA) depuis sa réécriture de 2026 ?", "o": ["De certifier chaque salarié par un examen.", "De prendre des mesures pour favoriser la maîtrise de l'IA par le personnel qui l'utilise, sans imposer un niveau précis par personne.", "Rien, l'article a été supprimé.", "D'interdire l'IA aux salariés non formés."], "a": 1, "e": "L'obligation demeure, mais elle porte sur des mesures adaptées (formation, charte, accompagnement) et non sur un niveau garanti pour chaque individu."}]];
+const ACTS=["ch0", "ch1", "ch2", "ch3", "ch4", "ch5"];
+const params = new URLSearchParams(location.search);
+if (params.has('formateur') || location.hash === '#formateur') document.body.classList.add('formateur');
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const shuffle = a => { const b=a.slice(); for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];} return b; };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2400); }
+function copyText(txt){
+  if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(txt).then(()=>toast('Copié dans le presse-papiers ✅')).catch(()=>fallbackCopy(txt)); }
+  else fallbackCopy(txt);
+}
+function fallbackCopy(txt){ const ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); toast('Copié dans le presse-papiers ✅');}catch(e){toast('Copie impossible : sélectionnez le texte manuellement');} ta.remove(); }
+function download(name, txt){ const blob=new Blob([txt],{type:'text/markdown;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); }
+function setProgress(fillId, txtId, done, total, suffix){ const p = total ? Math.round(done/total*100) : 0; $('#'+fillId).style.width = p+'%'; $('#'+txtId).textContent = done+' / '+total+(suffix||''); }
+function scoreMsg(pct){ if(pct>=90) return 'Excellent : les notions sont acquises.'; if(pct>=70) return 'Bon résultat. Relisez les explications des erreurs pour consolider.'; if(pct>=50) return 'Des bases, mais plusieurs confusions. Relisez le chapitre puis recommencez.'; return 'Reprenez le chapitre, puis recommencez l\'activité.'; }
+const done = new Set();
+function markDone(act){
+  if(done.has(act)) return false;
+  done.add(act);
+  $$('.tab[data-act="'+act+'"]').forEach(t=>t.classList.add('done'));
+  const n = done.size;
+  $('#globalFill').style.width = Math.round(n/ACTS.length*100)+'%';
+  $('#globalPct').textContent = n+' / '+ACTS.length;
+  toast(n===ACTS.length ? '🎉 Toutes les activités sont validées !' : 'Activité validée ✅');
+  if(typeof onDone==='function') onDone(act);
+  return true;
+}
+function openTab(i){
+  $$('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab==i));
+  $$('.panel').forEach(p=>p.classList.toggle('active', p.dataset.panel==i));
+  const tw = $('.tabs-wrap'); window.scrollTo({top: tw.offsetTop, behavior: 'smooth'});
+  const at = $('.tab[data-tab="'+i+'"]'); if(at) at.scrollIntoView({inline:'center', block:'nearest'});
+}
+$$('.tab').forEach(t=>t.addEventListener('click',()=>openTab(t.dataset.tab)));
+$$('[data-goto]').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.goto)));
+
+/* Explorateurs */
+$$('[data-explorer]').forEach(box=>{
+  const E = EXPLORERS[box.dataset.explorer]; const seen=new Set();
+  const chain=$('.chain',box), detail=$('.concept-detail',box);
+  E.items.forEach((k,i)=>{
+    const b=document.createElement('button'); b.className='chain-node'; b.textContent=k.id; b.dataset.i=i;
+    b.addEventListener('click',()=>show(i)); chain.appendChild(b);
+  });
+  function show(i){
+    const k=E.items[i]; seen.add(i);
+    $$('.chain-node',box).forEach(n=>{ n.classList.toggle('active', n.dataset.i==i); if(seen.has(+n.dataset.i)) n.classList.add('seen'); });
+    detail.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap"><span class="term-item">'+esc(k.id)+'</span><span class="famille-tag '+k.fam+'">'+esc(FAMILIES[k.fam]||'')+'</span></div>'+
+      k.rows.map(r=>'<div class="row"><span class="k">'+esc(r[0])+'</span><span>'+esc(r[1])+'</span></div>').join('');
+    const f=$('.progress-fill',box), t=$('.progress-label span:last-child',box);
+    f.style.width=Math.round(seen.size/E.items.length*100)+'%'; t.textContent=seen.size+' / '+E.items.length;
+  }
+  show(0);
+});
+const qState = {};
+const L = ['A','B','C','D','E'];
+function renderQCM(ci){
+  const box=$('#qcm'+ci); box.innerHTML='';
+  const qs = shuffle(QCMS[ci]).map(q=>{ const opts=shuffle(q.o.map((t,i)=>({t,good:i===q.a}))); return {q:q.q,e:q.e,opts}; });
+  qState[ci]={qs};
+  qs.forEach((q,qi)=>{
+    const d=document.createElement('div'); d.className='qcm-q';
+    d.innerHTML='<div class="qt"><span class="q-num">Q'+(qi+1)+'</span>'+esc(q.q)+'</div><div class="qcm-opts" role="radiogroup">'+
+      q.opts.map((o,oi)=>'<button type="button" class="qcm-opt" role="radio" aria-checked="false" data-oi="'+oi+'"><span class="l">'+L[oi]+'</span><span>'+esc(o.t)+'</span></button>').join('')+
+      '</div><div class="expl"></div>';
+    $$('.qcm-opt',d).forEach(b=>b.addEventListener('click',()=>{
+      if(d.classList.contains('checked')) return;
+      $$('.qcm-opt',d).forEach(x=>{x.classList.remove('sel');x.setAttribute('aria-checked','false');});
+      b.classList.add('sel'); b.setAttribute('aria-checked','true'); d.dataset.ans=b.dataset.oi; updQ(ci);
+    }));
+    box.appendChild(d);
+  });
+  $('#qres'+ci).classList.remove('show'); updQ(ci);
+}
+function updQ(ci){ const rows=$$('#qcm'+ci+' .qcm-q'); setProgress('qfill'+ci,'qtxt'+ci,rows.filter(r=>r.dataset.ans!==undefined).length,rows.length); }
+const scores = {};
+function checkQCM(ci, silent){
+  const rows=$$('#qcm'+ci+' .qcm-q');
+  if(!silent && rows.some(r=>r.dataset.ans===undefined)){ toast('Répondez à toutes les questions avant de vérifier.'); return; }
+  let ok=0;
+  rows.forEach((r,qi)=>{
+    const q=qState[ci].qs[qi]; const ans=r.dataset.ans===undefined?-1:+r.dataset.ans;
+    const gi=q.opts.findIndex(o=>o.good); const good=ans===gi; if(good) ok++;
+    r.classList.remove('correct','wrong'); r.classList.add('checked', good?'correct':'wrong');
+    $$('.qcm-opt',r).forEach((b,oi)=>{ b.classList.toggle('good',oi===gi); b.classList.toggle('bad',oi===ans&&!good); });
+    $('.expl',r).innerHTML=(good?'✅ ':'❌ Bonne réponse : <strong>'+L[gi]+'</strong>. ')+esc(q.e);
+  });
+  const pct=Math.round(ok/rows.length*100);
+  $('#qres'+ci).innerHTML='<div class="score">'+ok+' / '+rows.length+'</div><div class="msg">'+scoreMsg(pct)+'</div>';
+  $('#qres'+ci).classList.add('show');
+  if(!silent){ scores[ci]=Math.max(scores[ci]||0,ok); updScores(); markDone('ch'+ci); }
+}
+function revealQCM(ci){
+  $$('#qcm'+ci+' .qcm-q').forEach((r,qi)=>{ const gi=qState[ci].qs[qi].opts.findIndex(o=>o.good); r.dataset.ans=gi; $$('.qcm-opt',r).forEach((b,oi)=>b.classList.toggle('sel',oi===gi)); });
+  updQ(ci); checkQCM(ci,true);
+}
+function updScores(){
+  let tot=0,max=0;
+  QCMS.forEach((q,ci)=>{ const c=$('#score'+ci); if(scores[ci]!==undefined){ c.textContent=scores[ci]+' / '+q.length; tot+=scores[ci]; } max+=q.length; });
+  $('#scoreTotal').textContent=tot+' / '+max;
+}
+QCMS.forEach((_,ci)=>renderQCM(ci));
+$$('[data-qcheck]').forEach(b=>b.addEventListener('click',()=>checkQCM(+b.dataset.qcheck)));
+$$('[data-qreveal]').forEach(b=>b.addEventListener('click',()=>revealQCM(+b.dataset.qreveal)));
+$$('[data-qreset]').forEach(b=>b.addEventListener('click',()=>renderQCM(+b.dataset.qreset)));
+$$('#finCheck input').forEach(c=>c.addEventListener('change',()=>{}));
+
+})();
+
+</script>
+</body>
+</html>
