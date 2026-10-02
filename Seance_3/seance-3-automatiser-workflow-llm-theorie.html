@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Séance 3 — Dématérialiser et automatiser un processus avec un LLM · Théorie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2563eb;--primary-dark:#1d4ed8;--primary-light:#dbeafe;
+  --secondary:#059669;--secondary-light:#d1fae5;
+  --accent:#d97706;--accent-light:#fef3c7;
+  --danger:#dc2626;--danger-light:#fee2e2;
+  --purple:#7c3aed;--purple-light:#ede9fe;
+  --dark:#0f172a;--dark2:#1e293b;
+  --text:#1e293b;--muted:#64748b;--border:#e2e8f0;
+  --bg:#f1f5f9;--card:#ffffff;--radius:14px;
+  --sans:'Sora',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.6;font-size:15px;min-height:100vh}
+code,.mono{font-family:var(--mono)}
+code{background:#f1f5f9;border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-size:.84em}
+pre code,.key-box code,.nest.n4 code{background:transparent;border:none;padding:0;color:inherit}
+button{font-family:inherit;cursor:pointer}
+a{color:var(--primary)}
+:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+
+header{background:linear-gradient(135deg,#0f172a 0%,#4c1d95 60%,#6d28d9 100%);color:#fff;padding:42px 24px 34px;position:relative;overflow:hidden}
+header.practice{background:linear-gradient(135deg,#0f172a 0%,#6d28d9 60%,#7c3aed 100%)}
+header::after{content:"";position:absolute;right:-120px;top:-120px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(167,139,250,.25),transparent 70%)}
+.header-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:6px 14px;border-radius:999px;font-size:.8rem;font-weight:600;margin-bottom:16px}
+header h1{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;line-height:1.2;margin-bottom:10px}
+header .subtitle{color:#cbd5e1;max-width:720px;font-size:1rem}
+.meta-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.meta-pill{background:rgba(15,23,42,.45);border:1px solid rgba(255,255,255,.15);padding:6px 14px;border-radius:999px;font-size:.8rem;display:inline-flex;align-items:center;gap:6px}
+.global-progress{margin-top:24px;max-width:520px}
+.global-progress .label{display:flex;justify-content:space-between;font-size:.8rem;color:#cbd5e1;margin-bottom:6px}
+.global-progress .track{height:8px;background:rgba(255,255,255,.15);border-radius:999px;overflow:hidden}
+.global-progress .fill{height:100%;width:0;background:linear-gradient(90deg,#10b981,#34d399);border-radius:999px;transition:width .5s ease}
+.mode-flag{display:none;margin-top:14px;background:var(--accent);color:#fff;font-size:.75rem;font-weight:700;padding:4px 10px;border-radius:6px;width:max-content}
+body.formateur .mode-flag{display:block}
+
+.tabs-wrap{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--border);box-shadow:0 2px 8px rgba(15,23,42,.04)}
+.tabs{max-width:1100px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding:0 16px;scrollbar-width:thin}
+.tab{border:none;background:none;padding:15px 14px;font-size:.85rem;font-weight:600;color:var(--muted);white-space:nowrap;border-bottom:3px solid transparent;display:flex;align-items:center;gap:6px}
+.tab:hover{color:var(--primary)}
+.tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab .done-mark{display:none;color:var(--secondary)}
+.tab.done .done-mark{display:inline}
+.tab .lock-mark{font-size:.8rem}
+
+main{max-width:1100px;margin:0 auto;padding:28px 16px 80px}
+.panel{display:none}
+.panel.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.panel.active{animation:none}.global-progress .fill,.progress-fill{transition:none}}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:22px;box-shadow:0 1px 3px rgba(15,23,42,.05)}
+@media(max-width:600px){.card{padding:20px 16px}}
+.section-title{display:flex;align-items:center;gap:14px;font-size:1.3rem;font-weight:700;margin-bottom:18px;color:var(--dark)}
+.icon-bg{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:1.3rem;flex-shrink:0;background:var(--primary-light)}
+.icon-bg.green{background:var(--secondary-light)}.icon-bg.amber{background:var(--accent-light)}.icon-bg.purple{background:var(--purple-light)}.icon-bg.red{background:var(--danger-light)}
+h3{font-size:1.05rem;font-weight:700;margin:22px 0 10px;color:var(--dark)}
+p{margin-bottom:10px}
+.lead{font-size:1.05rem;color:var(--dark2)}
+.muted{color:var(--muted);font-size:.88rem}
+ul.clean{list-style:none}
+ul.clean li{padding:6px 0 6px 26px;position:relative}
+ul.clean li::before{content:"▸";position:absolute;left:6px;color:var(--primary);font-weight:700}
+ol{padding-left:22px}ol li{padding:3px 0}
+
+.objectif-box{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid var(--primary);border-radius:10px;padding:18px 20px;margin:16px 0}
+.objectif-box strong.title{display:block;color:var(--primary-dark);margin-bottom:8px}
+.instruction-box{background:#fffbeb;border:1px solid #fde68a;border-left:5px solid var(--accent);border-radius:10px;padding:18px 20px;margin:16px 0}
+.instruction-box strong.title{display:block;color:#92400e;margin-bottom:8px}
+.key-box{background:var(--dark);color:#e2e8f0;border-radius:12px;padding:22px 24px;margin:18px 0;border-left:5px solid #10b981}
+.key-box .big{font-size:1.15rem;font-weight:700;color:#fff}
+.warn-box{background:#fef2f2;border:1px solid #fecaca;border-left:5px solid var(--danger);border-radius:10px;padding:16px 20px;margin:16px 0}
+
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.grid-3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.mini-card{border:1px solid var(--border);border-radius:12px;padding:18px;background:#fff}
+.mini-card h4{font-size:1rem;margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mini-card.bad{border-color:#fecaca;background:#fef2f2}
+.mini-card.good{border-color:#a7f3d0;background:#f0fdf4}
+.mini-card pre.prompt{margin-top:8px}
+
+.famille-tag{display:inline-block;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:999px;letter-spacing:.2px}
+.f1{background:var(--primary-light);color:#1e40af}
+.f2{background:var(--secondary-light);color:#065f46}
+.f3{background:var(--accent-light);color:#92400e}
+.f4{background:var(--purple-light);color:#5b21b6}
+.f5{background:var(--danger-light);color:#991b1b}
+
+.term-item{background:var(--dark);color:#e2e8f0;font-family:var(--mono);font-size:.85rem;padding:10px 14px;border-radius:8px;display:inline-block}
+.chain .term-item,.objectif-box .term-item{padding:6px 12px}
+pre.prompt{background:var(--dark);color:#e2e8f0;font-family:var(--mono);font-size:.84rem;padding:18px 20px;border-radius:10px;white-space:pre-wrap;word-break:break-word;line-height:1.65;overflow-x:auto;position:relative;margin:12px 0}
+pre.prompt .hl{color:#34d399}
+pre.prompt .hl2{color:#fbbf24}
+pre.prompt .hl3{color:#93c5fd}
+
+.btn{border:none;border-radius:10px;padding:11px 18px;font-weight:600;font-size:.88rem;display:inline-flex;align-items:center;gap:8px;transition:transform .1s,background .2s}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-dark)}
+.btn-success{background:var(--secondary);color:#fff}.btn-success:hover{background:#047857}
+.btn-ghost{background:#fff;color:var(--dark2);border:1px solid var(--border)}.btn-ghost:hover{background:#f8fafc}
+.btn-warning{background:var(--accent);color:#fff}
+.btn-sm{padding:7px 12px;font-size:.8rem}
+.actions-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;align-items:center}
+.btn-reveal{display:none}
+body.formateur .btn-reveal{display:inline-flex}
+.reveal-content{display:none}
+.reveal-content.shown{display:block}
+
+.progress-wrap{margin:14px 0 4px}
+.progress-label{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:5px;font-weight:600}
+.progress-track{height:8px;background:#e2e8f0;border-radius:999px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#059669,#10b981);border-radius:999px;transition:width .4s ease}
+
+.result-panel{display:none;background:var(--dark);color:#e2e8f0;border-radius:12px;padding:22px 24px;margin-top:20px}
+.result-panel.show{display:block}
+.result-panel .score{font-family:var(--mono);font-size:2rem;font-weight:700;color:#34d399}
+.result-panel .msg{margin-top:6px;color:#cbd5e1}
+
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:18px 0}
+.chain-node{border:2px solid var(--border);background:#fff;border-radius:10px;padding:10px 16px;font-weight:700;font-size:.9rem;color:var(--dark2)}
+.chain-node:hover{border-color:var(--primary)}
+.chain-node.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.chain-node.seen:not(.active){border-color:#93c5fd}
+.chain-arrow{color:var(--muted);font-weight:700}
+.concept-detail{border:1px solid var(--border);border-radius:12px;padding:22px;background:#f8fafc;min-height:180px}
+.concept-detail .row{display:grid;grid-template-columns:130px 1fr;gap:10px;padding:8px 0;border-bottom:1px dashed var(--border)}
+.concept-detail .row:last-child{border-bottom:none}
+.concept-detail .k{font-weight:700;font-size:.82rem;color:var(--muted)}
+@media(max-width:600px){.concept-detail .row{grid-template-columns:1fr;gap:2px}}
+
+/* QCM */
+.qcm-q{border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:12px;background:#fff}
+.qcm-q .qt{font-weight:600;margin-bottom:10px}
+.qcm-opts{display:grid;gap:8px}
+.qcm-opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--border);border-radius:9px;padding:10px 12px;cursor:pointer;font-size:.9rem;background:#fff;text-align:left;width:100%;color:var(--text)}
+.qcm-opt:hover{background:#f8fafc;border-color:#93c5fd}
+.qcm-opt .l{font-family:var(--mono);font-weight:700;color:var(--primary);min-width:18px}
+.qcm-opt.sel{border-color:var(--primary);background:#eff6ff}
+.qcm-q.checked .qcm-opt{cursor:default}
+.qcm-opt.good{border-color:#6ee7b7;background:#ecfdf5}
+.qcm-opt.bad{border-color:#fca5a5;background:#fef2f2}
+.qcm-q.correct{border-color:#6ee7b7}
+.qcm-q.wrong{border-color:#fca5a5}
+.qcm-q .expl{display:none;margin-top:10px;font-size:.86rem;padding-top:8px;border-top:1px dashed var(--border)}
+.qcm-q.checked .expl{display:block}
+.q-num{font-family:var(--mono);font-size:.75rem;color:var(--muted);margin-right:6px}
+
+/* V/F */
+.vf-row{padding:16px;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;background:#fff}
+.vf-row .vf-q{font-weight:500;margin-bottom:10px}
+.vf-btns{display:flex;gap:8px}
+.vf-btn{border:1px solid var(--border);background:#fff;border-radius:8px;padding:7px 18px;font-weight:600;font-size:.85rem;color:var(--text)}
+.vf-btn.sel{background:var(--dark);color:#fff;border-color:var(--dark)}
+.vf-row.correct{border-color:#6ee7b7;background:#ecfdf5}
+.vf-row.wrong{border-color:#fca5a5;background:#fef2f2}
+.vf-row .expl{display:none;margin-top:10px;font-size:.85rem}
+.vf-row.checked .expl{display:block}
+
+/* Cas 1 matching */
+.match-grid{display:grid;grid-template-columns:minmax(200px,1fr) 2fr;gap:16px;margin-top:10px}
+@media(max-width:760px){.match-grid{grid-template-columns:1fr}}
+.match-col{display:flex;flex-direction:column;gap:8px}
+.match-col h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+.m-term{background:var(--dark);color:#e2e8f0;font-family:var(--mono);font-size:.84rem;padding:10px 12px;border-radius:8px;border:2px solid var(--dark);text-align:left;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.m-term:hover{border-color:#60a5fa}
+.m-term.active{border-color:#fbbf24;box-shadow:0 0 0 3px rgba(251,191,36,.35)}
+.m-def{background:#fff;border:2px solid var(--border);border-radius:8px;padding:10px 12px;font-size:.86rem;text-align:left;display:flex;gap:10px;align-items:flex-start;color:var(--text)}
+.m-def:hover{border-color:#93c5fd}
+.pair-badge{font-family:var(--mono);font-size:.72rem;font-weight:700;min-width:24px;height:24px;border-radius:6px;display:inline-grid;place-items:center;background:#e2e8f0;color:var(--muted);flex-shrink:0}
+.paired .pair-badge{background:var(--primary);color:#fff}
+.m-def.paired{border-color:#93c5fd;background:#eff6ff}
+.m-term.good,.m-def.good{border-color:#10b981}
+.m-def.good{background:#ecfdf5}
+.m-term.bad,.m-def.bad{border-color:#ef4444}
+.m-def.bad{background:#fef2f2}
+.round-pills{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 4px}
+.round-pill{font-family:var(--mono);font-size:.75rem;padding:4px 10px;border-radius:999px;background:#f1f5f9;border:1px solid var(--border);color:var(--muted)}
+.round-pill.cur{background:var(--primary);color:#fff;border-color:var(--primary)}
+.round-pill.ok{background:var(--secondary-light);color:#065f46;border-color:#6ee7b7}
+
+/* Cas 2 */
+.group{border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;background:#fff}
+.group-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.group-head strong{font-size:1rem}
+.g-label{font-size:.8rem;font-weight:700;color:var(--muted);margin:12px 0 6px;text-transform:uppercase;letter-spacing:.5px}
+.choice-row{display:flex;flex-wrap:wrap;gap:8px}
+.choice{border:1px solid var(--border);background:#fff;border-radius:999px;padding:6px 14px;font-size:.84rem;font-weight:600;color:var(--dark2)}
+.choice.sel{background:var(--dark);color:#fff;border-color:var(--dark)}
+.choice.good{background:#10b981;color:#fff;border-color:#10b981}
+.choice.bad{background:#ef4444;color:#fff;border-color:#ef4444}
+.sit{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:1px solid var(--border);border-radius:9px;padding:10px 12px;background:#f8fafc;font-size:.88rem;margin-bottom:8px;color:var(--text)}
+.sit:hover{border-color:#fbbf24}
+.sit .tag{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:999px;background:#e2e8f0;color:var(--muted);white-space:nowrap}
+.sit.sel{border-color:var(--accent);background:#fffbeb}
+.sit.sel .tag{background:var(--accent);color:#fff}
+.sit.good{border-color:#10b981;background:#ecfdf5}
+.sit.good .tag{background:#10b981;color:#fff}
+.sit.bad{border-color:#ef4444;background:#fef2f2}
+.sit.bad .tag{background:#ef4444;color:#fff}
+.group .expl{display:none;margin-top:10px;font-size:.86rem;padding-top:10px;border-top:1px dashed var(--border)}
+.group.checked .expl{display:block}
+.group.correct{border-color:#6ee7b7}
+.group.wrong{border-color:#fca5a5}
+.group.half{border-color:#fcd34d}
+
+/* forms */
+label.f-label{display:block;font-weight:600;font-size:.85rem;margin:14px 0 6px;color:var(--dark2)}
+input.f-input,textarea.f-input{width:100%;padding:11px 13px;border:1px solid var(--border);border-radius:9px;font-family:var(--sans);font-size:.9rem;background:#fff;color:var(--text)}
+textarea.f-input{min-height:78px;resize:vertical}
+
+.steps{margin:14px 0}
+.step{display:flex;gap:14px;padding:12px 0;border-bottom:1px dashed var(--border);align-items:flex-start}
+.step:last-child{border-bottom:none}
+.step input[type=checkbox]{width:20px;height:20px;accent-color:var(--secondary);margin-top:3px;flex-shrink:0}
+.step .s-num{font-family:var(--mono);font-weight:700;color:var(--primary);min-width:24px}
+.checklist label{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;cursor:pointer}
+.checklist label:hover{background:#f8fafc}
+.checklist input{width:18px;height:18px;accent-color:var(--secondary);margin-top:3px;flex-shrink:0}
+
+.table-wrap{overflow-x:auto;margin:14px 0}
+table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:520px}
+th{background:var(--dark);color:#fff;text-align:left;padding:11px 14px;font-weight:600}
+th:first-child{border-top-left-radius:10px}th:last-child{border-top-right-radius:10px}
+td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:top;background:#fff}
+tr:nth-child(even) td{background:#f8fafc}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font-size:.75rem;background:#f1f5f9;border:1px solid var(--border);padding:3px 10px;border-radius:999px;color:var(--dark2)}
+
+.route{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:14px 0}
+.route-step{background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+.route-step .n{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.route-step .t{font-weight:700;font-size:.9rem;color:var(--dark)}
+.route-step .c{font-size:.75rem;color:var(--muted)}
+.route-step.past{background:#ecfdf5;border-color:#a7f3d0}
+.route-step.here{background:var(--primary);border-color:var(--primary)}
+.route-step.here .t,.route-step.here .n,.route-step.here .c{color:#fff}
+
+.levels{display:grid;gap:8px;margin:14px 0}
+.level{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:#fff}
+.level .lv{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--primary)}
+.level .risk{font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:999px}
+@media(max-width:600px){.level{grid-template-columns:40px 1fr}.level .risk{grid-column:2;justify-self:start}}
+
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
+.pillar{border-radius:12px;padding:16px;background:#fff;border:1px solid var(--border);border-top:4px solid var(--primary)}
+.pillar:nth-child(5n+2){border-top-color:var(--purple)}
+.pillar:nth-child(5n+3){border-top-color:var(--secondary)}
+.pillar:nth-child(5n+4){border-top-color:var(--accent)}
+.pillar:nth-child(5n+5){border-top-color:var(--danger)}
+.pillar .n{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+.pillar h4{font-size:1rem;margin:4px 0 6px}
+.pillar p{font-size:.84rem;color:var(--dark2);margin:0}
+.pillar .q{font-size:.8rem;color:var(--muted);font-style:italic;margin-top:8px}
+
+details.acc{border:1px solid var(--border);border-radius:10px;margin:10px 0;background:#fff}
+details.acc summary{cursor:pointer;padding:12px 16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:10px}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary::after{content:"+";font-family:var(--mono);color:var(--primary);font-weight:700}
+details.acc[open] summary::after{content:"−"}
+details.acc[open] summary{border-bottom:1px dashed var(--border)}
+details.acc > div{padding:12px 16px;font-size:.9rem}
+
+.gloss{display:grid;gap:10px;margin-top:10px}
+.gloss-item{display:grid;grid-template-columns:190px 1fr;gap:14px;align-items:start;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:#fff}
+.gloss-item .gt{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+@media(max-width:620px){.gloss-item{grid-template-columns:1fr}}
+.lock-wrap{text-align:center;padding:30px 10px}
+.lock-wrap .big-lock{font-size:3rem}
+.lock-pills{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:16px}
+.lock-pill{font-size:.82rem;font-weight:600;padding:6px 14px;border-radius:999px;background:#f1f5f9;border:1px solid var(--border)}
+.lock-pill.ok{background:var(--secondary-light);border-color:#6ee7b7;color:#065f46}
+.filter-row{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}
+.filter-row button{border:1px solid var(--border);background:#fff;border-radius:999px;padding:5px 12px;font-size:.78rem;font-weight:600;color:var(--dark2)}
+.filter-row button.on{background:var(--dark);color:#fff;border-color:var(--dark)}
+
+.score-table td:last-child{font-family:var(--mono);font-weight:700}
+.link-card{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:#f8fafc;border:1px dashed #93c5fd;border-radius:12px;padding:16px 18px;margin-top:16px}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--dark);color:#fff;padding:10px 18px;border-radius:10px;font-size:.85rem;opacity:0;pointer-events:none;transition:all .25s;z-index:100;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.nav-bottom{display:flex;justify-content:space-between;gap:10px;margin-top:10px;flex-wrap:wrap}
+footer{text-align:center;color:var(--muted);font-size:.78rem;padding:30px 16px 50px}
+@media print{.tabs-wrap,.actions-row,.nav-bottom{display:none}.panel{display:block!important}}
+
+
+
+/* ===== Identité module SIRH ===== */
+header{background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 55%,#0e7490 100%)}
+header.practice{background:linear-gradient(135deg,#0f172a 0%,#0e7490 55%,#0891b2 100%)}
+header::after{background:radial-gradient(circle,rgba(103,232,249,.22),transparent 70%)}
+.route.r10{grid-template-columns:repeat(5,1fr)}
+@media(max-width:640px){.route.r10{grid-template-columns:repeat(2,1fr)}}
+/* Fil rouge */
+.company{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:18px 20px;margin:14px 0}
+.company .logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#0e7490,#059669);display:grid;place-items:center;font-size:1.7rem;color:#fff}
+.company h4{font-size:1.05rem;margin-bottom:4px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px}
+.fact{background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.fact .v{font-family:var(--mono);font-weight:700;font-size:1.05rem;color:var(--dark)}
+.fact .l{font-size:.75rem;color:var(--muted)}
+/* Fonctions du SI */
+.flow4{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:16px 0;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.flow4 > div{padding:14px;background:#fff;border-right:1px solid var(--border);position:relative}
+.flow4 > div:last-child{border-right:none}
+.flow4 .n{font-family:var(--mono);font-size:.72rem;color:var(--primary);font-weight:700}
+.flow4 h4{margin:2px 0 4px;font-size:.98rem}
+.flow4 p{font-size:.82rem;color:var(--dark2);margin:0}
+@media(max-width:720px){.flow4{grid-template-columns:1fr 1fr}.flow4 > div:nth-child(2){border-right:none}.flow4 > div:nth-child(-n+2){border-bottom:1px solid var(--border)}}
+/* Pyramide donnée -> décision */
+.dikw{display:grid;gap:6px;margin:16px auto;max-width:620px}
+.dikw > div{border-radius:8px;padding:10px 14px;color:#fff;display:flex;justify-content:space-between;gap:12px;font-size:.88rem;margin:0 auto;width:100%}
+.dikw > div strong{white-space:nowrap}
+.dikw .d1{width:58%;background:#0f172a}.dikw .d2{width:72%;background:#1e3a8a}.dikw .d3{width:86%;background:#0e7490}.dikw .d4{width:100%;background:#059669}
+@media(max-width:620px){.dikw > div{width:100%!important;flex-direction:column}}
+/* Timeline */
+.timeline{position:relative;margin:16px 0 8px;padding-left:22px;border-left:3px solid #bfdbfe}
+.timeline .t-item{position:relative;margin-bottom:14px}
+.timeline .t-item::before{content:"";position:absolute;left:-30px;top:5px;width:13px;height:13px;border-radius:50%;background:var(--primary);border:3px solid #fff;box-shadow:0 0 0 2px #bfdbfe}
+.timeline .t-item.now::before{background:var(--secondary)}
+.timeline .when{font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--primary)}
+.timeline .t-item.now .when{color:var(--secondary)}
+/* Architecture SIRH */
+.archi{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:12px;align-items:stretch;margin:16px 0}
+.archi .col{display:grid;gap:8px;align-content:start}
+.archi .mod{background:#fff;border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:.84rem}
+.archi .mod b{display:block;font-size:.88rem}
+.archi .core{background:var(--dark);color:#e2e8f0;border-radius:14px;padding:18px;display:flex;flex-direction:column;justify-content:center;text-align:center;gap:8px}
+.archi .core b{color:#fff;font-size:1.05rem}
+.archi .core small{color:#94a3b8}
+.archi .ext{border-style:dashed;background:#f8fafc}
+.archi .when-s{font-family:var(--mono);font-size:.7rem;color:var(--muted)}
+@media(max-width:760px){.archi{grid-template-columns:1fr}}
+/* Couloirs (swimlane) */
+.swim-wrap{overflow-x:auto;margin:16px 0;border:1px solid var(--border);border-radius:12px}
+.swim{border-collapse:separate;border-spacing:0;min-width:860px;width:100%}
+.swim th.lane{background:var(--dark2);color:#fff;font-size:.78rem;width:130px;text-align:left;padding:10px;position:sticky;left:0;z-index:1}
+.swim td{border-bottom:1px dashed var(--border);border-right:1px dashed #eef2f7;padding:8px;vertical-align:middle;background:#fff;min-width:118px}
+.swim tr:nth-child(even) td{background:#f8fafc}
+.swim .stephead th{background:#f1f5f9;color:var(--muted);font-family:var(--mono);font-size:.72rem;padding:6px;border-bottom:1px solid var(--border)}
+.task{display:block;border-radius:8px;padding:7px 9px;font-size:.76rem;line-height:1.35;background:var(--primary-light);border:1px solid #93c5fd;color:#1e3a8a}
+.task.paper{background:var(--accent-light);border-color:#fcd34d;color:#78350f}
+.task.risk{background:var(--danger-light);border-color:#fca5a5;color:#7f1d1d}
+.task.evt{background:var(--secondary-light);border-color:#6ee7b7;color:#064e3b;border-radius:999px;text-align:center}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.legend .task{display:inline-block}
+/* Matrice / BPMN symboles */
+.symbols{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:14px 0}
+.symbol{border:1px solid var(--border);border-radius:10px;padding:12px;background:#fff;text-align:center;font-size:.82rem}
+.symbol .shape{height:46px;display:grid;place-items:center;margin-bottom:6px}
+.sh-evt{width:40px;height:40px;border-radius:50%;border:3px solid var(--secondary)}
+.sh-end{width:40px;height:40px;border-radius:50%;border:5px solid var(--danger)}
+.sh-task{width:70px;height:38px;border-radius:8px;border:2px solid var(--primary);background:var(--primary-light)}
+.sh-gw{width:32px;height:32px;transform:rotate(45deg);border:2px solid var(--accent);background:var(--accent-light)}
+.sh-flow{width:80px;height:2px;background:var(--dark2);position:relative}
+.sh-flow::after{content:"";position:absolute;right:-2px;top:-5px;border-left:9px solid var(--dark2);border-top:6px solid transparent;border-bottom:6px solid transparent}
+.sh-doc{width:46px;height:40px;border:2px solid var(--purple);background:var(--purple-light);border-radius:4px 4px 12px 4px}
+/* Indicateurs de processus */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:14px 0}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;border-left:4px solid var(--accent)}
+.kpi .v{font-family:var(--mono);font-size:1.4rem;font-weight:700;color:var(--dark)}
+.kpi .l{font-size:.8rem;color:var(--muted)}
+@media print{header{background:#0f172a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+
+/* ===== Ajouts séances 3-4 ===== */
+.wf{display:flex;align-items:stretch;gap:0;margin:16px 0;overflow-x:auto;padding-bottom:6px}
+.wf .node{min-width:150px;flex:1;background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;position:relative;margin-right:26px}
+.wf .node:last-child{margin-right:0}
+.wf .node:not(:last-child)::after{content:"➜";position:absolute;right:-22px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:1.1rem}
+.wf .node .k{font-family:var(--mono);font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.wf .node h4{margin:4px 0;font-size:.92rem}
+.wf .node p{font-size:.78rem;color:var(--dark2);margin:0}
+.wf .trg{border-top:4px solid var(--secondary)}.wf .trg .k{color:var(--secondary)}
+.wf .act{border-top:4px solid var(--primary)}.wf .act .k{color:var(--primary)}
+.wf .llm{border-top:4px solid var(--purple);background:var(--purple-light)}.wf .llm .k{color:var(--purple)}
+.wf .hum{border-top:4px solid var(--accent);background:var(--accent-light)}.wf .hum .k{color:#92400e}
+.wf .flt{border-top:4px solid var(--danger)}.wf .flt .k{color:var(--danger)}
+.stairs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;align-items:end;margin:16px 0}
+.stairs > div{border-radius:10px;padding:12px;color:#fff;font-size:.82rem}
+.stairs > div b{display:block;font-size:.95rem;margin-bottom:4px}
+.stairs .s1{background:#64748b;min-height:110px}.stairs .s2{background:#1e3a8a;min-height:140px}.stairs .s3{background:#0e7490;min-height:170px}.stairs .s4{background:#7c3aed;min-height:200px}
+@media(max-width:720px){.stairs{grid-template-columns:1fr 1fr}.stairs > div{min-height:0!important}}
+.chainx{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:16px 0}
+.chainx > div{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;position:relative}
+.chainx > div .ic{font-size:1.5rem}
+.chainx > div b{display:block;font-size:.9rem;margin:4px 0}
+.chainx > div span{font-size:.76rem;color:var(--muted)}
+.chainx > div.hot{border:2px solid var(--primary);background:var(--primary-light)}
+@media(max-width:760px){.chainx{grid-template-columns:1fr 1fr}}
+.scoregrid td.c{text-align:center;font-family:var(--mono);font-weight:700}
+.dataset{font-family:var(--mono);font-size:.76rem}
+.dataset td,.dataset th{padding:6px 8px!important;white-space:nowrap}
+
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <span class="badge">🏢 SIRH &amp; exploitation de la Data — IA · Séance 3 · Support théorique</span>
+    <h1>Dématérialiser et automatiser un processus avec un LLM</h1>
+    <p class="subtitle">Concevoir un processus cible qui simplifie avant d&#x27;automatiser, évaluer ce qui mérite de l&#x27;être, construire un workflow avec un appel à un LLM, et le gouverner dans le respect des données et des personnes.</p>
+    <div class="meta-pills"><span class="meta-pill">🧭 Séance 3 sur 10</span><span class="meta-pill">📚 Support théorique</span><span class="meta-pill">📖 6 chapitres</span><span class="meta-pill">❓ 30 questions de QCM</span><span class="meta-pill">🏠 Fil rouge : Groupe Habitéo</span></div>
+    <div class="global-progress">
+      <div class="label"><span>QCM de chapitre validés</span><span id="globalPct">0 / 6</span></div>
+      <div class="track"><div class="fill" id="globalFill"></div></div>
+    </div>
+    <div class="mode-flag">Mode formateur actif — boutons « Révéler » visibles</div>
+  </div>
+</header>
+<div class="tabs-wrap"><nav class="tabs" role="tablist" aria-label="Chapitres de la séance"><button class="tab active" data-tab="0" role="tab">🚀 Démarrage</button><button class="tab" data-tab="c0" data-act="ch0" role="tab">🗂️ Dématérialiser <span class="done-mark">✅</span></button><button class="tab" data-tab="c1" data-act="ch1" role="tab">⚖️ Automatisable ? <span class="done-mark">✅</span></button><button class="tab" data-tab="c2" data-act="ch2" role="tab">🔗 Anatomie d&#x27;un workflow <span class="done-mark">✅</span></button><button class="tab" data-tab="c3" data-act="ch3" role="tab">🤖 L&#x27;appel au LLM <span class="done-mark">✅</span></button><button class="tab" data-tab="c4" data-act="ch4" role="tab">🏗️ Make, n8n et souveraineté <span class="done-mark">✅</span></button><button class="tab" data-tab="c5" data-act="ch5" role="tab">🛡️ Gouverner l&#x27;automatisation <span class="done-mark">✅</span></button><button class="tab" data-tab="syn" role="tab">🏁 Synthèse</button></nav></div>
+<main>
+<section class="panel active" data-panel="0">
+  <div class="card">
+    <div class="section-title"><span class="icon-bg">🎯</span>Où en est-on dans le parcours ?</div>
+    <div class="key-box"><div class="big">Je sais concevoir un workflow RH augmenté par l&#x27;IA.</div><p style="margin:8px 0 0">Vous savez lire un processus (séance 1) et parler à une IA (séance 2). Vous allez maintenant les relier : redessiner un processus, puis le faire exécuter par un workflow dans lequel le LLM n'est qu'une étape, sous contrôle humain.</p></div>
+    <div class="route r10"><div class="route-step past"><div class="n">S1</div><div class="t">Lire</div><div class="c">SI, data, processus</div></div><div class="route-step past"><div class="n">S2</div><div class="t">Outiller</div><div class="c">IA générative</div></div><div class="route-step here"><div class="n">S3</div><div class="t">Automatiser</div><div class="c">Workflow + LLM</div></div><div class="route-step "><div class="n">S4</div><div class="t">Socle</div><div class="c">Core RH, paie, GTA</div></div><div class="route-step "><div class="n">S5</div><div class="t">Talents</div><div class="c">ATS, LMS, PMS</div></div><div class="route-step "><div class="n">S6</div><div class="t">Marché</div><div class="c">Solutions, acteurs</div></div><div class="route-step "><div class="n">S7</div><div class="t">Projet</div><div class="c">CDC, déploiement</div></div><div class="route-step "><div class="n">S8</div><div class="t">Data</div><div class="c">KPI, tableaux de bord</div></div><div class="route-step "><div class="n">S9</div><div class="t">Prédire</div><div class="c">Scénarios, virage RH</div></div><div class="route-step "><div class="n">S10</div><div class="t">Évaluer</div><div class="c">Révision + CCF</div></div></div>
+    <p class="muted">En vert : les séances franchies. En bleu : la séance d'aujourd'hui.</p>
+    <h3>Le fil pédagogique</h3>
+    <div class="table-wrap"><table><tr><th>Séance</th><th>Ce que vous saurez faire</th></tr><tr><td>Séance 1</td><td>Je sais lire le SI RH d&#x27;une entreprise.</td></tr><tr><td>Séance 2</td><td>Je sais choisir le bon outil IA et lui parler.</td></tr><tr><td><strong>Séance 3</strong> — aujourd&#39;hui</td><td><strong>Je sais concevoir un workflow RH augmenté par l&#x27;IA.</strong></td></tr><tr><td>Séance 4</td><td>Je sais relier les données du planning à la DSN.</td></tr><tr><td>Séance 5</td><td>Je sais évaluer ce qu&#x27;un module automatise, et ses risques.</td></tr><tr><td>Séance 6</td><td>Je sais positionner une solution et ses acteurs.</td></tr><tr><td>Séance 7</td><td>Je sais cadrer et piloter un projet SIRH.</td></tr><tr><td>Séance 8</td><td>Je sais transformer un export en KPI de climat social.</td></tr><tr><td>Séance 9</td><td>Je sais construire un scénario décisionnel.</td></tr><tr><td>Séance 10</td><td>Je sais mobiliser l&#x27;ensemble du module.</td></tr></table></div>
+  </div>
+  <div class="card">
+    <div class="section-title"><span class="icon-bg green">🏠</span>Le fil rouge : où en est Habitéo ?</div>
+    <p class="lead">Votre diagnostic de séance 1 a convaincu la DRH : 12 jours ouvrés entre la promesse signée et un technicien équipé, 3 saisies de la même identité, 2 DPAE tardives cette année, des comptes de tablette oubliés deux fois par mois. Votre charte d'usage de l'IA de séance 2 est validée.</p>
+    <div class="instruction-box"><strong class="title">La demande de la DRH</strong>« Sans attendre le futur SIRH, je veux un premier résultat visible dans les agences. Proposez-moi le processus cible de l'intégration, puis montrez-moi un scénario qui fonctionne, avec l'IA là où elle est utile et nulle part ailleurs. Et il doit respecter notre charte. »</div>
+    <p>L'atelier pratique vous fait passer du AS-IS au TO-BE, évaluer chaque étape avec la grille d'automatisabilité, puis construire et tester dans Make (ou n8n) le scénario « Déclaration d'embauche », avec un module LLM et une validation humaine.</p>
+  </div>
+  <div class="card">
+    <div class="section-title"><span class="icon-bg green">✅</span>Objectifs de la séance</div>
+    <div class="objectif-box"><strong class="title">À la fin de cette séance, vous serez capable de :</strong><ul class="clean"><li>Distinguer matérialiser, dématérialiser, automatiser et augmenter un processus RH, et concevoir un processus cible (TO-BE) ;</li><li>Évaluer si une étape est automatisable avec une grille : fréquence, volume, standardisation, stabilité des règles, valeur ajoutée, risque ;</li><li>Décrire un workflow avec son vocabulaire : déclencheur, module, mapping, filtre, routeur, gestion d&#x27;erreur ;</li><li>Placer un appel à un LLM au bon endroit d&#x27;un workflow, avec un prompt système, une sortie structurée et une validation humaine ;</li><li>Comparer Make, n8n et leurs alternatives, et choisir entre SaaS et auto-hébergement sous l&#x27;angle de la souveraineté des données ;</li><li>Documenter et gouverner une automatisation RH : charte, RGPD, CSE, propriétaire, suivi.</li></ul></div>
+    <div class="grid grid-2">
+      <div class="mini-card"><h4>🎒 À avoir avec vous</h4><ul class="clean"><li>Vos fiches de séance 1 (AS-IS et diagnostic) et votre charte d'usage de l'IA de séance 2.</li><li>Un compte Make gratuit (ou un accès à une instance n8n), et un compte Google pour Forms, Sheets et Gmail.</li><li>Un accès à un module LLM dans Make : clé API OpenAI, Anthropic, Google AI Studio (Gemini) ou Mistral.</li></ul></div>
+      <div class="mini-card"><h4>🧩 Les 5 familles de notions</h4><div class="chips" style="margin-top:4px"><span class="famille-tag f1">Dématérialisation</span><span class="famille-tag f2">Automatisabilité</span><span class="famille-tag f3">Anatomie du workflow</span><span class="famille-tag f4">IA dans le workflow</span><span class="famille-tag f5">Outils et souveraineté</span></div><p class="muted" style="margin-top:10px">Ces familles organisent les chapitres, les cas pratiques et le glossaire.</p></div>
+    </div>
+    <div class="warn-box"><strong>⛔ Règle de la séance</strong> Les automatisations de l'atelier ne traitent que des données fictives du cas Habitéo. Aucun formulaire ne collecte de pièce d'identité réelle, et aucune clé API ne se partage dans un document ou une conversation.</div>
+    <div class="instruction-box"><strong class="title">Comment utiliser ce support</strong>Chaque onglet est un chapitre. Lisez-le, explorez les éléments interactifs, puis répondez au <strong>QCM de fin de chapitre</strong> : sa validation fait avancer la barre de progression. La mise en application se fait dans le <strong>support pratique</strong>.</div>
+    <div class="link-card"><span><strong>🛠️ Support pratique associé</strong><br><span class="muted">Cas pratiques, atelier Habitéo et glossaire de la séance.</span></span><a class="btn btn-success" href="seance-3-automatiser-workflow-llm-pratique.html">Ouvrir le support pratique ▸</a></div>
+    <div class="nav-bottom"><span></span><button class="btn btn-primary" data-goto="c0">Commencer : 🗂️ Dématérialiser ▸</button></div>
+  </div>
+</section>
+<section class="panel" data-panel="c0">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 1 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">🗂️</span>Matérialiser, dématérialiser, automatiser, augmenter</div>
+  <p class="lead">En séance 1, vous avez matérialisé le processus d'intégration d'un technicien : vous l'avez rendu visible. Aujourd'hui, vous montez les marches suivantes. Chaque marche a un coût, un gain et un risque différents.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Distinguer les quatre niveaux de transformation d'un processus, et concevoir un processus cible (TO-BE) qui simplifie avant d'automatiser.</div>
+  <div class="stairs">
+    <div class="s1"><b>1 · Matérialiser</b>Rendre visible : cartographie AS-IS, acteurs, frictions. <em>Séance 1.</em></div>
+    <div class="s2"><b>2 · Dématérialiser</b>Remplacer le papier par du numérique : formulaire, signature électronique, coffre-fort.</div>
+    <div class="s3"><b>3 · Automatiser</b>Faire exécuter les règles stables par un workflow : transmettre, créer, relancer.</div>
+    <div class="s4"><b>4 · Augmenter</b>Confier au LLM ce qui demandait de la rédaction ou de l'interprétation, sous validation.</div>
+  </div>
+  <div class="table-wrap"><table>
+    <tr><th>Niveau <span class="famille-tag f1">Dématérialisation</span></th><th>Exemple chez Habitéo</th><th>Ce qui change vraiment</th></tr>
+    <tr><td>Dématérialiser</td><td>Les pièces du candidat sont déposées dans un formulaire au lieu d'être envoyées en photo par e-mail.</td><td>Le support. Quelqu'un doit encore tout traiter.</td></tr>
+    <tr><td>Automatiser</td><td>Chaque déclaration d'embauche crée une ligne dans le registre et alerte l'informatique pour la tablette.</td><td>L'exécution des règles. Plus d'oubli possible.</td></tr>
+    <tr><td>Augmenter</td><td>Le LLM rédige la checklist d'intégration adaptée au poste et le message d'accueil, relus par la RH.</td><td>La préparation des contenus. La décision reste humaine.</td></tr>
+  </table></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">✂️</span>Simplifier avant d'automatiser</div>
+  <p class="lead">Automatiser une étape inutile la rend seulement plus rapide. La démarche ECRS, issue du Lean, s'applique à chaque étape du AS-IS, dans cet ordre.</p>
+  <div class="pillars">
+    <div class="pillar"><div class="n">E</div><h4>Éliminer</h4><p>L'étape sert-elle encore ? Ex. : le contrat imprimé et envoyé par courrier interne.</p></div>
+    <div class="pillar"><div class="n">C</div><h4>Combiner</h4><p>Peut-on fusionner ? Ex. : les deux saisies Excel deviennent une saisie unique.</p></div>
+    <div class="pillar"><div class="n">R</div><h4>Réorganiser</h4><p>Faut-il changer l'ordre ? Ex. : planifier les habilitations avant l'arrivée.</p></div>
+    <div class="pillar"><div class="n">S</div><h4>Simplifier</h4><p>Peut-on alléger ? Ex. : une liste de pièces unique et un dépôt guidé.</p></div>
+    <div class="pillar"><div class="n">+</div><h4>Puis automatiser</h4><p>Ce qui reste, stable et répétitif, est confié au workflow.</p></div>
+  </div>
+  <h3>Les briques de la dématérialisation RH</h3>
+  <div class="grid grid-3">
+    <div class="mini-card"><h4>✍️ Signature électronique</h4><p class="muted">Le règlement européen eIDAS distingue trois niveaux : simple, avancée, qualifiée. Pour un contrat de travail, la signature avancée est la pratique courante. Outils : Yousign, Docusign, solutions intégrées aux SIRH.</p></div>
+    <div class="mini-card"><h4>📄 Bulletin dématérialisé</h4><p class="muted">Remise électronique par défaut, sauf opposition du salarié (article L3243-2 du Code du travail), avec un accès garanti dans la durée, souvent via un coffre-fort numérique.</p></div>
+    <div class="mini-card"><h4>🗄️ Dossier salarié numérique</h4><p class="muted">Pièces classées, droits d'accès définis, durées de conservation appliquées. Il remplace le dossier papier du siège et les copies partielles des agences.</p></div>
+  </div>
+  <div class="key-box"><div class="big">Automatiser l'absurde, c'est produire de l'absurde plus vite.</div><p style="margin:8px 0 0">Le TO-BE commence par supprimer ; l'outil vient ensuite.</p></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 1</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm0"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt0">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill0"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="0">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="0">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="0">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres0"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="0">◂ Précédent</button><button class="btn btn-primary" data-goto="c1">Suite : ⚖️ Automatisable ? ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="c1">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 2 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">⚖️</span>Cette étape est-elle automatisable ?</div>
+  <p class="lead">Tout ce qui est techniquement automatisable ne mérite pas de l'être. Une grille simple évite deux erreurs symétriques : automatiser une étape rare et risquée, ou laisser à la main une tâche répétitive qui épuise l'équipe.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Évaluer une étape avec une grille argumentée, repérer les quick wins et chiffrer un gain.</div>
+  <h3>La grille d'automatisabilité <span class="famille-tag f2">Automatisabilité</span></h3>
+  <div class="table-wrap"><table class="scoregrid">
+    <tr><th>Critère</th><th>Question</th><th>1 (faible)</th><th>3 (fort)</th></tr>
+    <tr><td>Fréquence</td><td>Combien de fois par mois ?</td><td>Quelques fois par an</td><td>Plusieurs fois par jour</td></tr>
+    <tr><td>Volume</td><td>Combien de temps cumulé ?</td><td>Moins d'une heure par mois</td><td>Plusieurs jours par mois</td></tr>
+    <tr><td>Standardisation</td><td>Les données arrivent-elles toujours sous la même forme ?</td><td>Texte libre, cas par cas</td><td>Formulaire, champs fixes</td></tr>
+    <tr><td>Stabilité des règles</td><td>La règle change-t-elle souvent ?</td><td>Varie selon l'agence ou le mois</td><td>Stable et écrite</td></tr>
+    <tr><td>Valeur ajoutée humaine</td><td>Le jugement humain y apporte-t-il quelque chose ?</td><td>Essentiel (entretien, décision)</td><td>Nul (copier, transmettre)</td></tr>
+    <tr><td><strong>Risque pour les personnes</strong></td><td>Que se passe-t-il en cas d'erreur ?</td><td colspan="2">Critère bloquant : plus il est élevé, plus la validation humaine s'impose, quel que soit le score.</td></tr>
+  </table></div>
+  <p class="muted">Score sur 15 pour les cinq premiers critères. Au-dessus de 11 : candidate prioritaire. Entre 8 et 11 : à simplifier d'abord. En dessous : on garde à la main.</p>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">🎯</span>Effort, impact et ROI express</div>
+  <div class="grid grid-2">
+    <div class="mini-card good"><h4>✅ Quick wins : fort impact, faible effort</h4><p class="muted">Alerte à l'informatique pour la tablette, relance automatique des pièces manquantes, création de la ligne dans le registre. On commence ici.</p></div>
+    <div class="mini-card"><h4>🏗️ Projets : fort impact, effort élevé</h4><p class="muted">Saisie unique de l'identité dans un Core RH relié à la paie. C'est l'objet des séances 4 et 7.</p></div>
+    <div class="mini-card"><h4>🧹 À simplifier : faible impact</h4><p class="muted">Archivage manuel de copies papier : on supprime plutôt que d'automatiser.</p></div>
+    <div class="mini-card bad"><h4>⛔ À garder humain</h4><p class="muted">Entretien d'accueil, décision sur une période d'essai, échange avec un salarié en difficulté.</p></div>
+  </div>
+  <h3>Chiffrer un gain : l'intégration d'un technicien</h3>
+  <div class="kpi-row">
+    <div class="kpi"><div class="v">15</div><div class="l">intégrations par mois</div></div>
+    <div class="kpi"><div class="v">3 h → 1 h</div><div class="l">temps RH par dossier (AS-IS → cible)</div></div>
+    <div class="kpi"><div class="v">360 h</div><div class="l">gagnées par an : 15 × 2 h × 12</div></div>
+    <div class="kpi"><div class="v">12 j → 5 j</div><div class="l">délai cible promesse → technicien équipé</div></div>
+  </div>
+  <div class="instruction-box"><strong class="title">ROI = (gains − coûts) / coûts</strong>Gains : heures valorisées au coût horaire chargé, et surtout jours de technicien opérationnel plus tôt. Coûts : abonnement de l'outil, crédits consommés, temps de conception et de maintenance. Avec 15 dossiers par mois, le temps de technicien non productif pèse souvent plus lourd que le temps RH.</div>
+  <div class="warn-box"><strong>⚠️ Le piège du ROI</strong> On oublie souvent la maintenance : un scénario qui casse à chaque changement de formulaire coûte plus qu'il ne rapporte. Comptez au moins une heure de suivi par mois et par scénario.</div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 2</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm1"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt1">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill1"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="1">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="1">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="1">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres1"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c0">◂ Précédent</button><button class="btn btn-primary" data-goto="c2">Suite : 🔗 Anatomie d&#x27;un workflow ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="c2">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 3 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">🔗</span>L'anatomie d'un workflow</div>
+  <p class="lead">Make, n8n, Zapier ou Power Automate n'emploient pas exactement les mêmes mots, mais ils reposent tous sur les mêmes briques. Savoir les nommer vous permet de lire un scénario, de le spécifier et d'en discuter avec un intégrateur.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Lire et décrire un scénario avec le bon vocabulaire, et repérer où il peut casser.</div>
+  <h3>Un scénario Habitéo, de bout en bout <span class="famille-tag f3">Anatomie du workflow</span></h3>
+  <div class="wf">
+    <div class="node trg"><div class="k">Déclencheur</div><h4>Formulaire rempli</h4><p>Le manager déclare une embauche.</p></div>
+    <div class="node act"><div class="k">Module</div><h4>Ajouter une ligne</h4><p>Registre des intégrations, statut « Nouveau ».</p></div>
+    <div class="node flt"><div class="k">Routeur + filtres</div><h4>Urgence ?</h4><p>Arrivée &lt; 5 jours → alerte RH.</p></div>
+    <div class="node llm"><div class="k">Appel LLM</div><h4>Préparer les contenus</h4><p>Checklist, message d'accueil, demandes aux services.</p></div>
+    <div class="node hum"><div class="k">Validation</div><h4>Brouillon à valider</h4><p>La RH relit et envoie.</p></div>
+  </div>
+  <p class="muted">Vert : déclencheur. Bleu : actions. Rouge : aiguillage. Violet : IA. Ambre : intervention humaine.</p>
+</div>
+<div class="card" data-explorer="x1">
+  <div class="section-title"><span class="icon-bg purple">🧩</span>Explorateur — les 7 briques d&#x27;un scénario</div>
+  <p class="muted">Cliquez sur chaque notion pour afficher sa fiche.</p>
+  <div class="chain"></div>
+  <div class="concept-detail"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Notions consultées</span><span>0 / 7</span></div><div class="progress-track"><div class="progress-fill"></div></div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">📖</span>Le même vocabulaire, des mots différents</div>
+  <div class="table-wrap"><table>
+    <tr><th>Notion</th><th>Make</th><th>n8n</th><th>Power Automate</th></tr>
+    <tr><td>Le workflow</td><td>Scénario</td><td>Workflow</td><td>Flux</td></tr>
+    <tr><td>Une brique</td><td>Module</td><td>Nœud (node)</td><td>Action</td></tr>
+    <tr><td>Un lot de données qui circule</td><td>Bundle</td><td>Item</td><td>Sortie dynamique</td></tr>
+    <tr><td>L'aiguillage</td><td>Router</td><td>Switch / If</td><td>Condition / Switch</td></tr>
+    <tr><td>L'unité facturée</td><td>Crédit</td><td>Exécution</td><td>Licence / exécution</td></tr>
+  </table></div>
+  <div class="grid grid-2">
+    <div class="mini-card"><h4>🧪 Tester par morceaux</h4><p class="muted">On exécute module par module avec des données fictives (« Run once ») avant d'activer le scénario. On garde trois cas de test : normal, urgent, incomplet.</p></div>
+    <div class="mini-card"><h4>📜 Lire le journal</h4><p class="muted">Chaque exécution laisse une trace : données entrées et sorties de chaque module. C'est la première chose à ouvrir quand quelque chose a mal tourné.</p></div>
+  </div>
+  <div class="key-box"><div class="big">Un déclencheur, des modules reliés par le mapping, des filtres pour les règles, et une sortie prévue pour chaque erreur.</div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 3</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm2"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt2">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill2"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="2">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="2">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="2">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres2"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c1">◂ Précédent</button><button class="btn btn-primary" data-goto="c3">Suite : 🤖 L&#x27;appel au LLM ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="c3">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 4 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">🤖</span>Où placer l'IA dans un workflow ?</div>
+  <p class="lead">Dans un workflow, le LLM n'est qu'un module parmi d'autres : il reçoit un texte, renvoie un texte. Toute la difficulté est de lui confier ce qu'il fait mieux qu'une règle, et rien d'autre.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Choisir entre règle et LLM, rédiger le prompt d'un module IA et encadrer sa sortie.</div>
+  <div class="table-wrap"><table>
+    <tr><th>Tâche <span class="famille-tag f4">IA dans le workflow</span></th><th>Règle ou LLM ?</th><th>Pourquoi</th></tr>
+    <tr><td>Calculer le nombre de jours avant l'arrivée</td><td><strong>Règle</strong></td><td>Calcul exact, gratuit, explicable.</td></tr>
+    <tr><td>Vérifier que toutes les pièces sont déposées</td><td><strong>Règle</strong></td><td>Contrôle de présence de champs.</td></tr>
+    <tr><td>Classer un e-mail libre de salarié (paie, congés, mutuelle…)</td><td><strong>LLM</strong></td><td>Texte non structuré, formulations infinies.</td></tr>
+    <tr><td>Extraire la date et le motif d'une demande rédigée</td><td><strong>LLM</strong></td><td>Interprétation du langage.</td></tr>
+    <tr><td>Rédiger une checklist adaptée au poste et à l'agence</td><td><strong>LLM + relecture</strong></td><td>Rédaction contextualisée, à valider.</td></tr>
+    <tr><td>Décider de refuser une candidature</td><td><strong>Ni l'un ni l'autre</strong></td><td>Décision humaine (RGPD, article 22).</td></tr>
+  </table></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">🧾</span>Le prompt d'un module IA</div>
+  <p class="lead">Dans un scénario, personne ne relit le prompt à chaque exécution. Il doit donc être complet, stable et produire une sortie exploitable par les modules suivants. Les 5 Piliers de la séance 2 s'appliquent, avec deux ajouts.</p>
+  <div class="grid grid-2">
+    <div class="mini-card"><h4>🧱 Prompt système</h4><p class="muted">Les consignes fixes : rôle, règles, format de sortie, interdits. Rédigé une fois, versionné, documenté.</p></div>
+    <div class="mini-card"><h4>🔤 Variables</h4><p class="muted">Les données de l'exécution, injectées par mapping : {{poste}}, {{agence}}, {{date_arrivee}}, {{habilitations}}.</p></div>
+  </div>
+  <pre class="prompt"><span class="hl3">Rôle</span> : tu es assistant RH du Groupe Habitéo.
+<span class="hl3">Contexte</span> : intégration d'un nouveau salarié. Poste : {{poste}}. Agence : {{agence}}. Arrivée : {{date_arrivee}}. Habilitations requises : {{habilitations}}.
+<span class="hl">Tâche</span> : prépare la checklist d'intégration et le brouillon du message d'accueil.
+<span class="hl2">Contraintes</span> : n'invente aucune date ni aucun nom ; si une information manque, écris « À COMPLÉTER » ; ton chaleureux et simple ; 120 mots maximum pour le message.
+<span class="hl2">Format</span> : réponds uniquement en JSON : {"checklist": [...], "message_accueil": "...", "demandes_services": [{"service": "...", "objet": "..."}], "points_a_verifier": [...]}</pre>
+  <h3>Trois réglages qui comptent</h3>
+  <div class="grid grid-3">
+    <div class="mini-card"><h4>🌡️ Température</h4><p class="muted">Basse (0 à 0,3) pour classer ou extraire : mêmes données, même réponse. Plus haute pour rédiger, avec relecture.</p></div>
+    <div class="mini-card"><h4>🧩 Sortie structurée</h4><p class="muted">Un JSON aux champs fixés se mappe proprement. Un module « Parse JSON » vérifie qu'il est valide ; sinon, branche d'erreur.</p></div>
+    <div class="mini-card"><h4>💶 Coût</h4><p class="muted">Chaque appel consomme des tokens et des crédits. On n'appelle le modèle que lorsque c'est utile, après les filtres.</p></div>
+  </div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">🙋</span>Human-in-the-loop : la validation humaine</div>
+  <p class="lead">Le scénario ne doit jamais envoyer seul ce qui engage l'entreprise ou touche une personne. On place un point de validation : brouillon d'e-mail, statut « À valider » dans le registre, approbation dans Teams.</p>
+  <div class="levels">
+    <div class="level"><span class="lv">✓</span><span><strong>Sans validation</strong> : créer une ligne, alerter un service interne, relancer une pièce manquante avec un message figé.</span><span class="risk f2">Règles stables</span></div>
+    <div class="level"><span class="lv">✋</span><span><strong>Validation obligatoire</strong> : tout contenu rédigé par le LLM et adressé à un salarié ou à un candidat.</span><span class="risk f1">Charte S2</span></div>
+    <div class="level"><span class="lv">⛔</span><span><strong>Hors workflow</strong> : toute décision individuelle (refus, sanction, rémunération).</span><span class="risk f5">Humain seul</span></div>
+  </div>
+  <div class="warn-box"><strong>🔒 Minimisation</strong> Le module IA ne reçoit que les données nécessaires à sa tâche. Pour une checklist, le poste, l'agence et les habilitations suffisent : ni nom, ni pièce d'identité, ni RIB, ni numéro de sécurité sociale.</div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 4</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm3"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt3">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill3"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="3">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="3">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="3">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres3"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c2">◂ Précédent</button><button class="btn btn-primary" data-goto="c4">Suite : 🏗️ Make, n8n et souveraineté ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="c4">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 5 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">🏗️</span>Choisir son outil d'automatisation</div>
+  <p class="lead">Le marché des outils d'automatisation « no-code » est large. Pour une DRH, le choix se fait moins sur les fonctionnalités, assez proches, que sur l'environnement existant, le coût à l'usage et la maîtrise des données.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Comparer les outils, et trancher entre SaaS et auto-hébergement avec des arguments de souveraineté et de conformité.</div>
+</div>
+<div class="card" data-explorer="x2">
+  <div class="section-title"><span class="icon-bg purple">🧰</span>Explorateur — les outils et les options</div>
+  <p class="muted">Cliquez sur chaque notion pour afficher sa fiche.</p>
+  <div class="chain"></div>
+  <div class="concept-detail"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Notions consultées</span><span>0 / 6</span></div><div class="progress-track"><div class="progress-fill"></div></div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">☁️</span>SaaS ou auto-hébergement ?</div>
+  <div class="table-wrap"><table>
+    <tr><th></th><th>SaaS (Make, Zapier, n8n Cloud)</th><th>Auto-hébergé (n8n sur un serveur de l'entreprise)</th></tr>
+    <tr><td>Mise en route</td><td>Immédiate, compte en ligne</td><td>Serveur, installation, sécurisation</td></tr>
+    <tr><td>Maintenance</td><td>Assurée par l'éditeur</td><td>À la charge de l'entreprise : mises à jour, sauvegardes</td></tr>
+    <tr><td>Données</td><td>Transitent par l'infrastructure de l'éditeur ; région d'hébergement à choisir</td><td>Restent dans l'infrastructure maîtrisée</td></tr>
+    <tr><td>Coût</td><td>Abonnement + consommation (crédits, exécutions)</td><td>Licence libre pour usage interne + coût d'exploitation</td></tr>
+    <tr><td>Profil adapté</td><td>Équipe RH sans support technique dédié</td><td>Entreprise avec une DSI qui exploite déjà des serveurs</td></tr>
+  </table></div>
+  <h3>Les questions de souveraineté <span class="famille-tag f5">Outils et souveraineté</span></h3>
+  <div class="grid grid-2">
+    <div class="mini-card"><h4>📍 Où ?</h4><p class="muted">Région d'hébergement du scénario (Make propose des zones européennes) et du modèle appelé. Un scénario européen qui appelle un LLM hébergé aux États-Unis transfère les données hors UE.</p></div>
+    <div class="mini-card"><h4>⚖️ Sous quelle loi ?</h4><p class="muted">Un éditeur soumis à une loi extraterritoriale (par exemple le Cloud Act américain) peut être contraint de communiquer des données, même hébergées en Europe.</p></div>
+    <div class="mini-card"><h4>📝 Avec quel contrat ?</h4><p class="muted">Accord de sous-traitance (RGPD, article 28), liste des sous-traitants ultérieurs, engagement de non-réutilisation pour l'entraînement des modèles.</p></div>
+    <div class="mini-card"><h4>🔁 Et si on part ?</h4><p class="muted">Réversibilité : export des scénarios, récupération des données, documentation suffisante pour reconstruire ailleurs.</p></div>
+  </div>
+  <div class="key-box"><div class="big">Le bon outil est celui que l'entreprise sait exploiter, dans un cadre contractuel qu'elle maîtrise.</div><p style="margin:8px 0 0">Pour l'atelier : Make par défaut, n8n en alternative si vous disposez d'une instance.</p></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 5</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm4"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt4">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill4"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="4">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="4">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="4">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres4"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c3">◂ Précédent</button><button class="btn btn-primary" data-goto="c5">Suite : 🛡️ Gouverner l&#x27;automatisation ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="c5">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 6 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">🛡️</span>Gouverner une automatisation RH</div>
+  <p class="lead">Un scénario qui fonctionne en démonstration n'est pas encore un processus de l'entreprise. Pour le devenir, il lui faut un cadre juridique, un propriétaire, une documentation et un suivi.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Lister les obligations et les bonnes pratiques qui accompagnent la mise en production d'une automatisation RH.</div>
+  <div class="table-wrap"><table>
+    <tr><th>Exigence</th><th>Ce qu'il faut faire</th><th>Référence</th></tr>
+    <tr><td>Registre des traitements</td><td>Inscrire le traitement : finalité, données, destinataires, durée, sous-traitants.</td><td>RGPD, art. 30</td></tr>
+    <tr><td>Minimisation</td><td>Ne transmettre à chaque module que les données nécessaires.</td><td>RGPD, art. 5</td></tr>
+    <tr><td>Contrats</td><td>Accord de sous-traitance avec l'éditeur de l'outil et le fournisseur du modèle.</td><td>RGPD, art. 28</td></tr>
+    <tr><td>Analyse d'impact</td><td>À mener si le traitement présente un risque élevé (évaluation, surveillance, données sensibles).</td><td>RGPD, art. 35</td></tr>
+    <tr><td>CSE</td><td>Informer et consulter sur l'introduction d'une nouvelle technologie (entreprises d'au moins 50 salariés).</td><td>C. trav., L2312-8</td></tr>
+    <tr><td>Décision humaine</td><td>Aucune décision individuelle produite par le seul scénario.</td><td>RGPD, art. 22</td></tr>
+    <tr><td>Charte d'usage de l'IA</td><td>Vérifier que le scénario respecte chacune des règles posées en séance 2.</td><td>Règle interne</td></tr>
+  </table></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">📘</span>La fiche d'identité d'un scénario</div>
+  <div class="grid grid-3">
+    <div class="mini-card"><h4>👤 Propriétaire</h4><p class="muted">Une personne nommée (et un suppléant), sur un compte de l'entreprise, jamais un compte personnel.</p></div>
+    <div class="mini-card"><h4>📄 Documentation</h4><p class="muted">Déclencheur, modules, données, prompt versionné, validations, cas de test, procédure de repli manuel.</p></div>
+    <div class="mini-card"><h4>📈 Suivi</h4><p class="muted">Taux d'erreur, dossiers passés en traitement manuel, délai moyen, crédits consommés, revue mensuelle.</p></div>
+  </div>
+  <h3>Conduire le changement</h3>
+  <div class="grid grid-2">
+    <div class="mini-card"><h4>🤝 Associer</h4><p class="muted">Sophie connaît les cas limites mieux que quiconque : elle co-conçoit et teste. Les managers d'agence remplissent le formulaire : ils doivent en comprendre l'intérêt.</p></div>
+    <div class="mini-card"><h4>🕒 Réinvestir le temps gagné</h4><p class="muted">Dire clairement ce que deviennent les 360 heures : accueil des nouveaux, suivi de la période d'essai, préparation du futur SIRH.</p></div>
+  </div>
+  <div class="key-box"><div class="big">Un scénario RH a un propriétaire, une documentation, un suivi, et le CSE en a été informé.</div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 6</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm5"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt5">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill5"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="5">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="5">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="5">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres5"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c4">◂ Précédent</button><button class="btn btn-primary" data-goto="syn">Synthèse de la séance ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="syn">
+  <div class="card">
+    <div class="section-title"><span class="icon-bg green">📊</span>Vos résultats aux QCM</div>
+    <div class="table-wrap score-table"><table><tr><th>Chapitre</th><th>Thème</th><th>Meilleur score</th></tr><tr><td>Chapitre 1</td><td>🗂️ Dématérialiser</td><td id="score0">—</td></tr><tr><td>Chapitre 2</td><td>⚖️ Automatisable ?</td><td id="score1">—</td></tr><tr><td>Chapitre 3</td><td>🔗 Anatomie d&#x27;un workflow</td><td id="score2">—</td></tr><tr><td>Chapitre 4</td><td>🤖 L&#x27;appel au LLM</td><td id="score3">—</td></tr><tr><td>Chapitre 5</td><td>🏗️ Make, n8n et souveraineté</td><td id="score4">—</td></tr><tr><td>Chapitre 6</td><td>🛡️ Gouverner l&#x27;automatisation</td><td id="score5">—</td></tr><tr><td colspan="2"><strong>Total</strong></td><td id="scoreTotal">0 / 30</td></tr></table></div>
+    <p class="muted">Un chapitre sous 4 / 5 ? Relisez-le et refaites son QCM avant de passer au support pratique.</p>
+  </div>
+  <div class="card">
+    <div class="section-title"><span class="icon-bg">🔑</span>Le message clé</div>
+    <div class="key-box"><div class="big">Simplifier, puis automatiser les règles, puis augmenter avec l&#x27;IA ; un humain valide, un propriétaire gouverne.</div></div>
+    <div class="table-wrap"><table><tr><th>Notion</th><th>À retenir en une phrase</th></tr><tr><td>Dématérialiser</td><td>Changer de support ne suffit pas : le TO-BE élimine, combine, réorganise et simplifie avant d&#x27;automatiser.</td></tr><tr><td>Automatisable ?</td><td>Fréquence, volume, standardisation, stabilité, valeur ajoutée ; le risque pour les personnes reste bloquant.</td></tr><tr><td>Workflow</td><td>Déclencheur, modules, mapping, filtres, routeurs, gestion d&#x27;erreur : les mêmes briques dans tous les outils.</td></tr><tr><td>Appel au LLM</td><td>Pour le texte libre uniquement ; prompt système, variables, sortie JSON, température basse, validation humaine.</td></tr><tr><td>Outils</td><td>Make, n8n, Power Automate ou le moteur du SIRH ; SaaS ou auto-hébergé selon la maîtrise des données.</td></tr><tr><td>Gouvernance</td><td>Registre, contrats, CSE, propriétaire, documentation, suivi des erreurs.</td></tr></table></div>
+    <div class="objectif-box"><strong class="title">À la fin de cette séance, vous êtes capable de :</strong><ul class="clean"><li>Distinguer matérialiser, dématérialiser, automatiser et augmenter un processus RH, et concevoir un processus cible (TO-BE) ;</li><li>Évaluer si une étape est automatisable avec une grille : fréquence, volume, standardisation, stabilité des règles, valeur ajoutée, risque ;</li><li>Décrire un workflow avec son vocabulaire : déclencheur, module, mapping, filtre, routeur, gestion d&#x27;erreur ;</li><li>Placer un appel à un LLM au bon endroit d&#x27;un workflow, avec un prompt système, une sortie structurée et une validation humaine ;</li><li>Comparer Make, n8n et leurs alternatives, et choisir entre SaaS et auto-hébergement sous l&#x27;angle de la souveraineté des données ;</li><li>Documenter et gouverner une automatisation RH : charte, RGPD, CSE, propriétaire, suivi.</li></ul></div>
+  </div>
+  <div class="card">
+    <div class="section-title"><span class="icon-bg amber">📦</span>À la fin de la séance, vous devez avoir</div>
+    <div class="checklist" id="finCheck"><label><input type="checkbox"> Validé les six QCM de chapitre ;</label><label><input type="checkbox"> Réalisé les trois cas pratiques et débloqué le glossaire ;</label><label><input type="checkbox"> Rédigé le processus TO-BE de l&#x27;intégration d&#x27;un technicien ;</label><label><input type="checkbox"> Évalué les étapes candidates avec la grille d&#x27;automatisabilité ;</label><label><input type="checkbox"> Construit et testé le scénario « Déclaration d&#x27;embauche » avec un module LLM ;</label><label><input type="checkbox"> Rédigé la spécification du scénario et vérifié sa conformité à la charte.</label></div>
+    <div class="link-card"><span><strong>🛠️ Passez à la pratique</strong><br><span class="muted">Cas 1, 2, 3, atelier Habitéo et glossaire à débloquer.</span></span><a class="btn btn-success" href="seance-3-automatiser-workflow-llm-pratique.html">Ouvrir le support pratique ▸</a></div>
+    <div class="objectif-box"><strong class="title">Prochaine séance — Je sais relier les données du planning à la DSN.</strong>Vous ouvrirez le socle du SIRH : Core RH, temps et activités, paie et DSN. Vous suivrez une heure de chantier d'un technicien, du pointage jusqu'à la déclaration, et vous verrez ce que la future loi sur la transparence salariale demandera au SIRH.</div>
+  </div>
+</section>
+</main>
+<footer>SIRH &amp; exploitation de la Data — IA — Séance 3 — Automatiser avec un LLM — Théorie<br>Mode formateur : ajoutez <code>?formateur</code> à l'adresse de la page.</footer>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+"use strict";
+const FAMILIES={"f1": "Dématérialisation", "f2": "Automatisabilité", "f3": "Anatomie du workflow", "f4": "IA dans le workflow", "f5": "Outils et souveraineté"};
+const EXPLORERS={"x1": {"items": [{"id": "Déclencheur", "fam": "f3", "rows": [["Définition", "L'événement qui lance le scénario : nouvelle réponse à un formulaire, nouvelle ligne, e-mail reçu, heure fixe."], ["Exemple Habitéo", "Le manager d'agence remplit le formulaire « Déclaration d'embauche »."], ["À retenir", "Instantané (webhook) ou par interrogation périodique (polling) : le second consomme des crédits même quand rien ne se passe."]]}, {"id": "Module", "fam": "f3", "rows": [["Définition", "Une brique qui réalise une action dans une application : ajouter une ligne, envoyer un e-mail, appeler un modèle."], ["Exemple Habitéo", "« Google Sheets — Ajouter une ligne » dans le registre des intégrations."], ["À retenir", "Dans Make, chaque exécution de module consomme un crédit ; dans n8n on parle de nœud (node)."]]}, {"id": "Mapping", "fam": "f3", "rows": [["Définition", "Le branchement des données d'un module vers les champs du module suivant."], ["Exemple Habitéo", "Le champ « Date d'arrivée » du formulaire alimente la colonne « Arrivée » du registre et le texte du message."], ["À retenir", "C'est là que naissent la plupart des erreurs : formats de date, champs vides, mauvais champ glissé."]]}, {"id": "Filtre", "fam": "f3", "rows": [["Définition", "Une condition placée entre deux modules : la suite ne s'exécute que si elle est remplie."], ["Exemple Habitéo", "Ne continuer que si le poste est « Technicien » et l'agence renseignée."], ["À retenir", "Une règle stable s'écrit en filtre, pas en prompt : c'est plus fiable, gratuit et explicable."]]}, {"id": "Routeur", "fam": "f3", "rows": [["Définition", "Un aiguillage qui envoie les données vers plusieurs branches, chacune avec son filtre."], ["Exemple Habitéo", "Arrivée dans moins de 5 jours ouvrés → alerte urgente à la RH ; sinon → circuit normal."], ["À retenir", "Il remplace les « si… sinon » ; chaque branche doit avoir une sortie prévue."]]}, {"id": "Gestion d'erreur", "fam": "f3", "rows": [["Définition", "Ce que fait le scénario quand un module échoue : réessayer, ignorer, alerter, arrêter."], ["Exemple Habitéo", "Si le modèle ne répond pas, la ligne passe au statut « À traiter manuellement » et Sophie est alertée."], ["À retenir", "Un scénario sans gestion d'erreur échoue en silence : le pire cas en RH."]]}, {"id": "Webhook", "fam": "f3", "rows": [["Définition", "Une adresse web qui reçoit instantanément des données envoyées par une autre application."], ["Exemple Habitéo", "Le futur ATS envoie un signal « candidat embauché » au scénario dès la signature de la promesse."], ["À retenir", "Plus rapide et plus économe que le polling ; nécessite que l'application source sache l'émettre."]]}]}, "x2": {"items": [{"id": "Make", "fam": "f5", "rows": [["Éditeur", "Make (ex-Integromat), éditeur d'origine tchèque, filiale de Celonis."], ["Points forts", "Éditeur visuel très lisible, plus de 3 000 applications, modules OpenAI, Claude, Gemini et Mistral, agents IA et serveur MCP."], ["À savoir", "Facturation en crédits depuis 2025 ; offre gratuite limitée (1 000 crédits par mois, 2 scénarios actifs, intervalle de 15 minutes)."]]}, {"id": "n8n", "fam": "f5", "rows": [["Éditeur", "n8n GmbH (Allemagne)."], ["Points forts", "Peut être auto-hébergé sur un serveur de l'entreprise ; nœuds IA avancés (agents, mémoire, RAG) ; code possible."], ["À savoir", "Licence « fair-code » : usage interne libre, revente encadrée. L'auto-hébergement suppose une compétence d'exploitation."]]}, {"id": "Zapier", "fam": "f5", "rows": [["Éditeur", "Zapier (États-Unis)."], ["Points forts", "Le plus grand catalogue d'applications, prise en main très rapide."], ["À savoir", "Logique plus linéaire, coût qui monte vite avec le volume de tâches."]]}, {"id": "Power Automate", "fam": "f5", "rows": [["Éditeur", "Microsoft (États-Unis)."], ["Points forts", "Intégré à Microsoft 365 et Teams ; souvent déjà inclus dans les licences de l'entreprise ; Copilot pour décrire un flux."], ["À savoir", "Choix naturel si l'entreprise est sous Microsoft 365 ; connecteurs avancés payants."]]}, {"id": "Automatisation du SIRH", "fam": "f5", "rows": [["Principe", "Les SIRH intègrent leurs propres moteurs de workflow : circuits d'onboarding, validations, relances."], ["Exemples", "Workday, SAP SuccessFactors, Cegid, Lucca ou Eurécia proposent des circuits de validation paramétrables."], ["À savoir", "À privilégier dès que le processus vit entièrement dans le SIRH ; l'outil externe sert à relier ce qui ne l'est pas."]]}, {"id": "Modèle auto-hébergé", "fam": "f5", "rows": [["Principe", "Un modèle open-weight exécuté sur l'infrastructure de l'entreprise, appelé par n8n ou Make."], ["Exemples", "Modèles Mistral, Llama ou Qwen, servis localement par un outil comme Ollama."], ["À savoir", "Les données ne quittent pas l'entreprise ; performance moindre et exploitation à assurer."]]}]}};
+const QCMS=[[{"q": "Habitéo scanne désormais les feuilles d'heures papier en PDF et les dépose dans un dossier partagé. Il s'agit :", "o": ["d'une automatisation", "d'une dématérialisation", "d'une augmentation par l'IA", "d'une suppression d'étape"], "a": 1, "e": "Le support change (papier → numérique) mais le travail reste le même : quelqu'un doit encore lire et ressaisir. C'est une dématérialisation, sans automatisation."}, {"q": "Pourquoi faut-il simplifier un processus avant de l'automatiser ?", "o": ["Parce que les outils d'automatisation refusent les processus longs.", "Parce qu'automatiser une étape inutile la rend seulement plus rapide, sans la rendre utile.", "Parce que le RGPD l'impose.", "Parce que la simplification est toujours gratuite."], "a": 1, "e": "C'est la logique ECRS : éliminer, combiner, réorganiser, simplifier, puis seulement automatiser. Sinon on industrialise les gaspillages repérés en séance 1."}, {"q": "Dans le processus d'intégration d'Habitéo, l'identité du salarié est saisie trois fois. Quelle réponse relève du TO-BE ?", "o": ["Automatiser les trois saisies avec un robot.", "Saisir une seule fois à la source, puis diffuser la donnée aux autres outils.", "Former Sophie à taper plus vite.", "Demander au cabinet de ressaisir à sa place."], "a": 1, "e": "Le principe « saisie unique à la source » supprime deux saisies au lieu de les automatiser. C'est aussi le rôle futur du Core RH (séance 4)."}, {"q": "Selon le Code du travail, l'employeur peut remettre le bulletin de paie sous forme électronique :", "o": ["uniquement avec l'accord écrit de chaque salarié", "sauf si le salarié s'y oppose", "jamais, le papier reste obligatoire", "seulement dans les entreprises de plus de 1 000 salariés"], "a": 1, "e": "La remise électronique est la règle par défaut, avec un droit d'opposition du salarié (article L3243-2). Elle s'accompagne de garanties de disponibilité et de confidentialité."}, {"q": "Quelle étape correspond à « augmenter » un processus, et non à « l'automatiser » ?", "o": ["Envoyer automatiquement un e-mail quand un formulaire est rempli.", "Faire rédiger par un LLM une checklist d'intégration adaptée au poste, relue par la RH.", "Copier une ligne d'un tableur à un autre.", "Créer un dossier partagé au nom du salarié."], "a": 1, "e": "Augmenter, c'est confier au système une tâche qui demandait du jugement ou de la rédaction. Les trois autres réponses appliquent des règles fixes."}], [{"q": "Quelle étape est la meilleure candidate à l'automatisation ?", "o": ["L'entretien de recadrage d'un salarié", "La relance des pièces manquantes, 15 fois par mois, avec le même message", "La négociation d'un accord d'entreprise", "La décision de licenciement"], "a": 1, "e": "Fréquente, volumineuse, standardisée, à faible risque : c'est un quick win. Les autres engagent un jugement humain ou un dialogue."}, {"q": "Une étape fréquente mais dont les règles changent chaque mois selon l'agence est :", "o": ["une excellente candidate, car fréquente", "une candidate fragile : il faut d'abord stabiliser et harmoniser les règles", "impossible à automatiser par principe", "à confier entièrement au LLM"], "a": 1, "e": "Une règle instable rend le scénario faux dès le mois suivant. On harmonise d'abord, puis on automatise ce qui est devenu stable."}, {"q": "Habitéo traite 15 intégrations par mois à 3 h chacune. Le TO-BE ramène ce temps à 1 h. Combien d'heures gagnées par an ?", "o": ["180 h", "360 h", "540 h", "720 h"], "a": 1, "e": "15 × (3 − 1) = 30 h par mois, soit 360 h par an. C'est la base d'un ROI express, à comparer au coût de l'outil et du temps projet."}, {"q": "Que signifie « quick win » dans une démarche d'automatisation ?", "o": ["Une automatisation sans aucun risque juridique", "Une action à fort impact et faible effort, réalisable rapidement", "Un scénario qui s'exécute en moins d'une minute", "Le premier scénario créé par un stagiaire"], "a": 1, "e": "La matrice effort / impact repère ces actions : elles prouvent la valeur du projet et embarquent les équipes."}, {"q": "Pourquoi le critère « risque pour les personnes » pèse-t-il plus lourd en RH ?", "o": ["Parce que les données RH sont moins volumineuses.", "Parce qu'une erreur peut toucher un contrat, une paie ou une décision individuelle, avec des effets juridiques et humains.", "Parce que les RH utilisent moins d'outils.", "Parce que l'AI Act interdit toute automatisation RH."], "a": 1, "e": "Une DPAE oubliée ou un refus envoyé par erreur ont des conséquences réelles. Plus le risque est élevé, plus la validation humaine s'impose."}], [{"q": "Dans un scénario, l'élément qui lance l'exécution s'appelle :", "o": ["le mapping", "le déclencheur", "le routeur", "le filtre"], "a": 1, "e": "Le déclencheur (trigger) détecte l'événement de départ ; tous les autres modules en dépendent."}, {"q": "Vous glissez le champ « Poste » du formulaire dans l'objet de l'e-mail. Cette opération est :", "o": ["un filtre", "un mapping", "un webhook", "une gestion d'erreur"], "a": 1, "e": "Le mapping relie une donnée produite par un module à un champ du module suivant."}, {"q": "Les arrivées dans moins de cinq jours doivent suivre un circuit d'urgence. Quel élément utiliser ?", "o": ["Un routeur avec un filtre sur chaque branche", "Un second déclencheur", "Un appel au LLM", "Une nouvelle feuille de calcul"], "a": 0, "e": "Le routeur aiguille vers deux branches ; un filtre de date décide laquelle s'exécute. C'est une règle stable : pas besoin d'IA."}, {"q": "Quel avantage principal du webhook sur le polling ?", "o": ["Il est plus facile à lire.", "Il réagit instantanément et ne consomme rien quand il ne se passe rien.", "Il fonctionne sans connexion internet.", "Il remplace le mapping."], "a": 1, "e": "Le polling interroge l'application à intervalle fixe, même à vide. Le webhook est poussé au moment de l'événement."}, {"q": "Le module d'envoi d'e-mail échoue. Sans gestion d'erreur, que risque-t-on ?", "o": ["Rien, l'outil renvoie l'e-mail automatiquement dans tous les cas.", "Que l'échec passe inaperçu et que le nouveau technicien n'ait pas son équipement.", "Que le formulaire soit supprimé.", "Que le scénario devienne un agent."], "a": 1, "e": "Une automatisation qui échoue en silence est pire qu'un processus manuel : chacun croit que c'est fait. On prévoit une alerte et un statut « à traiter »."}], [{"q": "Dans quel cas un appel au LLM apporte-t-il une vraie valeur dans un workflow ?", "o": ["Calculer le nombre de jours avant l'arrivée", "Classer une demande libre de salarié dans la bonne catégorie et en résumer l'objet", "Copier un e-mail dans un tableur", "Vérifier qu'un champ est rempli"], "a": 1, "e": "Le LLM est utile face à du texte non structuré : classer, extraire, résumer, rédiger. Un calcul ou un contrôle de présence relèvent d'une règle."}, {"q": "Pourquoi demander au modèle une sortie en JSON avec des champs fixés ?", "o": ["Pour que la réponse soit plus jolie.", "Pour que les modules suivants puissent mapper chaque champ de façon fiable.", "Parce que les LLM ne savent pas écrire de texte.", "Pour réduire la facture d'électricité."], "a": 1, "e": "Une sortie structurée transforme une réponse libre en données exploitables : checklist, message, catégorie, chacun dans son champ."}, {"q": "Quel réglage de température privilégier pour classer des demandes RH ?", "o": ["Une température élevée, pour plus de créativité", "Une température basse, pour des réponses stables et reproductibles", "La température n'a aucun effet", "Une température aléatoire à chaque exécution"], "a": 1, "e": "Pour classer ou extraire, on veut la même réponse aux mêmes données. La créativité est réservée à la rédaction, toujours relue."}, {"q": "Quelles données transmettre au LLM pour générer la checklist d'intégration d'un technicien ?", "o": ["Le dossier complet avec pièce d'identité et RIB", "Le poste, l'agence, la date d'arrivée et les habilitations requises, sans données d'identité", "Le numéro de sécurité sociale pour personnaliser", "Toutes les colonnes du registre, par sécurité"], "a": 1, "e": "C'est la minimisation (RGPD, article 5) : on n'envoie que ce qui est nécessaire à la tâche. La checklist ne dépend pas de l'identité de la personne."}, {"q": "Le LLM a rédigé le message de bienvenue d'un nouveau technicien. Que prévoir avant l'envoi ?", "o": ["Un envoi immédiat, le modèle étant fiable", "Un brouillon placé en validation, relu et envoyé par une personne de la RH", "Un second LLM qui relit le premier, sans humain", "Aucun message : l'IA est interdite en RH"], "a": 1, "e": "Human-in-the-loop : l'IA prépare, la RH valide et signe. C'est la règle posée dans la charte de la séance 2."}], [{"q": "Quel est l'atout principal de n8n pour une DRH soucieuse de ses données ?", "o": ["Il est le seul outil gratuit.", "Il peut être installé sur un serveur maîtrisé par l'entreprise.", "Il n'a besoin d'aucune compétence technique.", "Il est intégré à Word."], "a": 1, "e": "L'auto-hébergement garde les flux de données chez l'entreprise, au prix d'une exploitation à assurer (mises à jour, sauvegardes, sécurité)."}, {"q": "Habitéo est entièrement équipée de Microsoft 365. Quel outil d'automatisation étudier en priorité ?", "o": ["Power Automate", "Un outil choisi pour sa popularité sur les réseaux sociaux", "Un développement sur mesure", "Aucun outil"], "a": 0, "e": "L'intégration à l'environnement existant et les licences déjà payées sont des critères forts. Make reste pertinent si l'on doit relier des outils hors Microsoft."}, {"q": "Quand un éditeur traite des données personnelles pour le compte d'Habitéo, il est au sens du RGPD :", "o": ["responsable de traitement", "sous-traitant, lié par un contrat (article 28)", "délégué à la protection des données", "autorité de contrôle"], "a": 1, "e": "Make, l'hébergeur ou le fournisseur du LLM agissent comme sous-traitants : un contrat doit fixer instructions, sécurité, localisation et sous-traitants ultérieurs."}, {"q": "Que désigne la souveraineté des données ?", "o": ["Le fait que les données appartiennent à l'éditeur.", "La capacité de l'entreprise à maîtriser où ses données sont traitées et quelles lois peuvent y donner accès.", "L'obligation d'utiliser un logiciel français.", "Le chiffrement des mots de passe."], "a": 1, "e": "Un éditeur soumis à une loi extraterritoriale peut être contraint de communiquer des données, même hébergées en Europe. La souveraineté se juge sur l'hébergement, le contrat et le droit applicable."}, {"q": "Quand le moteur de workflow du SIRH est-il préférable à un outil externe ?", "o": ["Jamais, les outils externes sont toujours meilleurs.", "Quand tout le processus se déroule dans le SIRH : le circuit natif évite une couche de plus à maintenir.", "Uniquement pour la paie.", "Seulement si le SIRH est gratuit."], "a": 1, "e": "On ajoute un outil externe pour relier ce qui n'est pas relié. Si le SIRH le fait nativement, chaque outil en moins est un risque en moins."}], [{"q": "L'introduction d'un outil qui automatise une partie du travail de l'équipe RH impose, dans une entreprise de 820 salariés :", "o": ["une simple note de service", "l'information et la consultation du CSE sur l'introduction d'une nouvelle technologie", "l'accord écrit de chaque salarié", "une autorisation préalable de la CNIL"], "a": 1, "e": "Le CSE des entreprises d'au moins 50 salariés est consulté sur l'introduction de nouvelles technologies affectant les conditions de travail (article L2312-8)."}, {"q": "Un nouveau traitement de données personnelles est créé par le scénario. Que faut-il mettre à jour ?", "o": ["Le règlement intérieur", "Le registre des activités de traitement (RGPD, article 30)", "Le bilan social", "Rien, s'il est automatique"], "a": 1, "e": "Chaque traitement est inscrit au registre : finalité, données, destinataires, durée de conservation, sous-traitants, sécurité."}, {"q": "Le scénario tourne sur le compte Make personnel d'une alternante qui quitte l'entreprise. Quel est le risque ?", "o": ["Aucun, le scénario continue de fonctionner indéfiniment.", "Perte de contrôle : accès aux données, interruption du scénario, absence de propriétaire.", "Le scénario devient plus rapide.", "La CNIL supprime automatiquement le compte."], "a": 1, "e": "Une automatisation RH vit sur un compte de l'entreprise, avec un propriétaire nommé, une documentation et un suppléant."}, {"q": "Quel indicateur suit le mieux la santé d'un scénario en production ?", "o": ["Le nombre de modules", "Le taux d'exécutions en erreur et le nombre de dossiers passés en traitement manuel", "La couleur des modules", "Le nombre de likes sur le réseau social interne"], "a": 1, "e": "On pilote le run : erreurs, délais, reprises manuelles, crédits consommés. Ce sont les KPI de l'automatisation."}, {"q": "Sophie craint que l'automatisation supprime son poste. Quelle réponse managériale est la plus juste ?", "o": ["Ne rien lui dire avant la mise en production.", "L'associer à la conception, expliciter les tâches libérées et ce qu'elle fera du temps gagné.", "Lui garantir que rien ne changera jamais.", "Abandonner le projet."], "a": 1, "e": "La conduite du changement commence à la conception : la personne qui connaît le processus est aussi celle qui repère les cas limites."}]];
+const ACTS=["ch0", "ch1", "ch2", "ch3", "ch4", "ch5"];
+const params = new URLSearchParams(location.search);
+if (params.has('formateur') || location.hash === '#formateur') document.body.classList.add('formateur');
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const shuffle = a => { const b=a.slice(); for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];} return b; };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2400); }
+function copyText(txt){
+  if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(txt).then(()=>toast('Copié dans le presse-papiers ✅')).catch(()=>fallbackCopy(txt)); }
+  else fallbackCopy(txt);
+}
+function fallbackCopy(txt){ const ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); toast('Copié dans le presse-papiers ✅');}catch(e){toast('Copie impossible : sélectionnez le texte manuellement');} ta.remove(); }
+function download(name, txt){ const blob=new Blob([txt],{type:'text/markdown;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); }
+function setProgress(fillId, txtId, done, total, suffix){ const p = total ? Math.round(done/total*100) : 0; $('#'+fillId).style.width = p+'%'; $('#'+txtId).textContent = done+' / '+total+(suffix||''); }
+function scoreMsg(pct){ if(pct>=90) return 'Excellent : les notions sont acquises.'; if(pct>=70) return 'Bon résultat. Relisez les explications des erreurs pour consolider.'; if(pct>=50) return 'Des bases, mais plusieurs confusions. Relisez le chapitre puis recommencez.'; return 'Reprenez le chapitre, puis recommencez l\'activité.'; }
+const done = new Set();
+function markDone(act){
+  if(done.has(act)) return false;
+  done.add(act);
+  $$('.tab[data-act="'+act+'"]').forEach(t=>t.classList.add('done'));
+  const n = done.size;
+  $('#globalFill').style.width = Math.round(n/ACTS.length*100)+'%';
+  $('#globalPct').textContent = n+' / '+ACTS.length;
+  toast(n===ACTS.length ? '🎉 Toutes les activités sont validées !' : 'Activité validée ✅');
+  if(typeof onDone==='function') onDone(act);
+  return true;
+}
+function openTab(i){
+  $$('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab==i));
+  $$('.panel').forEach(p=>p.classList.toggle('active', p.dataset.panel==i));
+  const tw = $('.tabs-wrap'); window.scrollTo({top: tw.offsetTop, behavior: 'smooth'});
+  const at = $('.tab[data-tab="'+i+'"]'); if(at) at.scrollIntoView({inline:'center', block:'nearest'});
+}
+$$('.tab').forEach(t=>t.addEventListener('click',()=>openTab(t.dataset.tab)));
+$$('[data-goto]').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.goto)));
+
+/* Explorateurs */
+$$('[data-explorer]').forEach(box=>{
+  const E = EXPLORERS[box.dataset.explorer]; const seen=new Set();
+  const chain=$('.chain',box), detail=$('.concept-detail',box);
+  E.items.forEach((k,i)=>{
+    const b=document.createElement('button'); b.className='chain-node'; b.textContent=k.id; b.dataset.i=i;
+    b.addEventListener('click',()=>show(i)); chain.appendChild(b);
+  });
+  function show(i){
+    const k=E.items[i]; seen.add(i);
+    $$('.chain-node',box).forEach(n=>{ n.classList.toggle('active', n.dataset.i==i); if(seen.has(+n.dataset.i)) n.classList.add('seen'); });
+    detail.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap"><span class="term-item">'+esc(k.id)+'</span><span class="famille-tag '+k.fam+'">'+esc(FAMILIES[k.fam]||'')+'</span></div>'+
+      k.rows.map(r=>'<div class="row"><span class="k">'+esc(r[0])+'</span><span>'+esc(r[1])+'</span></div>').join('');
+    const f=$('.progress-fill',box), t=$('.progress-label span:last-child',box);
+    f.style.width=Math.round(seen.size/E.items.length*100)+'%'; t.textContent=seen.size+' / '+E.items.length;
+  }
+  show(0);
+});
+const qState = {};
+const L = ['A','B','C','D','E'];
+function renderQCM(ci){
+  const box=$('#qcm'+ci); box.innerHTML='';
+  const qs = shuffle(QCMS[ci]).map(q=>{ const opts=shuffle(q.o.map((t,i)=>({t,good:i===q.a}))); return {q:q.q,e:q.e,opts}; });
+  qState[ci]={qs};
+  qs.forEach((q,qi)=>{
+    const d=document.createElement('div'); d.className='qcm-q';
+    d.innerHTML='<div class="qt"><span class="q-num">Q'+(qi+1)+'</span>'+esc(q.q)+'</div><div class="qcm-opts" role="radiogroup">'+
+      q.opts.map((o,oi)=>'<button type="button" class="qcm-opt" role="radio" aria-checked="false" data-oi="'+oi+'"><span class="l">'+L[oi]+'</span><span>'+esc(o.t)+'</span></button>').join('')+
+      '</div><div class="expl"></div>';
+    $$('.qcm-opt',d).forEach(b=>b.addEventListener('click',()=>{
+      if(d.classList.contains('checked')) return;
+      $$('.qcm-opt',d).forEach(x=>{x.classList.remove('sel');x.setAttribute('aria-checked','false');});
+      b.classList.add('sel'); b.setAttribute('aria-checked','true'); d.dataset.ans=b.dataset.oi; updQ(ci);
+    }));
+    box.appendChild(d);
+  });
+  $('#qres'+ci).classList.remove('show'); updQ(ci);
+}
+function updQ(ci){ const rows=$$('#qcm'+ci+' .qcm-q'); setProgress('qfill'+ci,'qtxt'+ci,rows.filter(r=>r.dataset.ans!==undefined).length,rows.length); }
+const scores = {};
+function checkQCM(ci, silent){
+  const rows=$$('#qcm'+ci+' .qcm-q');
+  if(!silent && rows.some(r=>r.dataset.ans===undefined)){ toast('Répondez à toutes les questions avant de vérifier.'); return; }
+  let ok=0;
+  rows.forEach((r,qi)=>{
+    const q=qState[ci].qs[qi]; const ans=r.dataset.ans===undefined?-1:+r.dataset.ans;
+    const gi=q.opts.findIndex(o=>o.good); const good=ans===gi; if(good) ok++;
+    r.classList.remove('correct','wrong'); r.classList.add('checked', good?'correct':'wrong');
+    $$('.qcm-opt',r).forEach((b,oi)=>{ b.classList.toggle('good',oi===gi); b.classList.toggle('bad',oi===ans&&!good); });
+    $('.expl',r).innerHTML=(good?'✅ ':'❌ Bonne réponse : <strong>'+L[gi]+'</strong>. ')+esc(q.e);
+  });
+  const pct=Math.round(ok/rows.length*100);
+  $('#qres'+ci).innerHTML='<div class="score">'+ok+' / '+rows.length+'</div><div class="msg">'+scoreMsg(pct)+'</div>';
+  $('#qres'+ci).classList.add('show');
+  if(!silent){ scores[ci]=Math.max(scores[ci]||0,ok); updScores(); markDone('ch'+ci); }
+}
+function revealQCM(ci){
+  $$('#qcm'+ci+' .qcm-q').forEach((r,qi)=>{ const gi=qState[ci].qs[qi].opts.findIndex(o=>o.good); r.dataset.ans=gi; $$('.qcm-opt',r).forEach((b,oi)=>b.classList.toggle('sel',oi===gi)); });
+  updQ(ci); checkQCM(ci,true);
+}
+function updScores(){
+  let tot=0,max=0;
+  QCMS.forEach((q,ci)=>{ const c=$('#score'+ci); if(scores[ci]!==undefined){ c.textContent=scores[ci]+' / '+q.length; tot+=scores[ci]; } max+=q.length; });
+  $('#scoreTotal').textContent=tot+' / '+max;
+}
+QCMS.forEach((_,ci)=>renderQCM(ci));
+$$('[data-qcheck]').forEach(b=>b.addEventListener('click',()=>checkQCM(+b.dataset.qcheck)));
+$$('[data-qreveal]').forEach(b=>b.addEventListener('click',()=>revealQCM(+b.dataset.qreveal)));
+$$('[data-qreset]').forEach(b=>b.addEventListener('click',()=>renderQCM(+b.dataset.qreset)));
+$$('#finCheck input').forEach(c=>c.addEventListener('change',()=>{}));
+
+})();
+
+</script>
+</body>
+</html>

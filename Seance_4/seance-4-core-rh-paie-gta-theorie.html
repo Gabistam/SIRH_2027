@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Séance 4 — Le socle : Core RH, paie et GTA · Théorie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2563eb;--primary-dark:#1d4ed8;--primary-light:#dbeafe;
+  --secondary:#059669;--secondary-light:#d1fae5;
+  --accent:#d97706;--accent-light:#fef3c7;
+  --danger:#dc2626;--danger-light:#fee2e2;
+  --purple:#7c3aed;--purple-light:#ede9fe;
+  --dark:#0f172a;--dark2:#1e293b;
+  --text:#1e293b;--muted:#64748b;--border:#e2e8f0;
+  --bg:#f1f5f9;--card:#ffffff;--radius:14px;
+  --sans:'Sora',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.6;font-size:15px;min-height:100vh}
+code,.mono{font-family:var(--mono)}
+code{background:#f1f5f9;border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-size:.84em}
+pre code,.key-box code,.nest.n4 code{background:transparent;border:none;padding:0;color:inherit}
+button{font-family:inherit;cursor:pointer}
+a{color:var(--primary)}
+:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+
+header{background:linear-gradient(135deg,#0f172a 0%,#4c1d95 60%,#6d28d9 100%);color:#fff;padding:42px 24px 34px;position:relative;overflow:hidden}
+header.practice{background:linear-gradient(135deg,#0f172a 0%,#6d28d9 60%,#7c3aed 100%)}
+header::after{content:"";position:absolute;right:-120px;top:-120px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(167,139,250,.25),transparent 70%)}
+.header-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:6px 14px;border-radius:999px;font-size:.8rem;font-weight:600;margin-bottom:16px}
+header h1{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;line-height:1.2;margin-bottom:10px}
+header .subtitle{color:#cbd5e1;max-width:720px;font-size:1rem}
+.meta-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.meta-pill{background:rgba(15,23,42,.45);border:1px solid rgba(255,255,255,.15);padding:6px 14px;border-radius:999px;font-size:.8rem;display:inline-flex;align-items:center;gap:6px}
+.global-progress{margin-top:24px;max-width:520px}
+.global-progress .label{display:flex;justify-content:space-between;font-size:.8rem;color:#cbd5e1;margin-bottom:6px}
+.global-progress .track{height:8px;background:rgba(255,255,255,.15);border-radius:999px;overflow:hidden}
+.global-progress .fill{height:100%;width:0;background:linear-gradient(90deg,#10b981,#34d399);border-radius:999px;transition:width .5s ease}
+.mode-flag{display:none;margin-top:14px;background:var(--accent);color:#fff;font-size:.75rem;font-weight:700;padding:4px 10px;border-radius:6px;width:max-content}
+body.formateur .mode-flag{display:block}
+
+.tabs-wrap{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--border);box-shadow:0 2px 8px rgba(15,23,42,.04)}
+.tabs{max-width:1100px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding:0 16px;scrollbar-width:thin}
+.tab{border:none;background:none;padding:15px 14px;font-size:.85rem;font-weight:600;color:var(--muted);white-space:nowrap;border-bottom:3px solid transparent;display:flex;align-items:center;gap:6px}
+.tab:hover{color:var(--primary)}
+.tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab .done-mark{display:none;color:var(--secondary)}
+.tab.done .done-mark{display:inline}
+.tab .lock-mark{font-size:.8rem}
+
+main{max-width:1100px;margin:0 auto;padding:28px 16px 80px}
+.panel{display:none}
+.panel.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.panel.active{animation:none}.global-progress .fill,.progress-fill{transition:none}}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:22px;box-shadow:0 1px 3px rgba(15,23,42,.05)}
+@media(max-width:600px){.card{padding:20px 16px}}
+.section-title{display:flex;align-items:center;gap:14px;font-size:1.3rem;font-weight:700;margin-bottom:18px;color:var(--dark)}
+.icon-bg{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:1.3rem;flex-shrink:0;background:var(--primary-light)}
+.icon-bg.green{background:var(--secondary-light)}.icon-bg.amber{background:var(--accent-light)}.icon-bg.purple{background:var(--purple-light)}.icon-bg.red{background:var(--danger-light)}
+h3{font-size:1.05rem;font-weight:700;margin:22px 0 10px;color:var(--dark)}
+p{margin-bottom:10px}
+.lead{font-size:1.05rem;color:var(--dark2)}
+.muted{color:var(--muted);font-size:.88rem}
+ul.clean{list-style:none}
+ul.clean li{padding:6px 0 6px 26px;position:relative}
+ul.clean li::before{content:"▸";position:absolute;left:6px;color:var(--primary);font-weight:700}
+ol{padding-left:22px}ol li{padding:3px 0}
+
+.objectif-box{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid var(--primary);border-radius:10px;padding:18px 20px;margin:16px 0}
+.objectif-box strong.title{display:block;color:var(--primary-dark);margin-bottom:8px}
+.instruction-box{background:#fffbeb;border:1px solid #fde68a;border-left:5px solid var(--accent);border-radius:10px;padding:18px 20px;margin:16px 0}
+.instruction-box strong.title{display:block;color:#92400e;margin-bottom:8px}
+.key-box{background:var(--dark);color:#e2e8f0;border-radius:12px;padding:22px 24px;margin:18px 0;border-left:5px solid #10b981}
+.key-box .big{font-size:1.15rem;font-weight:700;color:#fff}
+.warn-box{background:#fef2f2;border:1px solid #fecaca;border-left:5px solid var(--danger);border-radius:10px;padding:16px 20px;margin:16px 0}
+
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.grid-3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.mini-card{border:1px solid var(--border);border-radius:12px;padding:18px;background:#fff}
+.mini-card h4{font-size:1rem;margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mini-card.bad{border-color:#fecaca;background:#fef2f2}
+.mini-card.good{border-color:#a7f3d0;background:#f0fdf4}
+.mini-card pre.prompt{margin-top:8px}
+
+.famille-tag{display:inline-block;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:999px;letter-spacing:.2px}
+.f1{background:var(--primary-light);color:#1e40af}
+.f2{background:var(--secondary-light);color:#065f46}
+.f3{background:var(--accent-light);color:#92400e}
+.f4{background:var(--purple-light);color:#5b21b6}
+.f5{background:var(--danger-light);color:#991b1b}
+
+.term-item{background:var(--dark);color:#e2e8f0;font-family:var(--mono);font-size:.85rem;padding:10px 14px;border-radius:8px;display:inline-block}
+.chain .term-item,.objectif-box .term-item{padding:6px 12px}
+pre.prompt{background:var(--dark);color:#e2e8f0;font-family:var(--mono);font-size:.84rem;padding:18px 20px;border-radius:10px;white-space:pre-wrap;word-break:break-word;line-height:1.65;overflow-x:auto;position:relative;margin:12px 0}
+pre.prompt .hl{color:#34d399}
+pre.prompt .hl2{color:#fbbf24}
+pre.prompt .hl3{color:#93c5fd}
+
+.btn{border:none;border-radius:10px;padding:11px 18px;font-weight:600;font-size:.88rem;display:inline-flex;align-items:center;gap:8px;transition:transform .1s,background .2s}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-dark)}
+.btn-success{background:var(--secondary);color:#fff}.btn-success:hover{background:#047857}
+.btn-ghost{background:#fff;color:var(--dark2);border:1px solid var(--border)}.btn-ghost:hover{background:#f8fafc}
+.btn-warning{background:var(--accent);color:#fff}
+.btn-sm{padding:7px 12px;font-size:.8rem}
+.actions-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;align-items:center}
+.btn-reveal{display:none}
+body.formateur .btn-reveal{display:inline-flex}
+.reveal-content{display:none}
+.reveal-content.shown{display:block}
+
+.progress-wrap{margin:14px 0 4px}
+.progress-label{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:5px;font-weight:600}
+.progress-track{height:8px;background:#e2e8f0;border-radius:999px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#059669,#10b981);border-radius:999px;transition:width .4s ease}
+
+.result-panel{display:none;background:var(--dark);color:#e2e8f0;border-radius:12px;padding:22px 24px;margin-top:20px}
+.result-panel.show{display:block}
+.result-panel .score{font-family:var(--mono);font-size:2rem;font-weight:700;color:#34d399}
+.result-panel .msg{margin-top:6px;color:#cbd5e1}
+
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:18px 0}
+.chain-node{border:2px solid var(--border);background:#fff;border-radius:10px;padding:10px 16px;font-weight:700;font-size:.9rem;color:var(--dark2)}
+.chain-node:hover{border-color:var(--primary)}
+.chain-node.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.chain-node.seen:not(.active){border-color:#93c5fd}
+.chain-arrow{color:var(--muted);font-weight:700}
+.concept-detail{border:1px solid var(--border);border-radius:12px;padding:22px;background:#f8fafc;min-height:180px}
+.concept-detail .row{display:grid;grid-template-columns:130px 1fr;gap:10px;padding:8px 0;border-bottom:1px dashed var(--border)}
+.concept-detail .row:last-child{border-bottom:none}
+.concept-detail .k{font-weight:700;font-size:.82rem;color:var(--muted)}
+@media(max-width:600px){.concept-detail .row{grid-template-columns:1fr;gap:2px}}
+
+/* QCM */
+.qcm-q{border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:12px;background:#fff}
+.qcm-q .qt{font-weight:600;margin-bottom:10px}
+.qcm-opts{display:grid;gap:8px}
+.qcm-opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--border);border-radius:9px;padding:10px 12px;cursor:pointer;font-size:.9rem;background:#fff;text-align:left;width:100%;color:var(--text)}
+.qcm-opt:hover{background:#f8fafc;border-color:#93c5fd}
+.qcm-opt .l{font-family:var(--mono);font-weight:700;color:var(--primary);min-width:18px}
+.qcm-opt.sel{border-color:var(--primary);background:#eff6ff}
+.qcm-q.checked .qcm-opt{cursor:default}
+.qcm-opt.good{border-color:#6ee7b7;background:#ecfdf5}
+.qcm-opt.bad{border-color:#fca5a5;background:#fef2f2}
+.qcm-q.correct{border-color:#6ee7b7}
+.qcm-q.wrong{border-color:#fca5a5}
+.qcm-q .expl{display:none;margin-top:10px;font-size:.86rem;padding-top:8px;border-top:1px dashed var(--border)}
+.qcm-q.checked .expl{display:block}
+.q-num{font-family:var(--mono);font-size:.75rem;color:var(--muted);margin-right:6px}
+
+/* V/F */
+.vf-row{padding:16px;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;background:#fff}
+.vf-row .vf-q{font-weight:500;margin-bottom:10px}
+.vf-btns{display:flex;gap:8px}
+.vf-btn{border:1px solid var(--border);background:#fff;border-radius:8px;padding:7px 18px;font-weight:600;font-size:.85rem;color:var(--text)}
+.vf-btn.sel{background:var(--dark);color:#fff;border-color:var(--dark)}
+.vf-row.correct{border-color:#6ee7b7;background:#ecfdf5}
+.vf-row.wrong{border-color:#fca5a5;background:#fef2f2}
+.vf-row .expl{display:none;margin-top:10px;font-size:.85rem}
+.vf-row.checked .expl{display:block}
+
+/* Cas 1 matching */
+.match-grid{display:grid;grid-template-columns:minmax(200px,1fr) 2fr;gap:16px;margin-top:10px}
+@media(max-width:760px){.match-grid{grid-template-columns:1fr}}
+.match-col{display:flex;flex-direction:column;gap:8px}
+.match-col h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+.m-term{background:var(--dark);color:#e2e8f0;font-family:var(--mono);font-size:.84rem;padding:10px 12px;border-radius:8px;border:2px solid var(--dark);text-align:left;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.m-term:hover{border-color:#60a5fa}
+.m-term.active{border-color:#fbbf24;box-shadow:0 0 0 3px rgba(251,191,36,.35)}
+.m-def{background:#fff;border:2px solid var(--border);border-radius:8px;padding:10px 12px;font-size:.86rem;text-align:left;display:flex;gap:10px;align-items:flex-start;color:var(--text)}
+.m-def:hover{border-color:#93c5fd}
+.pair-badge{font-family:var(--mono);font-size:.72rem;font-weight:700;min-width:24px;height:24px;border-radius:6px;display:inline-grid;place-items:center;background:#e2e8f0;color:var(--muted);flex-shrink:0}
+.paired .pair-badge{background:var(--primary);color:#fff}
+.m-def.paired{border-color:#93c5fd;background:#eff6ff}
+.m-term.good,.m-def.good{border-color:#10b981}
+.m-def.good{background:#ecfdf5}
+.m-term.bad,.m-def.bad{border-color:#ef4444}
+.m-def.bad{background:#fef2f2}
+.round-pills{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 4px}
+.round-pill{font-family:var(--mono);font-size:.75rem;padding:4px 10px;border-radius:999px;background:#f1f5f9;border:1px solid var(--border);color:var(--muted)}
+.round-pill.cur{background:var(--primary);color:#fff;border-color:var(--primary)}
+.round-pill.ok{background:var(--secondary-light);color:#065f46;border-color:#6ee7b7}
+
+/* Cas 2 */
+.group{border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;background:#fff}
+.group-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.group-head strong{font-size:1rem}
+.g-label{font-size:.8rem;font-weight:700;color:var(--muted);margin:12px 0 6px;text-transform:uppercase;letter-spacing:.5px}
+.choice-row{display:flex;flex-wrap:wrap;gap:8px}
+.choice{border:1px solid var(--border);background:#fff;border-radius:999px;padding:6px 14px;font-size:.84rem;font-weight:600;color:var(--dark2)}
+.choice.sel{background:var(--dark);color:#fff;border-color:var(--dark)}
+.choice.good{background:#10b981;color:#fff;border-color:#10b981}
+.choice.bad{background:#ef4444;color:#fff;border-color:#ef4444}
+.sit{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:1px solid var(--border);border-radius:9px;padding:10px 12px;background:#f8fafc;font-size:.88rem;margin-bottom:8px;color:var(--text)}
+.sit:hover{border-color:#fbbf24}
+.sit .tag{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:999px;background:#e2e8f0;color:var(--muted);white-space:nowrap}
+.sit.sel{border-color:var(--accent);background:#fffbeb}
+.sit.sel .tag{background:var(--accent);color:#fff}
+.sit.good{border-color:#10b981;background:#ecfdf5}
+.sit.good .tag{background:#10b981;color:#fff}
+.sit.bad{border-color:#ef4444;background:#fef2f2}
+.sit.bad .tag{background:#ef4444;color:#fff}
+.group .expl{display:none;margin-top:10px;font-size:.86rem;padding-top:10px;border-top:1px dashed var(--border)}
+.group.checked .expl{display:block}
+.group.correct{border-color:#6ee7b7}
+.group.wrong{border-color:#fca5a5}
+.group.half{border-color:#fcd34d}
+
+/* forms */
+label.f-label{display:block;font-weight:600;font-size:.85rem;margin:14px 0 6px;color:var(--dark2)}
+input.f-input,textarea.f-input{width:100%;padding:11px 13px;border:1px solid var(--border);border-radius:9px;font-family:var(--sans);font-size:.9rem;background:#fff;color:var(--text)}
+textarea.f-input{min-height:78px;resize:vertical}
+
+.steps{margin:14px 0}
+.step{display:flex;gap:14px;padding:12px 0;border-bottom:1px dashed var(--border);align-items:flex-start}
+.step:last-child{border-bottom:none}
+.step input[type=checkbox]{width:20px;height:20px;accent-color:var(--secondary);margin-top:3px;flex-shrink:0}
+.step .s-num{font-family:var(--mono);font-weight:700;color:var(--primary);min-width:24px}
+.checklist label{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;cursor:pointer}
+.checklist label:hover{background:#f8fafc}
+.checklist input{width:18px;height:18px;accent-color:var(--secondary);margin-top:3px;flex-shrink:0}
+
+.table-wrap{overflow-x:auto;margin:14px 0}
+table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:520px}
+th{background:var(--dark);color:#fff;text-align:left;padding:11px 14px;font-weight:600}
+th:first-child{border-top-left-radius:10px}th:last-child{border-top-right-radius:10px}
+td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:top;background:#fff}
+tr:nth-child(even) td{background:#f8fafc}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font-size:.75rem;background:#f1f5f9;border:1px solid var(--border);padding:3px 10px;border-radius:999px;color:var(--dark2)}
+
+.route{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:14px 0}
+.route-step{background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+.route-step .n{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.route-step .t{font-weight:700;font-size:.9rem;color:var(--dark)}
+.route-step .c{font-size:.75rem;color:var(--muted)}
+.route-step.past{background:#ecfdf5;border-color:#a7f3d0}
+.route-step.here{background:var(--primary);border-color:var(--primary)}
+.route-step.here .t,.route-step.here .n,.route-step.here .c{color:#fff}
+
+.levels{display:grid;gap:8px;margin:14px 0}
+.level{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:#fff}
+.level .lv{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--primary)}
+.level .risk{font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:999px}
+@media(max-width:600px){.level{grid-template-columns:40px 1fr}.level .risk{grid-column:2;justify-self:start}}
+
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
+.pillar{border-radius:12px;padding:16px;background:#fff;border:1px solid var(--border);border-top:4px solid var(--primary)}
+.pillar:nth-child(5n+2){border-top-color:var(--purple)}
+.pillar:nth-child(5n+3){border-top-color:var(--secondary)}
+.pillar:nth-child(5n+4){border-top-color:var(--accent)}
+.pillar:nth-child(5n+5){border-top-color:var(--danger)}
+.pillar .n{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+.pillar h4{font-size:1rem;margin:4px 0 6px}
+.pillar p{font-size:.84rem;color:var(--dark2);margin:0}
+.pillar .q{font-size:.8rem;color:var(--muted);font-style:italic;margin-top:8px}
+
+details.acc{border:1px solid var(--border);border-radius:10px;margin:10px 0;background:#fff}
+details.acc summary{cursor:pointer;padding:12px 16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:10px}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary::after{content:"+";font-family:var(--mono);color:var(--primary);font-weight:700}
+details.acc[open] summary::after{content:"−"}
+details.acc[open] summary{border-bottom:1px dashed var(--border)}
+details.acc > div{padding:12px 16px;font-size:.9rem}
+
+.gloss{display:grid;gap:10px;margin-top:10px}
+.gloss-item{display:grid;grid-template-columns:190px 1fr;gap:14px;align-items:start;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:#fff}
+.gloss-item .gt{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+@media(max-width:620px){.gloss-item{grid-template-columns:1fr}}
+.lock-wrap{text-align:center;padding:30px 10px}
+.lock-wrap .big-lock{font-size:3rem}
+.lock-pills{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:16px}
+.lock-pill{font-size:.82rem;font-weight:600;padding:6px 14px;border-radius:999px;background:#f1f5f9;border:1px solid var(--border)}
+.lock-pill.ok{background:var(--secondary-light);border-color:#6ee7b7;color:#065f46}
+.filter-row{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}
+.filter-row button{border:1px solid var(--border);background:#fff;border-radius:999px;padding:5px 12px;font-size:.78rem;font-weight:600;color:var(--dark2)}
+.filter-row button.on{background:var(--dark);color:#fff;border-color:var(--dark)}
+
+.score-table td:last-child{font-family:var(--mono);font-weight:700}
+.link-card{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:#f8fafc;border:1px dashed #93c5fd;border-radius:12px;padding:16px 18px;margin-top:16px}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--dark);color:#fff;padding:10px 18px;border-radius:10px;font-size:.85rem;opacity:0;pointer-events:none;transition:all .25s;z-index:100;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.nav-bottom{display:flex;justify-content:space-between;gap:10px;margin-top:10px;flex-wrap:wrap}
+footer{text-align:center;color:var(--muted);font-size:.78rem;padding:30px 16px 50px}
+@media print{.tabs-wrap,.actions-row,.nav-bottom{display:none}.panel{display:block!important}}
+
+
+
+/* ===== Identité module SIRH ===== */
+header{background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 55%,#0e7490 100%)}
+header.practice{background:linear-gradient(135deg,#0f172a 0%,#0e7490 55%,#0891b2 100%)}
+header::after{background:radial-gradient(circle,rgba(103,232,249,.22),transparent 70%)}
+.route.r10{grid-template-columns:repeat(5,1fr)}
+@media(max-width:640px){.route.r10{grid-template-columns:repeat(2,1fr)}}
+/* Fil rouge */
+.company{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:18px 20px;margin:14px 0}
+.company .logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#0e7490,#059669);display:grid;place-items:center;font-size:1.7rem;color:#fff}
+.company h4{font-size:1.05rem;margin-bottom:4px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px}
+.fact{background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.fact .v{font-family:var(--mono);font-weight:700;font-size:1.05rem;color:var(--dark)}
+.fact .l{font-size:.75rem;color:var(--muted)}
+/* Fonctions du SI */
+.flow4{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:16px 0;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.flow4 > div{padding:14px;background:#fff;border-right:1px solid var(--border);position:relative}
+.flow4 > div:last-child{border-right:none}
+.flow4 .n{font-family:var(--mono);font-size:.72rem;color:var(--primary);font-weight:700}
+.flow4 h4{margin:2px 0 4px;font-size:.98rem}
+.flow4 p{font-size:.82rem;color:var(--dark2);margin:0}
+@media(max-width:720px){.flow4{grid-template-columns:1fr 1fr}.flow4 > div:nth-child(2){border-right:none}.flow4 > div:nth-child(-n+2){border-bottom:1px solid var(--border)}}
+/* Pyramide donnée -> décision */
+.dikw{display:grid;gap:6px;margin:16px auto;max-width:620px}
+.dikw > div{border-radius:8px;padding:10px 14px;color:#fff;display:flex;justify-content:space-between;gap:12px;font-size:.88rem;margin:0 auto;width:100%}
+.dikw > div strong{white-space:nowrap}
+.dikw .d1{width:58%;background:#0f172a}.dikw .d2{width:72%;background:#1e3a8a}.dikw .d3{width:86%;background:#0e7490}.dikw .d4{width:100%;background:#059669}
+@media(max-width:620px){.dikw > div{width:100%!important;flex-direction:column}}
+/* Timeline */
+.timeline{position:relative;margin:16px 0 8px;padding-left:22px;border-left:3px solid #bfdbfe}
+.timeline .t-item{position:relative;margin-bottom:14px}
+.timeline .t-item::before{content:"";position:absolute;left:-30px;top:5px;width:13px;height:13px;border-radius:50%;background:var(--primary);border:3px solid #fff;box-shadow:0 0 0 2px #bfdbfe}
+.timeline .t-item.now::before{background:var(--secondary)}
+.timeline .when{font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--primary)}
+.timeline .t-item.now .when{color:var(--secondary)}
+/* Architecture SIRH */
+.archi{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:12px;align-items:stretch;margin:16px 0}
+.archi .col{display:grid;gap:8px;align-content:start}
+.archi .mod{background:#fff;border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:.84rem}
+.archi .mod b{display:block;font-size:.88rem}
+.archi .core{background:var(--dark);color:#e2e8f0;border-radius:14px;padding:18px;display:flex;flex-direction:column;justify-content:center;text-align:center;gap:8px}
+.archi .core b{color:#fff;font-size:1.05rem}
+.archi .core small{color:#94a3b8}
+.archi .ext{border-style:dashed;background:#f8fafc}
+.archi .when-s{font-family:var(--mono);font-size:.7rem;color:var(--muted)}
+@media(max-width:760px){.archi{grid-template-columns:1fr}}
+/* Couloirs (swimlane) */
+.swim-wrap{overflow-x:auto;margin:16px 0;border:1px solid var(--border);border-radius:12px}
+.swim{border-collapse:separate;border-spacing:0;min-width:860px;width:100%}
+.swim th.lane{background:var(--dark2);color:#fff;font-size:.78rem;width:130px;text-align:left;padding:10px;position:sticky;left:0;z-index:1}
+.swim td{border-bottom:1px dashed var(--border);border-right:1px dashed #eef2f7;padding:8px;vertical-align:middle;background:#fff;min-width:118px}
+.swim tr:nth-child(even) td{background:#f8fafc}
+.swim .stephead th{background:#f1f5f9;color:var(--muted);font-family:var(--mono);font-size:.72rem;padding:6px;border-bottom:1px solid var(--border)}
+.task{display:block;border-radius:8px;padding:7px 9px;font-size:.76rem;line-height:1.35;background:var(--primary-light);border:1px solid #93c5fd;color:#1e3a8a}
+.task.paper{background:var(--accent-light);border-color:#fcd34d;color:#78350f}
+.task.risk{background:var(--danger-light);border-color:#fca5a5;color:#7f1d1d}
+.task.evt{background:var(--secondary-light);border-color:#6ee7b7;color:#064e3b;border-radius:999px;text-align:center}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.legend .task{display:inline-block}
+/* Matrice / BPMN symboles */
+.symbols{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:14px 0}
+.symbol{border:1px solid var(--border);border-radius:10px;padding:12px;background:#fff;text-align:center;font-size:.82rem}
+.symbol .shape{height:46px;display:grid;place-items:center;margin-bottom:6px}
+.sh-evt{width:40px;height:40px;border-radius:50%;border:3px solid var(--secondary)}
+.sh-end{width:40px;height:40px;border-radius:50%;border:5px solid var(--danger)}
+.sh-task{width:70px;height:38px;border-radius:8px;border:2px solid var(--primary);background:var(--primary-light)}
+.sh-gw{width:32px;height:32px;transform:rotate(45deg);border:2px solid var(--accent);background:var(--accent-light)}
+.sh-flow{width:80px;height:2px;background:var(--dark2);position:relative}
+.sh-flow::after{content:"";position:absolute;right:-2px;top:-5px;border-left:9px solid var(--dark2);border-top:6px solid transparent;border-bottom:6px solid transparent}
+.sh-doc{width:46px;height:40px;border:2px solid var(--purple);background:var(--purple-light);border-radius:4px 4px 12px 4px}
+/* Indicateurs de processus */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:14px 0}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;border-left:4px solid var(--accent)}
+.kpi .v{font-family:var(--mono);font-size:1.4rem;font-weight:700;color:var(--dark)}
+.kpi .l{font-size:.8rem;color:var(--muted)}
+@media print{header{background:#0f172a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+
+/* ===== Ajouts séances 3-4 ===== */
+.wf{display:flex;align-items:stretch;gap:0;margin:16px 0;overflow-x:auto;padding-bottom:6px}
+.wf .node{min-width:150px;flex:1;background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;position:relative;margin-right:26px}
+.wf .node:last-child{margin-right:0}
+.wf .node:not(:last-child)::after{content:"➜";position:absolute;right:-22px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:1.1rem}
+.wf .node .k{font-family:var(--mono);font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.wf .node h4{margin:4px 0;font-size:.92rem}
+.wf .node p{font-size:.78rem;color:var(--dark2);margin:0}
+.wf .trg{border-top:4px solid var(--secondary)}.wf .trg .k{color:var(--secondary)}
+.wf .act{border-top:4px solid var(--primary)}.wf .act .k{color:var(--primary)}
+.wf .llm{border-top:4px solid var(--purple);background:var(--purple-light)}.wf .llm .k{color:var(--purple)}
+.wf .hum{border-top:4px solid var(--accent);background:var(--accent-light)}.wf .hum .k{color:#92400e}
+.wf .flt{border-top:4px solid var(--danger)}.wf .flt .k{color:var(--danger)}
+.stairs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;align-items:end;margin:16px 0}
+.stairs > div{border-radius:10px;padding:12px;color:#fff;font-size:.82rem}
+.stairs > div b{display:block;font-size:.95rem;margin-bottom:4px}
+.stairs .s1{background:#64748b;min-height:110px}.stairs .s2{background:#1e3a8a;min-height:140px}.stairs .s3{background:#0e7490;min-height:170px}.stairs .s4{background:#7c3aed;min-height:200px}
+@media(max-width:720px){.stairs{grid-template-columns:1fr 1fr}.stairs > div{min-height:0!important}}
+.chainx{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:16px 0}
+.chainx > div{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;position:relative}
+.chainx > div .ic{font-size:1.5rem}
+.chainx > div b{display:block;font-size:.9rem;margin:4px 0}
+.chainx > div span{font-size:.76rem;color:var(--muted)}
+.chainx > div.hot{border:2px solid var(--primary);background:var(--primary-light)}
+@media(max-width:760px){.chainx{grid-template-columns:1fr 1fr}}
+.scoregrid td.c{text-align:center;font-family:var(--mono);font-weight:700}
+.dataset{font-family:var(--mono);font-size:.76rem}
+.dataset td,.dataset th{padding:6px 8px!important;white-space:nowrap}
+
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <span class="badge">🏢 SIRH &amp; exploitation de la Data — IA · Séance 4 · Support théorique</span>
+    <h1>Le socle : Core RH, paie et GTA</h1>
+    <p class="subtitle">Comprendre le socle du SIRH : le Core RH comme référentiel unique, la GTA qui transforme le temps en variables, la paie qui produit bulletins et DSN, les contrôles qui la sécurisent, et ce que la transparence salariale va exiger.</p>
+    <div class="meta-pills"><span class="meta-pill">🧭 Séance 4 sur 10</span><span class="meta-pill">📚 Support théorique</span><span class="meta-pill">📖 6 chapitres</span><span class="meta-pill">❓ 30 questions de QCM</span><span class="meta-pill">🏠 Fil rouge : Groupe Habitéo</span></div>
+    <div class="global-progress">
+      <div class="label"><span>QCM de chapitre validés</span><span id="globalPct">0 / 6</span></div>
+      <div class="track"><div class="fill" id="globalFill"></div></div>
+    </div>
+    <div class="mode-flag">Mode formateur actif — boutons « Révéler » visibles</div>
+  </div>
+</header>
+<div class="tabs-wrap"><nav class="tabs" role="tablist" aria-label="Chapitres de la séance"><button class="tab active" data-tab="0" role="tab">🚀 Démarrage</button><button class="tab" data-tab="c0" data-act="ch0" role="tab">🗄️ Le Core RH <span class="done-mark">✅</span></button><button class="tab" data-tab="c1" data-act="ch1" role="tab">⏱️ Temps et activités <span class="done-mark">✅</span></button><button class="tab" data-tab="c2" data-act="ch2" role="tab">💶 La paie <span class="done-mark">✅</span></button><button class="tab" data-tab="c3" data-act="ch3" role="tab">📡 La DSN <span class="done-mark">✅</span></button><button class="tab" data-tab="c4" data-act="ch4" role="tab">🔍 Contrôler la paie <span class="done-mark">✅</span></button><button class="tab" data-tab="c5" data-act="ch5" role="tab">⚖️ Transparence salariale <span class="done-mark">✅</span></button><button class="tab" data-tab="syn" role="tab">🏁 Synthèse</button></nav></div>
+<main>
+<section class="panel active" data-panel="0">
+  <div class="card">
+    <div class="section-title"><span class="icon-bg">🎯</span>Où en est-on dans le parcours ?</div>
+    <div class="key-box"><div class="big">Je sais relier les données du planning à la DSN.</div><p style="margin:8px 0 0">Le scénario de la séance 3 a montré la limite des fichiers : sans source de vérité, on automatise des données fausses. Aujourd'hui, vous ouvrez le socle du SIRH, là où naissent les données qui partent chaque mois aux organismes.</p></div>
+    <div class="route r10"><div class="route-step past"><div class="n">S1</div><div class="t">Lire</div><div class="c">SI, data, processus</div></div><div class="route-step past"><div class="n">S2</div><div class="t">Outiller</div><div class="c">IA générative</div></div><div class="route-step past"><div class="n">S3</div><div class="t">Automatiser</div><div class="c">Workflow + LLM</div></div><div class="route-step here"><div class="n">S4</div><div class="t">Socle</div><div class="c">Core RH, paie, GTA</div></div><div class="route-step "><div class="n">S5</div><div class="t">Talents</div><div class="c">ATS, LMS, PMS</div></div><div class="route-step "><div class="n">S6</div><div class="t">Marché</div><div class="c">Solutions, acteurs</div></div><div class="route-step "><div class="n">S7</div><div class="t">Projet</div><div class="c">CDC, déploiement</div></div><div class="route-step "><div class="n">S8</div><div class="t">Data</div><div class="c">KPI, tableaux de bord</div></div><div class="route-step "><div class="n">S9</div><div class="t">Prédire</div><div class="c">Scénarios, virage RH</div></div><div class="route-step "><div class="n">S10</div><div class="t">Évaluer</div><div class="c">Révision + CCF</div></div></div>
+    <p class="muted">En vert : les séances franchies. En bleu : la séance d'aujourd'hui.</p>
+    <h3>Le fil pédagogique</h3>
+    <div class="table-wrap"><table><tr><th>Séance</th><th>Ce que vous saurez faire</th></tr><tr><td>Séance 1</td><td>Je sais lire le SI RH d&#x27;une entreprise.</td></tr><tr><td>Séance 2</td><td>Je sais choisir le bon outil IA et lui parler.</td></tr><tr><td>Séance 3</td><td>Je sais concevoir un workflow RH augmenté par l&#x27;IA.</td></tr><tr><td><strong>Séance 4</strong> — aujourd&#39;hui</td><td><strong>Je sais relier les données du planning à la DSN.</strong></td></tr><tr><td>Séance 5</td><td>Je sais évaluer ce qu&#x27;un module automatise, et ses risques.</td></tr><tr><td>Séance 6</td><td>Je sais positionner une solution et ses acteurs.</td></tr><tr><td>Séance 7</td><td>Je sais cadrer et piloter un projet SIRH.</td></tr><tr><td>Séance 8</td><td>Je sais transformer un export en KPI de climat social.</td></tr><tr><td>Séance 9</td><td>Je sais construire un scénario décisionnel.</td></tr><tr><td>Séance 10</td><td>Je sais mobiliser l&#x27;ensemble du module.</td></tr></table></div>
+  </div>
+  <div class="card">
+    <div class="section-title"><span class="icon-bg green">🏠</span>Le fil rouge : où en est Habitéo ?</div>
+    <p class="lead">Le scénario « Déclaration d'embauche » plaît aux agences. Mais en le testant, vous avez buté sur la même question : dans lequel des six fichiers Excel se trouve la bonne information ? Et le cabinet de paie signale des variables erronées presque chaque mois.</p>
+    <div class="instruction-box"><strong class="title">La demande de la DRH</strong>« Le cabinet m'a appelée : encore des paniers et des heures supplémentaires faux sur Grenoble, et une DSN à corriger. Je veux comprendre comment une heure de chantier arrive jusqu'à la DSN, qui est responsable de chaque donnée, et comment contrôler la paie avant qu'il ne soit trop tard. Et on me parle de transparence salariale : sommes-nous prêts ? »</div>
+    <p>L'atelier pratique vous fait suivre une heure de chantier jusqu'à la DSN, désigner le système maître de chaque donnée, faire analyser par l'IA un fichier de variables pseudonymisé, puis rédiger un plan de contrôle de la paie et une première évaluation de la préparation d'Habitéo à la transparence salariale.</p>
+  </div>
+  <div class="card">
+    <div class="section-title"><span class="icon-bg green">✅</span>Objectifs de la séance</div>
+    <div class="objectif-box"><strong class="title">À la fin de cette séance, vous serez capable de :</strong><ul class="clean"><li>Décrire le Core RH comme référentiel unique des collaborateurs et identifier le système maître de chaque donnée ;</li><li>Expliquer ce que la GTA transforme en données de paie : temps, absences, plannings, indemnités ;</li><li>Distinguer éléments fixes et variables de la paie, et comparer paie internalisée, externalisée et partagée ;</li><li>Suivre la chaîne GTA → paie → DSN et nommer les flux déclaratifs : DPAE, DSN mensuelle, signalements, retours ;</li><li>Concevoir un plan de contrôle de la paie, en distinguant ce que vérifie une règle et ce qu&#x27;apporte l&#x27;IA ;</li><li>Anticiper ce que la future loi sur la transparence salariale demandera au SIRH.</li></ul></div>
+    <div class="grid grid-2">
+      <div class="mini-card"><h4>🎒 À avoir avec vous</h4><ul class="clean"><li>Votre processus TO-BE et votre spécification de scénario de la séance 3.</li><li>Un assistant IA autorisé par votre charte de séance 2 (ChatGPT, Claude, Gemini ou Le Chat).</li><li>Un accès à Perplexity pour vérifier une obligation sur une source officielle (net-entreprises, URSSAF, service-public).</li></ul></div>
+      <div class="mini-card"><h4>🧩 Les 5 familles de notions</h4><div class="chips" style="margin-top:4px"><span class="famille-tag f1">Core RH</span><span class="famille-tag f2">Temps et activités</span><span class="famille-tag f3">Paie</span><span class="famille-tag f4">DSN et déclaratif</span><span class="famille-tag f5">Contrôle et transparence</span></div><p class="muted" style="margin-top:10px">Ces familles organisent les chapitres, les cas pratiques et le glossaire.</p></div>
+    </div>
+    <div class="warn-box"><strong>⛔ Règle de la séance</strong> Le fichier de variables de l'atelier est fictif et pseudonymisé. Ne jamais transmettre à un outil d'IA un fichier de paie réel, ni un bulletin, ni un numéro de sécurité sociale.</div>
+    <div class="instruction-box"><strong class="title">Comment utiliser ce support</strong>Chaque onglet est un chapitre. Lisez-le, explorez les éléments interactifs, puis répondez au <strong>QCM de fin de chapitre</strong> : sa validation fait avancer la barre de progression. La mise en application se fait dans le <strong>support pratique</strong>.</div>
+    <div class="link-card"><span><strong>🛠️ Support pratique associé</strong><br><span class="muted">Cas pratiques, atelier Habitéo et glossaire de la séance.</span></span><a class="btn btn-success" href="seance-4-core-rh-paie-gta-pratique.html">Ouvrir le support pratique ▸</a></div>
+    <div class="nav-bottom"><span></span><button class="btn btn-primary" data-goto="c0">Commencer : 🗄️ Le Core RH ▸</button></div>
+  </div>
+</section>
+<section class="panel" data-panel="c0">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 1 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">🗄️</span>Le Core RH : le référentiel des collaborateurs</div>
+  <p class="lead">Le Core RH (ou gestion administrative du personnel) est le cœur du SIRH : il contient l'identité, l'organisation, le contrat et l'historique de chaque collaborateur. Tous les autres modules s'y alimentent. Chez Habitéo, ce rôle est aujourd'hui tenu par six fichiers Excel qui se contredisent.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Décrire le contenu d'un Core RH, le principe de source de vérité unique et la notion de système maître.</div>
+  <div class="archi">
+    <div class="col">
+      <div class="mod"><b>⏱️ GTA</b>temps, absences, plannings</div>
+      <div class="mod"><b>💶 Paie</b>bulletins, cotisations, DSN</div>
+      <div class="mod ext"><b>🏢 Cabinet de paie</b><span class="when-s">prestataire externe</span></div>
+    </div>
+    <div class="core"><b>🗄️ Core RH</b><span>Matricule · identité · organisation · emploi et classification · contrat · rémunération · historique</span><small>Source de vérité unique</small></div>
+    <div class="col">
+      <div class="mod"><b>🎯 Recrutement (ATS)</b><span class="when-s">séance 5</span></div>
+      <div class="mod"><b>🎓 Formation (LMS)</b><span class="when-s">séance 5</span></div>
+      <div class="mod"><b>📊 Pilotage</b><span class="when-s">séance 8</span></div>
+    </div>
+  </div>
+</div>
+<div class="card" data-explorer="x1">
+  <div class="section-title"><span class="icon-bg purple">🗄️</span>Explorateur — ce que contient un Core RH</div>
+  <p class="muted">Cliquez sur chaque notion pour afficher sa fiche.</p>
+  <div class="chain"></div>
+  <div class="concept-detail"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Notions consultées</span><span>0 / 7</span></div><div class="progress-track"><div class="progress-fill"></div></div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">👑</span>Un système maître par donnée</div>
+  <p class="lead">Pour chaque donnée, on désigne un seul système maître, le seul où elle est créée ou modifiée. Les autres outils la reçoivent. C'est la traduction technique du principe de saisie unique vu en séance 3.</p>
+  <div class="table-wrap"><table>
+    <tr><th>Donnée <span class="famille-tag f1">Core RH</span></th><th>Système maître cible</th><th>Qui la saisit</th><th>Qui la reçoit</th></tr>
+    <tr><td>Identité, adresse</td><td>Core RH</td><td>RH à l'embauche, puis salarié en libre-service</td><td>Paie, DSN, formation</td></tr>
+    <tr><td>Agence, manager</td><td>Core RH</td><td>RH, sur demande du manager</td><td>GTA, validations, droits d'accès</td></tr>
+    <tr><td>Heures travaillées, chantier</td><td>GTA</td><td>Technicien, validé par le chef d'équipe</td><td>Paie</td></tr>
+    <tr><td>Salaire de base</td><td>Core RH</td><td>RH, après décision</td><td>Paie</td></tr>
+    <tr><td>Habilitations</td><td>Formation (LMS) ou Core RH</td><td>RH formation</td><td>Planification, GTA (affectation)</td></tr>
+  </table></div>
+  <div class="grid grid-2">
+    <div class="mini-card"><h4>🏢 Éditeurs de Core RH</h4><p class="muted">Grands groupes : Workday HCM, SAP SuccessFactors Employee Central, Oracle HCM. ETI : Cegid HR, Sage, ADP, Lucca, Eurécia. PME : PayFit, Lucca.</p></div>
+    <div class="mini-card"><h4>⚠️ Ce qu'il faut savoir</h4><p class="muted">La qualité d'un Core RH tient moins au logiciel qu'à la reprise des données : dédoublonner six fichiers Excel est un projet en soi, à prévoir en séance 7.</p></div>
+  </div>
+  <div class="key-box"><div class="big">Une donnée, une source, un propriétaire, un historique.</div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 1</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm0"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt0">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill0"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="0">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="0">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="0">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres0"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="0">◂ Précédent</button><button class="btn btn-primary" data-goto="c1">Suite : ⏱️ Temps et activités ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="c1">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 2 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">⏱️</span>La gestion des temps et des activités</div>
+  <p class="lead">La GTA collecte le temps de travail, les absences et les activités, applique les règles légales et conventionnelles, puis transmet à la paie des variables valorisables. C'est la première marche de la chaîne qui mène à la DSN.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Expliquer ce que fait une GTA, pourquoi elle est déterminante pour la paie dans une entreprise de chantier, et ce qu'elle change chez Habitéo.</div>
+  <div class="chainx">
+  <div><div class="ic">📱</div><b>Pointage</b><span>Heures, chantier, absence saisis par le technicien, validés par le chef d'équipe</span></div>
+  <div><div class="ic">⏱️</div><b>GTA</b><span>Règles et compteurs : heures supplémentaires, zones, paniers, congés</span></div>
+  <div class="hot"><div class="ic">💶</div><b>Paie</b><span>Variables + éléments fixes du Core RH → bulletin</span></div>
+  <div><div class="ic">📡</div><b>DSN</b><span>Déclaration mensuelle et signalements</span></div>
+  <div><div class="ic">🏛️</div><b>Organismes</b><span>URSSAF, retraite, France Travail, impôts, assurance maladie, caisse de congés</span></div>
+</div>
+  <div class="table-wrap"><table>
+    <tr><th>Fonction <span class="famille-tag f2">Temps et activités</span></th><th>Ce qu'elle fait</th><th>Chez Habitéo aujourd'hui</th></tr>
+    <tr><td>Saisie du temps</td><td>Badge, application mobile, déclaratif ; validation par le responsable.</td><td>Feuilles papier remplies par les chefs d'équipe, scannées, ressaisies.</td></tr>
+    <tr><td>Absences</td><td>Demande, validation, décompte, justificatifs.</td><td>E-mails et appels à l'agence.</td></tr>
+    <tr><td>Planification</td><td>Affectation des équipes aux chantiers, compatibilité avec les habilitations.</td><td>Tableaux propres à chaque agence.</td></tr>
+    <tr><td>Règles et compteurs</td><td>Heures supplémentaires et majorations, repos, congés, indemnités.</td><td>Calculs à la main au siège.</td></tr>
+    <tr><td>Export vers la paie</td><td>Variables valorisées, par matricule et par période.</td><td>Fichier Excel envoyé par e-mail au cabinet.</td></tr>
+  </table></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">🏗️</span>Les spécificités d'une entreprise de chantier</div>
+  <div class="grid grid-2">
+    <div class="mini-card"><h4>🚐 Indemnités de petits déplacements</h4><p class="muted">Dans le bâtiment, les ouvriers perçoivent des indemnités de repas, de trajet et de transport selon des zones concentriques autour du siège ou de l'agence. La GTA doit connaître le chantier de chaque journée.</p></div>
+    <div class="mini-card"><h4>🌧️ Intempéries et congés</h4><p class="muted">Les arrêts pour intempéries et les congés payés des ouvriers passent par les caisses du réseau CIBTP. La GTA doit les qualifier correctement pour la paie.</p></div>
+    <div class="mini-card"><h4>➕ Heures supplémentaires</h4><p class="muted">Au-delà de 35 heures par semaine : majoration de 25 % pour les huit premières heures, 50 % au-delà, sauf accord prévoyant d'autres taux.</p></div>
+    <div class="mini-card"><h4>🦺 Habilitations</h4><p class="muted">Un technicien sans habilitation électrique à jour ne peut pas être planifié seul sur certaines interventions : le planning doit le savoir.</p></div>
+  </div>
+  <div class="grid grid-2">
+    <div class="mini-card"><h4>🏢 Éditeurs de GTA</h4><p class="muted">Kelio (Bodet Software), eTemptation (Horoquartz), Lucca Timmi, Eurécia, Skello ou Combo pour la planification, modules GTA de Workday, SAP SuccessFactors ou Cegid.</p></div>
+    <div class="mini-card bad"><h4>⛔ Pointage et vie privée</h4><p class="muted">Le pointage mobile se justifie ; une géolocalisation permanente des techniciens serait disproportionnée. La biométrie pour pointer est, sauf exception, à proscrire selon la CNIL.</p></div>
+  </div>
+  <div class="key-box"><div class="big">Une heure de chantier mal saisie devient un bulletin faux, puis une DSN fausse.</div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 2</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm1"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt1">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill1"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="1">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="1">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="1">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres1"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c0">◂ Précédent</button><button class="btn btn-primary" data-goto="c2">Suite : 💶 La paie ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="c2">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 3 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">💶</span>La paie : du brut au net, et au-delà</div>
+  <p class="lead">La paie transforme des données fixes (contrat, classification, salaire de base) et des variables (heures, primes, absences, indemnités) en un bulletin, des cotisations et une déclaration. C'est le processus RH le plus réglementé et le moins tolérant à l'erreur.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Distinguer éléments fixes et variables, situer les modes d'organisation de la paie et ce que chacun exige du SIRH.</div>
+  <div class="grid grid-2">
+    <div class="mini-card"><h4>📌 Éléments fixes <span class="famille-tag f3">Paie</span></h4><ul class="clean"><li>Salaire de base, temps de travail contractuel</li><li>Classification, coefficient</li><li>Primes contractuelles fixes</li><li>Organismes : mutuelle, prévoyance, retraite complémentaire</li></ul><p class="muted">Source : Core RH.</p></div>
+    <div class="mini-card"><h4>🔄 Éléments variables</h4><ul class="clean"><li>Heures supplémentaires</li><li>Absences, congés, intempéries</li><li>Paniers, indemnités de trajet et de transport</li><li>Primes exceptionnelles</li></ul><p class="muted">Source : GTA et décisions managériales.</p></div>
+  </div>
+  <h3>Le cycle mensuel</h3>
+  <div class="timeline">
+    <div class="t-item"><div class="when">Jusqu'au 20 du mois</div>Collecte des variables, validation par les managers.</div>
+    <div class="t-item"><div class="when">Vers le 22</div>Clôture des variables, calcul, contrôles.</div>
+    <div class="t-item"><div class="when">Vers le 25</div>Validation, virements, mise à disposition des bulletins.</div>
+    <div class="t-item now"><div class="when">Le 5 du mois suivant</div>Dépôt de la DSN, puis traitement des retours.</div>
+  </div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">🏢</span>Internaliser, externaliser ou partager ?</div>
+  <div class="table-wrap"><table>
+    <tr><th></th><th>Internalisée</th><th>Externalisée (cabinet, BPO)</th><th>Partagée (co-sourcing)</th></tr>
+    <tr><td>Qui calcule</td><td>L'équipe paie de l'entreprise</td><td>Le prestataire</td><td>Le prestataire</td></tr>
+    <tr><td>Qui tient les données</td><td>L'entreprise</td><td>Souvent le prestataire</td><td>L'entreprise (Core RH, GTA)</td></tr>
+    <tr><td>Logiciels typiques</td><td>Silae, Sage, Cegid, ADP, modules paie des SIRH</td><td>Ceux du prestataire</td><td>SIRH de l'entreprise relié au logiciel du prestataire</td></tr>
+    <tr><td>Point fort</td><td>Maîtrise, réactivité</td><td>Expertise, veille réglementaire déléguée</td><td>Qualité des données + expertise du prestataire</td></tr>
+    <tr><td>Point faible</td><td>Compétences rares à recruter et à garder</td><td>Dépendance, ressaisies, délais</td><td>Interfaces à construire et maintenir</td></tr>
+  </table></div>
+  <div class="instruction-box"><strong class="title">La piste pour Habitéo</strong>Garder le cabinet pour le calcul, mais remplacer le fichier Excel de variables par un export automatique de la GTA, et tenir les données fixes dans un Core RH. L'entreprise reste responsable de la paie, quel que soit le prestataire.</div>
+  <div class="warn-box"><strong>⚠️ Ne pas confier à l'IA</strong> Le calcul de la paie relève de règles légales et conventionnelles exactes. Un LLM peut expliquer un bulletin ou aider à repérer une incohérence ; il ne calcule pas une paie.</div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 3</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm2"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt2">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill2"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="2">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="2">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="2">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres2"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c1">◂ Précédent</button><button class="btn btn-primary" data-goto="c3">Suite : 📡 La DSN ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="c3">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 4 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">📡</span>La DSN : la paie qui parle aux organismes</div>
+  <p class="lead">La déclaration sociale nominative est produite chaque mois par le logiciel de paie. En un seul flux, elle informe la quasi-totalité des organismes sociaux et fiscaux. Elle a supprimé des dizaines de formulaires, mais elle a rendu visible chaque erreur de donnée.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Suivre la chaîne GTA → paie → DSN, nommer les principaux flux déclaratifs et comprendre ce que la qualité des données y change.</div>
+  <div class="chainx">
+  <div><div class="ic">📱</div><b>Pointage</b><span>Heures, chantier, absence saisis par le technicien, validés par le chef d'équipe</span></div>
+  <div><div class="ic">⏱️</div><b>GTA</b><span>Règles et compteurs : heures supplémentaires, zones, paniers, congés</span></div>
+  <div class="hot"><div class="ic">💶</div><b>Paie</b><span>Variables + éléments fixes du Core RH → bulletin</span></div>
+  <div><div class="ic">📡</div><b>DSN</b><span>Déclaration mensuelle et signalements</span></div>
+  <div><div class="ic">🏛️</div><b>Organismes</b><span>URSSAF, retraite, France Travail, impôts, assurance maladie, caisse de congés</span></div>
+</div>
+</div>
+<div class="card" data-explorer="x2">
+  <div class="section-title"><span class="icon-bg purple">📡</span>Explorateur — les flux déclaratifs</div>
+  <p class="muted">Cliquez sur chaque notion pour afficher sa fiche.</p>
+  <div class="chain"></div>
+  <div class="concept-detail"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Notions consultées</span><span>0 / 6</span></div><div class="progress-track"><div class="progress-fill"></div></div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">🔁</span>Ce que la DSN attend du SIRH</div>
+  <div class="table-wrap"><table>
+    <tr><th>Exigence <span class="famille-tag f4">DSN et déclaratif</span></th><th>Donnée concernée</th><th>Source dans le SIRH</th></tr>
+    <tr><td>Identifier chaque salarié sans ambiguïté</td><td>NIR, nom, date de naissance</td><td>Core RH, contrôlé à l'embauche</td></tr>
+    <tr><td>Déclarer par établissement</td><td>SIRET de l'agence de rattachement</td><td>Référentiel organisation</td></tr>
+    <tr><td>Décrire le contrat</td><td>Nature, dates, temps de travail, statut</td><td>Données contractuelles</td></tr>
+    <tr><td>Déclarer les rémunérations et cotisations</td><td>Brut, net, assiettes, taux</td><td>Paie</td></tr>
+    <tr><td>Signaler les événements</td><td>Arrêts, fins de contrat, reprises</td><td>GTA et Core RH, dans les cinq jours</td></tr>
+  </table></div>
+  <div class="grid grid-2">
+    <div class="mini-card"><h4>🧭 Ce que cela change pour Habitéo</h4><p class="muted">Avec environ 15 entrées par mois et un turnover de 24 %, les DPAE et signalements de fin de contrat sont fréquents. Chaque retard ou erreur se voit dans les comptes rendus.</p></div>
+    <div class="mini-card"><h4>📥 Lire les retours</h4><p class="muted">Les comptes rendus signalent anomalies, identités non reconnues et taux de prélèvement à la source. Une équipe qui ne les lit pas laisse filer des erreurs pendant des mois.</p></div>
+  </div>
+  <div class="key-box"><div class="big">La DSN ne crée aucune donnée : elle expose celles du Core RH, de la GTA et de la paie.</div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 4</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm3"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt3">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill3"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="3">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="3">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="3">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres3"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c2">◂ Précédent</button><button class="btn btn-primary" data-goto="c4">Suite : 🔍 Contrôler la paie ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="c4">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 5 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">🔍</span>Contrôler la paie</div>
+  <p class="lead">Une erreur de paie touche directement une personne, et une erreur de DSN peut entraîner des redressements. Le contrôle ne consiste pas à relire 820 bulletins, mais à bâtir un plan de contrôle : des règles automatiques, des revues ciblées et une organisation qui sépare les rôles.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Concevoir un plan de contrôle de la paie et situer l'apport de l'IA par rapport aux règles.</div>
+  <h3>Trois niveaux de contrôle <span class="famille-tag f5">Contrôle et transparence</span></h3>
+  <div class="levels">
+    <div class="level"><span class="lv">1</span><span><strong>Contrôles de cohérence automatiques</strong> : salaire inférieur au minimum, heures supplémentaires anormales, absence sans motif, paniers supérieurs aux jours travaillés, entrée en cours de mois payée en mois complet, doublon de matricule.</span><span class="risk f2">Règles</span></div>
+    <div class="level"><span class="lv">2</span><span><strong>Comparaisons</strong> : écarts de brut ou de net d'un mois sur l'autre au-delà d'un seuil, masse salariale par agence, effectifs payés contre effectifs du Core RH.</span><span class="risk f4">Seuils</span></div>
+    <div class="level"><span class="lv">3</span><span><strong>Revue humaine ciblée</strong> : analyse des alertes, échantillon de bulletins, entrées et sorties, rappels, puis validation formelle.</span><span class="risk f1">Humain</span></div>
+  </div>
+  <div class="grid grid-3">
+    <div class="mini-card"><h4>👥 Séparation des tâches</h4><p class="muted">Celui qui modifie un RIB ou un salaire n'est pas celui qui valide. C'est la première protection contre l'erreur et la fraude.</p></div>
+    <div class="mini-card"><h4>🧾 Piste d'audit</h4><p class="muted">Qui a modifié quoi, quand et pourquoi. Indispensable en cas de contrôle URSSAF ou de litige.</p></div>
+    <div class="mini-card"><h4>🗓️ Durées</h4><p class="muted">Double des bulletins conservé cinq ans par l'employeur ; action en paiement des salaires prescrite par trois ans.</p></div>
+  </div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">🤖</span>Et l'IA dans le contrôle de paie ?</div>
+  <div class="table-wrap"><table>
+    <tr><th>Usage</th><th>Pertinent ?</th><th>Condition</th></tr>
+    <tr><td>Repérer des incohérences dans un fichier de variables et suggérer des règles de contrôle</td><td>Oui</td><td>Données pseudonymisées, outil validé par l'entreprise, résultats vérifiés.</td></tr>
+    <tr><td>Expliquer une ligne de bulletin à un salarié</td><td>Oui</td><td>Réponse relue, ou assistant RAG sur une documentation validée.</td></tr>
+    <tr><td>Détecter des écarts atypiques sur l'historique (modèles statistiques)</td><td>Oui</td><td>Alerte à analyser, jamais correction automatique.</td></tr>
+    <tr><td>Calculer la paie ou décider d'une régularisation</td><td>Non</td><td>Règles exactes et décision humaine.</td></tr>
+  </table></div>
+  <div class="key-box"><div class="big">L'IA aide à trouver les règles ; les règles contrôlent la paie ; un humain valide.</div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 5</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm4"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt4">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill4"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="4">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="4">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="4">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres4"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c3">◂ Précédent</button><button class="btn btn-primary" data-goto="c5">Suite : ⚖️ Transparence salariale ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="c5">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 6 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">⚖️</span>La transparence salariale : un chantier SIRH</div>
+  <p class="lead">La directive (UE) 2023/970 impose de rendre les rémunérations plus transparentes pour réduire les écarts entre femmes et hommes. La France n'a pas tenu l'échéance de transposition du 7 juin 2026. Le projet de loi a été présenté en Conseil des ministres et déposé au Sénat le 10 septembre 2026, en procédure accélérée : début octobre 2026, il n'est pas encore voté.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Connaître les principales obligations annoncées et en déduire les données et fonctions que le SIRH devra porter.</div>
+  <div class="timeline">
+    <div class="t-item"><div class="when">Mai 2023</div>Adoption de la directive européenne.</div>
+    <div class="t-item"><div class="when">7 juin 2026</div>Date limite de transposition, non tenue par la France.</div>
+    <div class="t-item now"><div class="when">10 septembre 2026</div>Projet de loi n° 944 présenté en Conseil des ministres et déposé au Sénat.</div>
+    <div class="t-item"><div class="when">À venir</div>Examen par le Sénat puis l'Assemblée nationale, décrets d'application ; une application effective est généralement attendue pas avant 2028, sous réserve du texte définitif.</div>
+  </div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">🧩</span>Des obligations aux données</div>
+  <div class="table-wrap"><table>
+    <tr><th>Obligation annoncée <span class="famille-tag f5">Contrôle et transparence</span></th><th>Ce que le SIRH devra porter</th><th>Module concerné</th></tr>
+    <tr><td>Rémunération ou fourchette communiquée aux candidats ; question sur l'historique salarial proscrite</td><td>Fourchettes par emploi, modèles d'offres, champ obligatoire</td><td>ATS (séance 5)</td></tr>
+    <tr><td>Droit du salarié à connaître la rémunération moyenne de sa catégorie, par sexe</td><td>Catégories de travail de valeur égale, calcul des moyennes, réponse sécurisée</td><td>Core RH, libre-service</td></tr>
+    <tr><td>Fin des clauses de confidentialité salariale</td><td>Revue des modèles de contrats</td><td>Gestion documentaire</td></tr>
+    <tr><td>Indicateurs d'écarts de rémunération, dont par catégorie de valeur égale</td><td>Rémunération totale (fixe, variable, avantages), sexe, catégorie, historique</td><td>Paie, pilotage (séance 8)</td></tr>
+    <tr><td>Écart non justifié au-delà d'un seuil : évaluation et mesures correctrices</td><td>Critères objectifs de classification et de rémunération documentés</td><td>Core RH, rémunération</td></tr>
+  </table></div>
+  <div class="grid grid-2">
+    <div class="mini-card"><h4>🏠 Le point dur chez Habitéo</h4><p class="muted">Classer 820 emplois en catégories de valeur égale suppose des critères objectifs : compétences, responsabilités, efforts, conditions de travail. Les six fichiers Excel ne contiennent ni classification fiable, ni rémunération variable complète.</p></div>
+    <div class="mini-card"><h4>✅ Ce qu'on peut lancer dès maintenant</h4><p class="muted">Fiabiliser la classification dans un Core RH historisé, rattacher toute la rémunération au matricule, ajouter une fourchette à chaque offre, tester un calcul d'écart par emploi.</p></div>
+  </div>
+  <div class="warn-box"><strong>⏳ Texte en discussion</strong> Seuils, fréquences de déclaration et dates d'application peuvent évoluer pendant l'examen parlementaire. Vérifiez l'état du dossier législatif avant toute présentation au comité de direction.</div>
+  <div class="key-box"><div class="big">La transparence salariale se prépare dans le Core RH, bien avant d'être une obligation.</div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 6</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm5"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt5">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill5"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="5">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="5">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="5">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres5"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c4">◂ Précédent</button><button class="btn btn-primary" data-goto="syn">Synthèse de la séance ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="syn">
+  <div class="card">
+    <div class="section-title"><span class="icon-bg green">📊</span>Vos résultats aux QCM</div>
+    <div class="table-wrap score-table"><table><tr><th>Chapitre</th><th>Thème</th><th>Meilleur score</th></tr><tr><td>Chapitre 1</td><td>🗄️ Le Core RH</td><td id="score0">—</td></tr><tr><td>Chapitre 2</td><td>⏱️ Temps et activités</td><td id="score1">—</td></tr><tr><td>Chapitre 3</td><td>💶 La paie</td><td id="score2">—</td></tr><tr><td>Chapitre 4</td><td>📡 La DSN</td><td id="score3">—</td></tr><tr><td>Chapitre 5</td><td>🔍 Contrôler la paie</td><td id="score4">—</td></tr><tr><td>Chapitre 6</td><td>⚖️ Transparence salariale</td><td id="score5">—</td></tr><tr><td colspan="2"><strong>Total</strong></td><td id="scoreTotal">0 / 30</td></tr></table></div>
+    <p class="muted">Un chapitre sous 4 / 5 ? Relisez-le et refaites son QCM avant de passer au support pratique.</p>
+  </div>
+  <div class="card">
+    <div class="section-title"><span class="icon-bg">🔑</span>Le message clé</div>
+    <div class="key-box"><div class="big">Une donnée, une source : du pointage à la DSN, la qualité se construit à la saisie et se vérifie par des règles.</div></div>
+    <div class="table-wrap"><table><tr><th>Notion</th><th>À retenir en une phrase</th></tr><tr><td>Core RH</td><td>Référentiel unique : matricule, organisation, emploi, contrat, rémunération, historique ; un système maître par donnée.</td></tr><tr><td>GTA</td><td>Transforme le temps, les absences et les chantiers en variables de paie, selon des règles légales et conventionnelles.</td></tr><tr><td>Paie</td><td>Fixes du Core RH + variables de la GTA ; internalisée, externalisée ou partagée, l&#x27;entreprise reste responsable.</td></tr><tr><td>DSN</td><td>Produite par la paie chaque mois, avec DPAE, signalements dans les cinq jours et retours à traiter.</td></tr><tr><td>Contrôle</td><td>Règles automatiques, comparaisons, revue ciblée, séparation des tâches, piste d&#x27;audit ; l&#x27;IA aide à trouver les règles.</td></tr><tr><td>Transparence salariale</td><td>Projet de loi déposé le 10 septembre 2026 ; à préparer par la classification et la rémunération totale dans le Core RH.</td></tr></table></div>
+    <div class="objectif-box"><strong class="title">À la fin de cette séance, vous êtes capable de :</strong><ul class="clean"><li>Décrire le Core RH comme référentiel unique des collaborateurs et identifier le système maître de chaque donnée ;</li><li>Expliquer ce que la GTA transforme en données de paie : temps, absences, plannings, indemnités ;</li><li>Distinguer éléments fixes et variables de la paie, et comparer paie internalisée, externalisée et partagée ;</li><li>Suivre la chaîne GTA → paie → DSN et nommer les flux déclaratifs : DPAE, DSN mensuelle, signalements, retours ;</li><li>Concevoir un plan de contrôle de la paie, en distinguant ce que vérifie une règle et ce qu&#x27;apporte l&#x27;IA ;</li><li>Anticiper ce que la future loi sur la transparence salariale demandera au SIRH.</li></ul></div>
+  </div>
+  <div class="card">
+    <div class="section-title"><span class="icon-bg amber">📦</span>À la fin de la séance, vous devez avoir</div>
+    <div class="checklist" id="finCheck"><label><input type="checkbox"> Validé les six QCM de chapitre ;</label><label><input type="checkbox"> Réalisé les trois cas pratiques et débloqué le glossaire ;</label><label><input type="checkbox"> Tracé la chaîne d&#x27;une heure de chantier jusqu&#x27;à la DSN ;</label><label><input type="checkbox"> Complété le dictionnaire des données et systèmes maîtres ;</label><label><input type="checkbox"> Fait analyser le fichier de variables par l&#x27;IA et vérifié chaque anomalie ;</label><label><input type="checkbox"> Rédigé le plan de contrôle de la paie et l&#x27;évaluation de préparation à la transparence salariale.</label></div>
+    <div class="link-card"><span><strong>🛠️ Passez à la pratique</strong><br><span class="muted">Cas 1, 2, 3, atelier Habitéo et glossaire à débloquer.</span></span><a class="btn btn-success" href="seance-4-core-rh-paie-gta-pratique.html">Ouvrir le support pratique ▸</a></div>
+    <div class="objectif-box"><strong class="title">Prochaine séance — Je sais évaluer ce qu&#x27;un module automatise, et ses risques.</strong>Vous ouvrirez les modules talents : recrutement (ATS), formation (LMS) et performance (PMS), avec l'IA qu'ils embarquent. Vous qualifierez le niveau de risque de chaque usage au regard de l'AI Act et de l'article 22 du RGPD, et vous automatiserez une pré-qualification de candidatures en en fixant les limites.</div>
+  </div>
+</section>
+</main>
+<footer>SIRH &amp; exploitation de la Data — IA — Séance 4 — Core RH, paie et GTA — Théorie<br>Mode formateur : ajoutez <code>?formateur</code> à l'adresse de la page.</footer>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+"use strict";
+const FAMILIES={"f1": "Core RH", "f2": "Temps et activités", "f3": "Paie", "f4": "DSN et déclaratif", "f5": "Contrôle et transparence"};
+const EXPLORERS={"x1": {"items": [{"id": "Matricule", "fam": "f1", "rows": [["Définition", "Identifiant unique et stable d'un collaborateur, attribué une fois et jamais réutilisé."], ["Chez Habitéo", "Aujourd'hui, chaque fichier Excel a sa propre numérotation : un technicien peut avoir trois identifiants."], ["À retenir", "C'est la clé qui permet de relier GTA, paie, formation et DSN sans erreur."]]}, {"id": "Référentiel organisation", "fam": "f1", "rows": [["Définition", "La structure de l'entreprise : sociétés, établissements, agences, services, centres de coût, rattachements hiérarchiques."], ["Chez Habitéo", "Siège de Lyon + 9 agences ; chaque agence peut être un établissement au sens de la DSN."], ["À retenir", "Un référentiel faux propage l'erreur partout : droits d'accès, validations, déclarations par établissement."]]}, {"id": "Emploi et classification", "fam": "f1", "rows": [["Définition", "L'emploi occupé et sa position dans la grille de la convention collective (niveau, position, coefficient)."], ["Chez Habitéo", "Les techniciens relèvent de la classification des ouvriers du bâtiment."], ["À retenir", "Elle détermine le salaire minimum conventionnel… et demain les catégories de travail de valeur égale."]]}, {"id": "Données contractuelles", "fam": "f1", "rows": [["Définition", "Type de contrat, date d'entrée, temps de travail, rémunération de base, période d'essai, date de fin éventuelle."], ["Chez Habitéo", "Saisies dans un modèle Word, puis ressaisies par le cabinet de paie."], ["À retenir", "Elles alimentent directement la paie et la DSN : une saisie, une source."]]}, {"id": "Date d'effet", "fam": "f1", "rows": [["Définition", "Date à partir de laquelle une donnée change (mutation, augmentation, changement de coefficient), conservée dans l'historique."], ["Chez Habitéo", "Dans Excel, l'ancienne valeur est écrasée : impossible de savoir qui était où le mois dernier."], ["À retenir", "Sans historisation, pas de rappel de paie juste, ni d'indicateur fiable dans le temps."]]}, {"id": "Libre-service", "fam": "f1", "rows": [["Définition", "Espace où salariés et managers consultent ou mettent à jour certaines données eux-mêmes, avec validation."], ["Chez Habitéo", "Changement d'adresse ou de RIB aujourd'hui transmis par e-mail ou par courrier."], ["À retenir", "La donnée est saisie par celui qui la connaît ; la RH valide au lieu de ressaisir."]]}, {"id": "Dossier salarié numérique", "fam": "f1", "rows": [["Définition", "Ensemble des documents d'un collaborateur, classés, avec droits d'accès et durées de conservation."], ["Chez Habitéo", "Papier au siège, copies partielles dans les agences."], ["À retenir", "Il complète les données structurées du Core RH par les pièces justificatives."]]}]}, "x2": {"items": [{"id": "DPAE", "fam": "f4", "rows": [["Quoi", "Déclaration préalable à l'embauche, adressée à l'URSSAF (ou à la MSA)."], ["Quand", "Au plus tôt huit jours avant l'embauche et au plus tard avant la prise de poste."], ["Lien SIRH", "Déclenchée par l'embauche dans le Core RH ; chez Habitéo, deux DPAE tardives cette année."]]}, {"id": "DSN mensuelle", "fam": "f4", "rows": [["Quoi", "Déclaration sociale nominative issue de la paie : salaires, cotisations, contrats, absences, pour chaque salarié."], ["Quand", "Chaque mois, le 5 ou le 15 du mois suivant selon l'effectif et la date de versement des salaires."], ["Lien SIRH", "Elle remplace de nombreuses déclarations et alimente URSSAF, retraite, France Travail, impôts, assurance maladie, organismes complémentaires."]]}, {"id": "Signalement d'arrêt de travail", "fam": "f4", "rows": [["Quoi", "Déclaration d'un arrêt maladie, maternité ou accident, pour le calcul des indemnités journalières."], ["Quand", "Dans les cinq jours suivant la connaissance de l'arrêt."], ["Lien SIRH", "Part de la GTA (absence saisie) ; le motif médical n'est pas connu de l'employeur."]]}, {"id": "Signalement de fin de contrat", "fam": "f4", "rows": [["Quoi", "Déclaration de la fin du contrat de travail, qui produit l'attestation employeur pour France Travail."], ["Quand", "Dans les cinq jours suivant la fin du contrat."], ["Lien SIRH", "Avec 24 % de turnover chez les techniciens, ce flux est fréquent chez Habitéo."]]}, {"id": "Comptes rendus (CRM)", "fam": "f4", "rows": [["Quoi", "Retours des organismes après une DSN : anomalies, contrôles d'identité, taux de prélèvement à la source."], ["Quand", "Après chaque dépôt, à lire et à traiter."], ["Lien SIRH", "Le taux de prélèvement à la source de chaque salarié revient par ce canal et doit être intégré à la paie suivante."]]}, {"id": "Net-entreprises", "fam": "f4", "rows": [["Quoi", "Le portail déclaratif des entreprises, par lequel transitent DSN et retours."], ["Quand", "En continu ; dépôt généralement automatisé depuis le logiciel de paie."], ["Lien SIRH", "Les habilitations au portail font partie des accès sensibles à gouverner."]]}]}};
+const QCMS=[[{"q": "Habitéo tient ses effectifs dans 6 fichiers Excel « de référence ». Quel est le problème principal ?", "o": ["Excel ne sait pas trier les données.", "Il n'existe pas de source de vérité : chaque fichier peut contredire les autres.", "Les fichiers sont trop volumineux.", "Excel est interdit par le RGPD."], "a": 1, "e": "Six références, c'est aucune référence. Le Core RH sert justement de référentiel unique dont les autres outils se nourrissent."}, {"q": "À quoi sert le matricule unique ?", "o": ["À calculer le salaire net.", "À relier sans ambiguïté toutes les données d'un même collaborateur dans tous les outils.", "À remplacer le numéro de sécurité sociale sur le bulletin.", "À classer les salariés par ancienneté."], "a": 1, "e": "C'est la clé de jointure entre GTA, paie, formation, DSN et indicateurs. Il est stable et jamais réattribué."}, {"q": "Un technicien est muté de l'agence de Grenoble à celle d'Annecy au 1er novembre. Que doit faire le Core RH ?", "o": ["Remplacer « Grenoble » par « Annecy » dans la fiche.", "Enregistrer la nouvelle affectation avec sa date d'effet, en conservant l'historique.", "Créer un nouveau salarié avec un nouveau matricule.", "Attendre la paie de novembre pour décider."], "a": 1, "e": "La date d'effet et l'historisation permettent une paie juste, des déclarations par établissement correctes et des indicateurs fiables dans le temps."}, {"q": "Quel est le système maître du RIB d'un salarié dans une architecture cible ?", "o": ["Le fichier envoyé chaque mois au cabinet", "Le Core RH (ou la paie), alimenté par le salarié en libre-service avec validation", "La boîte e-mail de l'assistante RH", "La GTA"], "a": 1, "e": "Une donnée a un seul système maître, d'où elle est diffusée. Le libre-service fait saisir la donnée par celui qui la connaît, avec un contrôle RH."}, {"q": "Quelle solution est un Core RH pour une ETI comme Habitéo ?", "o": ["Un ATS comme SmartRecruiters", "Un module de gestion administrative du personnel comme Workday HCM, SAP SuccessFactors Employee Central, Cegid HR ou Lucca", "Un outil de sondage", "Un logiciel de comptabilité fournisseurs"], "a": 1, "e": "Le Core RH (ou « gestion administrative ») porte le dossier du collaborateur. Les modules talents s'y rattachent (séance 5)."}], [{"q": "Que désigne la GTA ?", "o": ["La gestion des talents et des aptitudes", "La gestion des temps et des activités : temps de travail, absences, plannings, compteurs", "La garantie de traitement automatisé", "Le grand tableau d'analyse"], "a": 1, "e": "La GTA collecte et valorise le temps. Elle produit les variables qui alimentent la paie."}, {"q": "Chez Habitéo, les feuilles d'heures papier sont ressaisies au siège. Quel risque pour la paie ?", "o": ["Aucun, la ressaisie est contrôlée.", "Des heures supplémentaires, paniers ou absences erronés, donc des bulletins faux et des rappels.", "Une baisse du turnover.", "Une DPAE tardive."], "a": 1, "e": "Chaque ressaisie est une occasion d'erreur, et les erreurs de variables sont la première cause de bulletins faux."}, {"q": "Dans le bâtiment, les indemnités de repas, de trajet et de transport des ouvriers dépendent :", "o": ["de l'ancienneté seulement", "de la distance entre le siège ou l'agence et le chantier, organisée en zones", "du nombre d'enfants", "du chiffre d'affaires de l'agence"], "a": 1, "e": "Les indemnités de petits déplacements reposent sur des zones concentriques. La GTA doit donc savoir sur quel chantier le technicien travaillait."}, {"q": "Que fait un compteur de GTA ?", "o": ["Il compte les connexions au SIRH.", "Il cumule des droits ou des temps (congés, heures supplémentaires, repos) selon des règles paramétrées.", "Il calcule le chiffre d'affaires.", "Il remplace la paie."], "a": 1, "e": "Les compteurs appliquent les règles légales et conventionnelles. Leur paramétrage est un travail RH, pas seulement informatique."}, {"q": "Quel est l'apport principal d'un pointage mobile pour des techniciens de chantier ?", "o": ["Surveiller la géolocalisation en continu.", "Saisir le temps à la source, une seule fois, avec validation du chef d'équipe.", "Supprimer le rôle du chef d'équipe.", "Éviter toute déclaration à l'URSSAF."], "a": 1, "e": "Saisie unique à la source et validation managériale. Une géolocalisation permanente serait, elle, disproportionnée au regard du RGPD."}], [{"q": "Lequel est un élément variable de paie ?", "o": ["Le salaire de base contractuel", "Les heures supplémentaires du mois", "Le coefficient de classification", "La date d'entrée"], "a": 1, "e": "Les variables changent chaque mois : heures, primes, absences, paniers. Les éléments fixes viennent du contrat et du Core RH."}, {"q": "Habitéo envoie chaque mois un fichier Excel de variables à un cabinet d'expertise comptable. C'est :", "o": ["une paie internalisée", "une paie externalisée", "une paie en libre-service", "une DSN"], "a": 1, "e": "Le calcul est réalisé par un prestataire. L'entreprise reste responsable des données qu'elle lui transmet et du résultat."}, {"q": "Quel est l'intérêt d'un modèle partagé (co-sourcing) pour Habitéo ?", "o": ["Supprimer tout contrôle interne.", "Garder Core RH et GTA dans le SIRH, et transmettre au prestataire des variables issues d'un flux automatisé plutôt que d'un fichier ressaisi.", "Faire calculer la paie par chaque agence.", "Supprimer la DSN."], "a": 1, "e": "Le prestataire conserve son expertise de calcul, et l'entreprise sécurise la qualité des données en amont."}, {"q": "Quel logiciel est un logiciel de paie largement utilisé en France ?", "o": ["Napkin", "Silae", "Gamma", "Perplexity"], "a": 1, "e": "Silae, Sage, Cegid, ADP ou les modules paie des grands SIRH. Les autres outils cités sont des outils d'IA vus en séance 2."}, {"q": "Dans le bâtiment, les congés payés des ouvriers sont versés :", "o": ["toujours directement par l'employeur, comme ailleurs", "par une caisse de congés payés du réseau CIBTP, à laquelle l'employeur cotise", "par France Travail", "par l'URSSAF"], "a": 1, "e": "C'est une spécificité du BTP : l'employeur adhère à une caisse de congés payés, qui indemnise les congés. Le paramétrage de paie doit en tenir compte."}], [{"q": "D'où est produite la DSN mensuelle ?", "o": ["Du logiciel de paie, à partir des données de paie du mois", "D'un formulaire rempli à la main par la RH", "Du logiciel de recrutement", "Du site de l'URSSAF uniquement"], "a": 0, "e": "La DSN est un sous-produit de la paie : sa qualité dépend de la qualité des données du Core RH et de la GTA."}, {"q": "Quelle est l'échéance de la DSN mensuelle pour une entreprise d'au moins 50 salariés qui paie dans le mois ?", "o": ["Le 5 du mois suivant", "Le 15 du mois suivant", "Le dernier jour du trimestre", "Le 31 janvier de l'année suivante"], "a": 0, "e": "Le 5 du mois suivant pour ces entreprises ; le 15 pour les autres. Habitéo, avec 820 salariés, est concernée par le 5."}, {"q": "Un technicien est en arrêt maladie. Dans quel délai le signalement doit-il être transmis ?", "o": ["Dans les cinq jours", "Dans le mois", "Lors de la DSN annuelle", "Aucun signalement n'est requis"], "a": 0, "e": "Le signalement d'arrêt de travail permet le calcul des indemnités journalières. Il part dans les cinq jours."}, {"q": "Par quel canal le taux de prélèvement à la source de chaque salarié parvient-il à l'employeur ?", "o": ["Par courrier du salarié", "Par les comptes rendus (CRM) retournés après la DSN", "Par la DPAE", "Par la convention collective"], "a": 1, "e": "L'administration fiscale renvoie le taux dans les retours de la DSN ; la paie suivante doit l'appliquer."}, {"q": "Que remplace principalement la DSN ?", "o": ["Le contrat de travail", "De nombreuses déclarations sociales autrefois séparées (DADS, attestations, déclarations de cotisations)", "Le bulletin de paie", "Le registre unique du personnel"], "a": 1, "e": "Une déclaration mensuelle unique, issue de la paie, remplace une multitude de formulaires. Le bulletin, lui, reste remis au salarié."}], [{"q": "Quel contrôle est un contrôle automatique bloquant avant la clôture de la paie ?", "o": ["Relire chaque bulletin un par un", "Alerter si le salaire de base est inférieur au minimum légal ou conventionnel", "Demander à l'IA si la paie « a l'air correcte »", "Comparer les bulletins avec ceux d'une autre entreprise"], "a": 1, "e": "Une règle explicite, testable, appliquée à tous les bulletins. On garde l'humain pour analyser les alertes."}, {"q": "Qu'est-ce que la séparation des tâches en paie ?", "o": ["Faire la paie de chaque agence par une personne différente.", "La personne qui saisit ou modifie une donnée sensible n'est pas celle qui la valide.", "Séparer la paie des cadres et des ouvriers.", "Confier la paie à deux cabinets."], "a": 1, "e": "C'est un principe de contrôle interne : il limite erreurs et fraudes, notamment sur les RIB et les salaires."}, {"q": "Un LLM détecte des anomalies dans un fichier de variables. Quelle est la bonne façon de l'utiliser ?", "o": ["Remplacer tous les contrôles par l'IA.", "S'en servir pour repérer des incohérences et proposer des règles, puis transformer ces règles en contrôles automatiques vérifiables.", "Lui envoyer le fichier nominatif complet dans la version gratuite.", "Ne jamais l'utiliser en paie."], "a": 1, "e": "L'IA est utile pour explorer et suggérer ; le contrôle de production repose sur des règles explicites. Et les données restent pseudonymisées, dans un outil validé."}, {"q": "Combien de temps l'employeur conserve-t-il le double des bulletins de paie ?", "o": ["Un an", "Cinq ans", "Dix ans", "Jusqu'au départ du salarié"], "a": 1, "e": "Le double est conservé cinq ans (article L3243-4). Les salariés, eux, ont intérêt à garder leurs bulletins sans limite."}, {"q": "Pourquoi tracer qui a modifié une donnée de paie, quand et pourquoi ?", "o": ["Pour remplir le bilan social.", "Pour disposer d'une piste d'audit en cas d'erreur, de contrôle URSSAF ou de litige.", "Parce que le CSE l'exige pour chaque bulletin.", "Pour calculer les congés payés."], "a": 1, "e": "La piste d'audit permet d'expliquer un montant, de corriger la cause d'une erreur et de répondre à un contrôle."}], [{"q": "Quel texte européen fonde la transparence salariale ?", "o": ["Le RGPD", "La directive (UE) 2023/970", "L'AI Act", "La directive eIDAS"], "a": 1, "e": "La directive de 2023 sur la transparence des rémunérations, que la France devait transposer avant le 7 juin 2026."}, {"q": "Où en est la transposition en France début octobre 2026 ?", "o": ["La loi est en vigueur depuis le 7 juin 2026.", "Un projet de loi a été déposé au Sénat le 10 septembre 2026 en procédure accélérée ; il n'est pas encore voté.", "La France a renoncé à transposer.", "Seul un décret a été publié."], "a": 1, "e": "Le projet de loi n° 944 doit encore être examiné par les deux assemblées ; ses dates d'application restent provisoires."}, {"q": "Selon le projet de loi, que devront mentionner les offres d'emploi ?", "o": ["L'âge souhaité du candidat", "La rémunération proposée ou une fourchette de rémunération", "Le salaire du précédent titulaire", "Le nombre de candidats"], "a": 1, "e": "Information du candidat dès le recrutement. L'ATS et les modèles d'offres devront donc porter une fourchette fiable."}, {"q": "Quelle donnée le SIRH devra-t-il structurer pour répondre au droit à l'information des salariés ?", "o": ["Les catégories de travail de valeur égale, avec les rémunérations moyennes par sexe", "Les salaires individuels de chaque collègue", "Les préférences politiques", "Les résultats des entretiens d'embauche"], "a": 0, "e": "Le salarié pourra connaître la rémunération moyenne de sa catégorie, ventilée par sexe, sans accéder aux salaires individuels."}, {"q": "Quel est le premier chantier SIRH à lancer pour Habitéo, sans attendre le vote ?", "o": ["Publier tous les salaires sur l'intranet.", "Fiabiliser la classification des emplois et la rémunération totale dans un Core RH historisé.", "Supprimer la rémunération variable.", "Attendre les décrets d'application."], "a": 1, "e": "Sans emplois classés, rémunérations complètes et historique, aucun indicateur ne sera fiable. Ce travail de fond prend du temps."}]];
+const ACTS=["ch0", "ch1", "ch2", "ch3", "ch4", "ch5"];
+const params = new URLSearchParams(location.search);
+if (params.has('formateur') || location.hash === '#formateur') document.body.classList.add('formateur');
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const shuffle = a => { const b=a.slice(); for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];} return b; };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2400); }
+function copyText(txt){
+  if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(txt).then(()=>toast('Copié dans le presse-papiers ✅')).catch(()=>fallbackCopy(txt)); }
+  else fallbackCopy(txt);
+}
+function fallbackCopy(txt){ const ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); toast('Copié dans le presse-papiers ✅');}catch(e){toast('Copie impossible : sélectionnez le texte manuellement');} ta.remove(); }
+function download(name, txt){ const blob=new Blob([txt],{type:'text/markdown;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); }
+function setProgress(fillId, txtId, done, total, suffix){ const p = total ? Math.round(done/total*100) : 0; $('#'+fillId).style.width = p+'%'; $('#'+txtId).textContent = done+' / '+total+(suffix||''); }
+function scoreMsg(pct){ if(pct>=90) return 'Excellent : les notions sont acquises.'; if(pct>=70) return 'Bon résultat. Relisez les explications des erreurs pour consolider.'; if(pct>=50) return 'Des bases, mais plusieurs confusions. Relisez le chapitre puis recommencez.'; return 'Reprenez le chapitre, puis recommencez l\'activité.'; }
+const done = new Set();
+function markDone(act){
+  if(done.has(act)) return false;
+  done.add(act);
+  $$('.tab[data-act="'+act+'"]').forEach(t=>t.classList.add('done'));
+  const n = done.size;
+  $('#globalFill').style.width = Math.round(n/ACTS.length*100)+'%';
+  $('#globalPct').textContent = n+' / '+ACTS.length;
+  toast(n===ACTS.length ? '🎉 Toutes les activités sont validées !' : 'Activité validée ✅');
+  if(typeof onDone==='function') onDone(act);
+  return true;
+}
+function openTab(i){
+  $$('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab==i));
+  $$('.panel').forEach(p=>p.classList.toggle('active', p.dataset.panel==i));
+  const tw = $('.tabs-wrap'); window.scrollTo({top: tw.offsetTop, behavior: 'smooth'});
+  const at = $('.tab[data-tab="'+i+'"]'); if(at) at.scrollIntoView({inline:'center', block:'nearest'});
+}
+$$('.tab').forEach(t=>t.addEventListener('click',()=>openTab(t.dataset.tab)));
+$$('[data-goto]').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.goto)));
+
+/* Explorateurs */
+$$('[data-explorer]').forEach(box=>{
+  const E = EXPLORERS[box.dataset.explorer]; const seen=new Set();
+  const chain=$('.chain',box), detail=$('.concept-detail',box);
+  E.items.forEach((k,i)=>{
+    const b=document.createElement('button'); b.className='chain-node'; b.textContent=k.id; b.dataset.i=i;
+    b.addEventListener('click',()=>show(i)); chain.appendChild(b);
+  });
+  function show(i){
+    const k=E.items[i]; seen.add(i);
+    $$('.chain-node',box).forEach(n=>{ n.classList.toggle('active', n.dataset.i==i); if(seen.has(+n.dataset.i)) n.classList.add('seen'); });
+    detail.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap"><span class="term-item">'+esc(k.id)+'</span><span class="famille-tag '+k.fam+'">'+esc(FAMILIES[k.fam]||'')+'</span></div>'+
+      k.rows.map(r=>'<div class="row"><span class="k">'+esc(r[0])+'</span><span>'+esc(r[1])+'</span></div>').join('');
+    const f=$('.progress-fill',box), t=$('.progress-label span:last-child',box);
+    f.style.width=Math.round(seen.size/E.items.length*100)+'%'; t.textContent=seen.size+' / '+E.items.length;
+  }
+  show(0);
+});
+const qState = {};
+const L = ['A','B','C','D','E'];
+function renderQCM(ci){
+  const box=$('#qcm'+ci); box.innerHTML='';
+  const qs = shuffle(QCMS[ci]).map(q=>{ const opts=shuffle(q.o.map((t,i)=>({t,good:i===q.a}))); return {q:q.q,e:q.e,opts}; });
+  qState[ci]={qs};
+  qs.forEach((q,qi)=>{
+    const d=document.createElement('div'); d.className='qcm-q';
+    d.innerHTML='<div class="qt"><span class="q-num">Q'+(qi+1)+'</span>'+esc(q.q)+'</div><div class="qcm-opts" role="radiogroup">'+
+      q.opts.map((o,oi)=>'<button type="button" class="qcm-opt" role="radio" aria-checked="false" data-oi="'+oi+'"><span class="l">'+L[oi]+'</span><span>'+esc(o.t)+'</span></button>').join('')+
+      '</div><div class="expl"></div>';
+    $$('.qcm-opt',d).forEach(b=>b.addEventListener('click',()=>{
+      if(d.classList.contains('checked')) return;
+      $$('.qcm-opt',d).forEach(x=>{x.classList.remove('sel');x.setAttribute('aria-checked','false');});
+      b.classList.add('sel'); b.setAttribute('aria-checked','true'); d.dataset.ans=b.dataset.oi; updQ(ci);
+    }));
+    box.appendChild(d);
+  });
+  $('#qres'+ci).classList.remove('show'); updQ(ci);
+}
+function updQ(ci){ const rows=$$('#qcm'+ci+' .qcm-q'); setProgress('qfill'+ci,'qtxt'+ci,rows.filter(r=>r.dataset.ans!==undefined).length,rows.length); }
+const scores = {};
+function checkQCM(ci, silent){
+  const rows=$$('#qcm'+ci+' .qcm-q');
+  if(!silent && rows.some(r=>r.dataset.ans===undefined)){ toast('Répondez à toutes les questions avant de vérifier.'); return; }
+  let ok=0;
+  rows.forEach((r,qi)=>{
+    const q=qState[ci].qs[qi]; const ans=r.dataset.ans===undefined?-1:+r.dataset.ans;
+    const gi=q.opts.findIndex(o=>o.good); const good=ans===gi; if(good) ok++;
+    r.classList.remove('correct','wrong'); r.classList.add('checked', good?'correct':'wrong');
+    $$('.qcm-opt',r).forEach((b,oi)=>{ b.classList.toggle('good',oi===gi); b.classList.toggle('bad',oi===ans&&!good); });
+    $('.expl',r).innerHTML=(good?'✅ ':'❌ Bonne réponse : <strong>'+L[gi]+'</strong>. ')+esc(q.e);
+  });
+  const pct=Math.round(ok/rows.length*100);
+  $('#qres'+ci).innerHTML='<div class="score">'+ok+' / '+rows.length+'</div><div class="msg">'+scoreMsg(pct)+'</div>';
+  $('#qres'+ci).classList.add('show');
+  if(!silent){ scores[ci]=Math.max(scores[ci]||0,ok); updScores(); markDone('ch'+ci); }
+}
+function revealQCM(ci){
+  $$('#qcm'+ci+' .qcm-q').forEach((r,qi)=>{ const gi=qState[ci].qs[qi].opts.findIndex(o=>o.good); r.dataset.ans=gi; $$('.qcm-opt',r).forEach((b,oi)=>b.classList.toggle('sel',oi===gi)); });
+  updQ(ci); checkQCM(ci,true);
+}
+function updScores(){
+  let tot=0,max=0;
+  QCMS.forEach((q,ci)=>{ const c=$('#score'+ci); if(scores[ci]!==undefined){ c.textContent=scores[ci]+' / '+q.length; tot+=scores[ci]; } max+=q.length; });
+  $('#scoreTotal').textContent=tot+' / '+max;
+}
+QCMS.forEach((_,ci)=>renderQCM(ci));
+$$('[data-qcheck]').forEach(b=>b.addEventListener('click',()=>checkQCM(+b.dataset.qcheck)));
+$$('[data-qreveal]').forEach(b=>b.addEventListener('click',()=>revealQCM(+b.dataset.qreveal)));
+$$('[data-qreset]').forEach(b=>b.addEventListener('click',()=>renderQCM(+b.dataset.qreset)));
+$$('#finCheck input').forEach(c=>c.addEventListener('change',()=>{}));
+
+})();
+
+</script>
+</body>
+</html>
