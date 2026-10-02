@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Séance 5 — Modules talents : ATS, LMS, PMS et IA embarquée · Pratique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2563eb;--primary-dark:#1d4ed8;--primary-light:#dbeafe;
+  --secondary:#059669;--secondary-light:#d1fae5;
+  --accent:#d97706;--accent-light:#fef3c7;
+  --danger:#dc2626;--danger-light:#fee2e2;
+  --purple:#7c3aed;--purple-light:#ede9fe;
+  --dark:#0f172a;--dark2:#1e293b;
+  --text:#1e293b;--muted:#64748b;--border:#e2e8f0;
+  --bg:#f1f5f9;--card:#ffffff;--radius:14px;
+  --sans:'Sora',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.6;font-size:15px;min-height:100vh}
+code,.mono{font-family:var(--mono)}
+code{background:#f1f5f9;border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-size:.84em}
+pre code,.key-box code,.nest.n4 code{background:transparent;border:none;padding:0;color:inherit}
+button{font-family:inherit;cursor:pointer}
+a{color:var(--primary)}
+:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+
+header{background:linear-gradient(135deg,#0f172a 0%,#4c1d95 60%,#6d28d9 100%);color:#fff;padding:42px 24px 34px;position:relative;overflow:hidden}
+header.practice{background:linear-gradient(135deg,#0f172a 0%,#6d28d9 60%,#7c3aed 100%)}
+header::after{content:"";position:absolute;right:-120px;top:-120px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(167,139,250,.25),transparent 70%)}
+.header-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:6px 14px;border-radius:999px;font-size:.8rem;font-weight:600;margin-bottom:16px}
+header h1{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;line-height:1.2;margin-bottom:10px}
+header .subtitle{color:#cbd5e1;max-width:720px;font-size:1rem}
+.meta-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.meta-pill{background:rgba(15,23,42,.45);border:1px solid rgba(255,255,255,.15);padding:6px 14px;border-radius:999px;font-size:.8rem;display:inline-flex;align-items:center;gap:6px}
+.global-progress{margin-top:24px;max-width:520px}
+.global-progress .label{display:flex;justify-content:space-between;font-size:.8rem;color:#cbd5e1;margin-bottom:6px}
+.global-progress .track{height:8px;background:rgba(255,255,255,.15);border-radius:999px;overflow:hidden}
+.global-progress .fill{height:100%;width:0;background:linear-gradient(90deg,#10b981,#34d399);border-radius:999px;transition:width .5s ease}
+.mode-flag{display:none;margin-top:14px;background:var(--accent);color:#fff;font-size:.75rem;font-weight:700;padding:4px 10px;border-radius:6px;width:max-content}
+body.formateur .mode-flag{display:block}
+
+.tabs-wrap{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--border);box-shadow:0 2px 8px rgba(15,23,42,.04)}
+.tabs{max-width:1100px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding:0 16px;scrollbar-width:thin}
+.tab{border:none;background:none;padding:15px 14px;font-size:.85rem;font-weight:600;color:var(--muted);white-space:nowrap;border-bottom:3px solid transparent;display:flex;align-items:center;gap:6px}
+.tab:hover{color:var(--primary)}
+.tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab .done-mark{display:none;color:var(--secondary)}
+.tab.done .done-mark{display:inline}
+.tab .lock-mark{font-size:.8rem}
+
+main{max-width:1100px;margin:0 auto;padding:28px 16px 80px}
+.panel{display:none}
+.panel.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.panel.active{animation:none}.global-progress .fill,.progress-fill{transition:none}}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:22px;box-shadow:0 1px 3px rgba(15,23,42,.05)}
+@media(max-width:600px){.card{padding:20px 16px}}
+.section-title{display:flex;align-items:center;gap:14px;font-size:1.3rem;font-weight:700;margin-bottom:18px;color:var(--dark)}
+.icon-bg{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:1.3rem;flex-shrink:0;background:var(--primary-light)}
+.icon-bg.green{background:var(--secondary-light)}.icon-bg.amber{background:var(--accent-light)}.icon-bg.purple{background:var(--purple-light)}.icon-bg.red{background:var(--danger-light)}
+h3{font-size:1.05rem;font-weight:700;margin:22px 0 10px;color:var(--dark)}
+p{margin-bottom:10px}
+.lead{font-size:1.05rem;color:var(--dark2)}
+.muted{color:var(--muted);font-size:.88rem}
+ul.clean{list-style:none}
+ul.clean li{padding:6px 0 6px 26px;position:relative}
+ul.clean li::before{content:"▸";position:absolute;left:6px;color:var(--primary);font-weight:700}
+ol{padding-left:22px}ol li{padding:3px 0}
+
+.objectif-box{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid var(--primary);border-radius:10px;padding:18px 20px;margin:16px 0}
+.objectif-box strong.title{display:block;color:var(--primary-dark);margin-bottom:8px}
+.instruction-box{background:#fffbeb;border:1px solid #fde68a;border-left:5px solid var(--accent);border-radius:10px;padding:18px 20px;margin:16px 0}
+.instruction-box strong.title{display:block;color:#92400e;margin-bottom:8px}
+.key-box{background:var(--dark);color:#e2e8f0;border-radius:12px;padding:22px 24px;margin:18px 0;border-left:5px solid #10b981}
+.key-box .big{font-size:1.15rem;font-weight:700;color:#fff}
+.warn-box{background:#fef2f2;border:1px solid #fecaca;border-left:5px solid var(--danger);border-radius:10px;padding:16px 20px;margin:16px 0}
+
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.grid-3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.mini-card{border:1px solid var(--border);border-radius:12px;padding:18px;background:#fff}
+.mini-card h4{font-size:1rem;margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mini-card.bad{border-color:#fecaca;background:#fef2f2}
+.mini-card.good{border-color:#a7f3d0;background:#f0fdf4}
+.mini-card pre.prompt{margin-top:8px}
+
+.famille-tag{display:inline-block;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:999px;letter-spacing:.2px}
+.f1{background:var(--primary-light);color:#1e40af}
+.f2{background:var(--secondary-light);color:#065f46}
+.f3{background:var(--accent-light);color:#92400e}
+.f4{background:var(--purple-light);color:#5b21b6}
+.f5{background:var(--danger-light);color:#991b1b}
+
+.term-item{background:var(--dark);color:#e2e8f0;font-family:var(--mono);font-size:.85rem;padding:10px 14px;border-radius:8px;display:inline-block}
+.chain .term-item,.objectif-box .term-item{padding:6px 12px}
+pre.prompt{background:var(--dark);color:#e2e8f0;font-family:var(--mono);font-size:.84rem;padding:18px 20px;border-radius:10px;white-space:pre-wrap;word-break:break-word;line-height:1.65;overflow-x:auto;position:relative;margin:12px 0}
+pre.prompt .hl{color:#34d399}
+pre.prompt .hl2{color:#fbbf24}
+pre.prompt .hl3{color:#93c5fd}
+
+.btn{border:none;border-radius:10px;padding:11px 18px;font-weight:600;font-size:.88rem;display:inline-flex;align-items:center;gap:8px;transition:transform .1s,background .2s}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-dark)}
+.btn-success{background:var(--secondary);color:#fff}.btn-success:hover{background:#047857}
+.btn-ghost{background:#fff;color:var(--dark2);border:1px solid var(--border)}.btn-ghost:hover{background:#f8fafc}
+.btn-warning{background:var(--accent);color:#fff}
+.btn-sm{padding:7px 12px;font-size:.8rem}
+.actions-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;align-items:center}
+.btn-reveal{display:none}
+body.formateur .btn-reveal{display:inline-flex}
+.reveal-content{display:none}
+.reveal-content.shown{display:block}
+
+.progress-wrap{margin:14px 0 4px}
+.progress-label{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:5px;font-weight:600}
+.progress-track{height:8px;background:#e2e8f0;border-radius:999px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#059669,#10b981);border-radius:999px;transition:width .4s ease}
+
+.result-panel{display:none;background:var(--dark);color:#e2e8f0;border-radius:12px;padding:22px 24px;margin-top:20px}
+.result-panel.show{display:block}
+.result-panel .score{font-family:var(--mono);font-size:2rem;font-weight:700;color:#34d399}
+.result-panel .msg{margin-top:6px;color:#cbd5e1}
+
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:18px 0}
+.chain-node{border:2px solid var(--border);background:#fff;border-radius:10px;padding:10px 16px;font-weight:700;font-size:.9rem;color:var(--dark2)}
+.chain-node:hover{border-color:var(--primary)}
+.chain-node.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.chain-node.seen:not(.active){border-color:#93c5fd}
+.chain-arrow{color:var(--muted);font-weight:700}
+.concept-detail{border:1px solid var(--border);border-radius:12px;padding:22px;background:#f8fafc;min-height:180px}
+.concept-detail .row{display:grid;grid-template-columns:130px 1fr;gap:10px;padding:8px 0;border-bottom:1px dashed var(--border)}
+.concept-detail .row:last-child{border-bottom:none}
+.concept-detail .k{font-weight:700;font-size:.82rem;color:var(--muted)}
+@media(max-width:600px){.concept-detail .row{grid-template-columns:1fr;gap:2px}}
+
+/* QCM */
+.qcm-q{border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:12px;background:#fff}
+.qcm-q .qt{font-weight:600;margin-bottom:10px}
+.qcm-opts{display:grid;gap:8px}
+.qcm-opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--border);border-radius:9px;padding:10px 12px;cursor:pointer;font-size:.9rem;background:#fff;text-align:left;width:100%;color:var(--text)}
+.qcm-opt:hover{background:#f8fafc;border-color:#93c5fd}
+.qcm-opt .l{font-family:var(--mono);font-weight:700;color:var(--primary);min-width:18px}
+.qcm-opt.sel{border-color:var(--primary);background:#eff6ff}
+.qcm-q.checked .qcm-opt{cursor:default}
+.qcm-opt.good{border-color:#6ee7b7;background:#ecfdf5}
+.qcm-opt.bad{border-color:#fca5a5;background:#fef2f2}
+.qcm-q.correct{border-color:#6ee7b7}
+.qcm-q.wrong{border-color:#fca5a5}
+.qcm-q .expl{display:none;margin-top:10px;font-size:.86rem;padding-top:8px;border-top:1px dashed var(--border)}
+.qcm-q.checked .expl{display:block}
+.q-num{font-family:var(--mono);font-size:.75rem;color:var(--muted);margin-right:6px}
+
+/* V/F */
+.vf-row{padding:16px;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;background:#fff}
+.vf-row .vf-q{font-weight:500;margin-bottom:10px}
+.vf-btns{display:flex;gap:8px}
+.vf-btn{border:1px solid var(--border);background:#fff;border-radius:8px;padding:7px 18px;font-weight:600;font-size:.85rem;color:var(--text)}
+.vf-btn.sel{background:var(--dark);color:#fff;border-color:var(--dark)}
+.vf-row.correct{border-color:#6ee7b7;background:#ecfdf5}
+.vf-row.wrong{border-color:#fca5a5;background:#fef2f2}
+.vf-row .expl{display:none;margin-top:10px;font-size:.85rem}
+.vf-row.checked .expl{display:block}
+
+/* Cas 1 matching */
+.match-grid{display:grid;grid-template-columns:minmax(200px,1fr) 2fr;gap:16px;margin-top:10px}
+@media(max-width:760px){.match-grid{grid-template-columns:1fr}}
+.match-col{display:flex;flex-direction:column;gap:8px}
+.match-col h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+.m-term{background:var(--dark);color:#e2e8f0;font-family:var(--mono);font-size:.84rem;padding:10px 12px;border-radius:8px;border:2px solid var(--dark);text-align:left;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.m-term:hover{border-color:#60a5fa}
+.m-term.active{border-color:#fbbf24;box-shadow:0 0 0 3px rgba(251,191,36,.35)}
+.m-def{background:#fff;border:2px solid var(--border);border-radius:8px;padding:10px 12px;font-size:.86rem;text-align:left;display:flex;gap:10px;align-items:flex-start;color:var(--text)}
+.m-def:hover{border-color:#93c5fd}
+.pair-badge{font-family:var(--mono);font-size:.72rem;font-weight:700;min-width:24px;height:24px;border-radius:6px;display:inline-grid;place-items:center;background:#e2e8f0;color:var(--muted);flex-shrink:0}
+.paired .pair-badge{background:var(--primary);color:#fff}
+.m-def.paired{border-color:#93c5fd;background:#eff6ff}
+.m-term.good,.m-def.good{border-color:#10b981}
+.m-def.good{background:#ecfdf5}
+.m-term.bad,.m-def.bad{border-color:#ef4444}
+.m-def.bad{background:#fef2f2}
+.round-pills{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 4px}
+.round-pill{font-family:var(--mono);font-size:.75rem;padding:4px 10px;border-radius:999px;background:#f1f5f9;border:1px solid var(--border);color:var(--muted)}
+.round-pill.cur{background:var(--primary);color:#fff;border-color:var(--primary)}
+.round-pill.ok{background:var(--secondary-light);color:#065f46;border-color:#6ee7b7}
+
+/* Cas 2 */
+.group{border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;background:#fff}
+.group-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.group-head strong{font-size:1rem}
+.g-label{font-size:.8rem;font-weight:700;color:var(--muted);margin:12px 0 6px;text-transform:uppercase;letter-spacing:.5px}
+.choice-row{display:flex;flex-wrap:wrap;gap:8px}
+.choice{border:1px solid var(--border);background:#fff;border-radius:999px;padding:6px 14px;font-size:.84rem;font-weight:600;color:var(--dark2)}
+.choice.sel{background:var(--dark);color:#fff;border-color:var(--dark)}
+.choice.good{background:#10b981;color:#fff;border-color:#10b981}
+.choice.bad{background:#ef4444;color:#fff;border-color:#ef4444}
+.sit{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:1px solid var(--border);border-radius:9px;padding:10px 12px;background:#f8fafc;font-size:.88rem;margin-bottom:8px;color:var(--text)}
+.sit:hover{border-color:#fbbf24}
+.sit .tag{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:999px;background:#e2e8f0;color:var(--muted);white-space:nowrap}
+.sit.sel{border-color:var(--accent);background:#fffbeb}
+.sit.sel .tag{background:var(--accent);color:#fff}
+.sit.good{border-color:#10b981;background:#ecfdf5}
+.sit.good .tag{background:#10b981;color:#fff}
+.sit.bad{border-color:#ef4444;background:#fef2f2}
+.sit.bad .tag{background:#ef4444;color:#fff}
+.group .expl{display:none;margin-top:10px;font-size:.86rem;padding-top:10px;border-top:1px dashed var(--border)}
+.group.checked .expl{display:block}
+.group.correct{border-color:#6ee7b7}
+.group.wrong{border-color:#fca5a5}
+.group.half{border-color:#fcd34d}
+
+/* forms */
+label.f-label{display:block;font-weight:600;font-size:.85rem;margin:14px 0 6px;color:var(--dark2)}
+input.f-input,textarea.f-input{width:100%;padding:11px 13px;border:1px solid var(--border);border-radius:9px;font-family:var(--sans);font-size:.9rem;background:#fff;color:var(--text)}
+textarea.f-input{min-height:78px;resize:vertical}
+
+.steps{margin:14px 0}
+.step{display:flex;gap:14px;padding:12px 0;border-bottom:1px dashed var(--border);align-items:flex-start}
+.step:last-child{border-bottom:none}
+.step input[type=checkbox]{width:20px;height:20px;accent-color:var(--secondary);margin-top:3px;flex-shrink:0}
+.step .s-num{font-family:var(--mono);font-weight:700;color:var(--primary);min-width:24px}
+.checklist label{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;cursor:pointer}
+.checklist label:hover{background:#f8fafc}
+.checklist input{width:18px;height:18px;accent-color:var(--secondary);margin-top:3px;flex-shrink:0}
+
+.table-wrap{overflow-x:auto;margin:14px 0}
+table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:520px}
+th{background:var(--dark);color:#fff;text-align:left;padding:11px 14px;font-weight:600}
+th:first-child{border-top-left-radius:10px}th:last-child{border-top-right-radius:10px}
+td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:top;background:#fff}
+tr:nth-child(even) td{background:#f8fafc}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font-size:.75rem;background:#f1f5f9;border:1px solid var(--border);padding:3px 10px;border-radius:999px;color:var(--dark2)}
+
+.route{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:14px 0}
+.route-step{background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+.route-step .n{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.route-step .t{font-weight:700;font-size:.9rem;color:var(--dark)}
+.route-step .c{font-size:.75rem;color:var(--muted)}
+.route-step.past{background:#ecfdf5;border-color:#a7f3d0}
+.route-step.here{background:var(--primary);border-color:var(--primary)}
+.route-step.here .t,.route-step.here .n,.route-step.here .c{color:#fff}
+
+.levels{display:grid;gap:8px;margin:14px 0}
+.level{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:#fff}
+.level .lv{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--primary)}
+.level .risk{font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:999px}
+@media(max-width:600px){.level{grid-template-columns:40px 1fr}.level .risk{grid-column:2;justify-self:start}}
+
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
+.pillar{border-radius:12px;padding:16px;background:#fff;border:1px solid var(--border);border-top:4px solid var(--primary)}
+.pillar:nth-child(5n+2){border-top-color:var(--purple)}
+.pillar:nth-child(5n+3){border-top-color:var(--secondary)}
+.pillar:nth-child(5n+4){border-top-color:var(--accent)}
+.pillar:nth-child(5n+5){border-top-color:var(--danger)}
+.pillar .n{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+.pillar h4{font-size:1rem;margin:4px 0 6px}
+.pillar p{font-size:.84rem;color:var(--dark2);margin:0}
+.pillar .q{font-size:.8rem;color:var(--muted);font-style:italic;margin-top:8px}
+
+details.acc{border:1px solid var(--border);border-radius:10px;margin:10px 0;background:#fff}
+details.acc summary{cursor:pointer;padding:12px 16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:10px}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary::after{content:"+";font-family:var(--mono);color:var(--primary);font-weight:700}
+details.acc[open] summary::after{content:"−"}
+details.acc[open] summary{border-bottom:1px dashed var(--border)}
+details.acc > div{padding:12px 16px;font-size:.9rem}
+
+.gloss{display:grid;gap:10px;margin-top:10px}
+.gloss-item{display:grid;grid-template-columns:190px 1fr;gap:14px;align-items:start;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:#fff}
+.gloss-item .gt{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+@media(max-width:620px){.gloss-item{grid-template-columns:1fr}}
+.lock-wrap{text-align:center;padding:30px 10px}
+.lock-wrap .big-lock{font-size:3rem}
+.lock-pills{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:16px}
+.lock-pill{font-size:.82rem;font-weight:600;padding:6px 14px;border-radius:999px;background:#f1f5f9;border:1px solid var(--border)}
+.lock-pill.ok{background:var(--secondary-light);border-color:#6ee7b7;color:#065f46}
+.filter-row{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}
+.filter-row button{border:1px solid var(--border);background:#fff;border-radius:999px;padding:5px 12px;font-size:.78rem;font-weight:600;color:var(--dark2)}
+.filter-row button.on{background:var(--dark);color:#fff;border-color:var(--dark)}
+
+.score-table td:last-child{font-family:var(--mono);font-weight:700}
+.link-card{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:#f8fafc;border:1px dashed #93c5fd;border-radius:12px;padding:16px 18px;margin-top:16px}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--dark);color:#fff;padding:10px 18px;border-radius:10px;font-size:.85rem;opacity:0;pointer-events:none;transition:all .25s;z-index:100;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.nav-bottom{display:flex;justify-content:space-between;gap:10px;margin-top:10px;flex-wrap:wrap}
+footer{text-align:center;color:var(--muted);font-size:.78rem;padding:30px 16px 50px}
+@media print{.tabs-wrap,.actions-row,.nav-bottom{display:none}.panel{display:block!important}}
+
+
+
+/* ===== Identité module SIRH ===== */
+header{background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 55%,#0e7490 100%)}
+header.practice{background:linear-gradient(135deg,#0f172a 0%,#0e7490 55%,#0891b2 100%)}
+header::after{background:radial-gradient(circle,rgba(103,232,249,.22),transparent 70%)}
+.route.r10{grid-template-columns:repeat(5,1fr)}
+@media(max-width:640px){.route.r10{grid-template-columns:repeat(2,1fr)}}
+/* Fil rouge */
+.company{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:18px 20px;margin:14px 0}
+.company .logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#0e7490,#059669);display:grid;place-items:center;font-size:1.7rem;color:#fff}
+.company h4{font-size:1.05rem;margin-bottom:4px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px}
+.fact{background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.fact .v{font-family:var(--mono);font-weight:700;font-size:1.05rem;color:var(--dark)}
+.fact .l{font-size:.75rem;color:var(--muted)}
+/* Fonctions du SI */
+.flow4{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:16px 0;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.flow4 > div{padding:14px;background:#fff;border-right:1px solid var(--border);position:relative}
+.flow4 > div:last-child{border-right:none}
+.flow4 .n{font-family:var(--mono);font-size:.72rem;color:var(--primary);font-weight:700}
+.flow4 h4{margin:2px 0 4px;font-size:.98rem}
+.flow4 p{font-size:.82rem;color:var(--dark2);margin:0}
+@media(max-width:720px){.flow4{grid-template-columns:1fr 1fr}.flow4 > div:nth-child(2){border-right:none}.flow4 > div:nth-child(-n+2){border-bottom:1px solid var(--border)}}
+/* Pyramide donnée -> décision */
+.dikw{display:grid;gap:6px;margin:16px auto;max-width:620px}
+.dikw > div{border-radius:8px;padding:10px 14px;color:#fff;display:flex;justify-content:space-between;gap:12px;font-size:.88rem;margin:0 auto;width:100%}
+.dikw > div strong{white-space:nowrap}
+.dikw .d1{width:58%;background:#0f172a}.dikw .d2{width:72%;background:#1e3a8a}.dikw .d3{width:86%;background:#0e7490}.dikw .d4{width:100%;background:#059669}
+@media(max-width:620px){.dikw > div{width:100%!important;flex-direction:column}}
+/* Timeline */
+.timeline{position:relative;margin:16px 0 8px;padding-left:22px;border-left:3px solid #bfdbfe}
+.timeline .t-item{position:relative;margin-bottom:14px}
+.timeline .t-item::before{content:"";position:absolute;left:-30px;top:5px;width:13px;height:13px;border-radius:50%;background:var(--primary);border:3px solid #fff;box-shadow:0 0 0 2px #bfdbfe}
+.timeline .t-item.now::before{background:var(--secondary)}
+.timeline .when{font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--primary)}
+.timeline .t-item.now .when{color:var(--secondary)}
+/* Architecture SIRH */
+.archi{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:12px;align-items:stretch;margin:16px 0}
+.archi .col{display:grid;gap:8px;align-content:start}
+.archi .mod{background:#fff;border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:.84rem}
+.archi .mod b{display:block;font-size:.88rem}
+.archi .core{background:var(--dark);color:#e2e8f0;border-radius:14px;padding:18px;display:flex;flex-direction:column;justify-content:center;text-align:center;gap:8px}
+.archi .core b{color:#fff;font-size:1.05rem}
+.archi .core small{color:#94a3b8}
+.archi .ext{border-style:dashed;background:#f8fafc}
+.archi .when-s{font-family:var(--mono);font-size:.7rem;color:var(--muted)}
+@media(max-width:760px){.archi{grid-template-columns:1fr}}
+/* Couloirs (swimlane) */
+.swim-wrap{overflow-x:auto;margin:16px 0;border:1px solid var(--border);border-radius:12px}
+.swim{border-collapse:separate;border-spacing:0;min-width:860px;width:100%}
+.swim th.lane{background:var(--dark2);color:#fff;font-size:.78rem;width:130px;text-align:left;padding:10px;position:sticky;left:0;z-index:1}
+.swim td{border-bottom:1px dashed var(--border);border-right:1px dashed #eef2f7;padding:8px;vertical-align:middle;background:#fff;min-width:118px}
+.swim tr:nth-child(even) td{background:#f8fafc}
+.swim .stephead th{background:#f1f5f9;color:var(--muted);font-family:var(--mono);font-size:.72rem;padding:6px;border-bottom:1px solid var(--border)}
+.task{display:block;border-radius:8px;padding:7px 9px;font-size:.76rem;line-height:1.35;background:var(--primary-light);border:1px solid #93c5fd;color:#1e3a8a}
+.task.paper{background:var(--accent-light);border-color:#fcd34d;color:#78350f}
+.task.risk{background:var(--danger-light);border-color:#fca5a5;color:#7f1d1d}
+.task.evt{background:var(--secondary-light);border-color:#6ee7b7;color:#064e3b;border-radius:999px;text-align:center}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.legend .task{display:inline-block}
+/* Matrice / BPMN symboles */
+.symbols{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:14px 0}
+.symbol{border:1px solid var(--border);border-radius:10px;padding:12px;background:#fff;text-align:center;font-size:.82rem}
+.symbol .shape{height:46px;display:grid;place-items:center;margin-bottom:6px}
+.sh-evt{width:40px;height:40px;border-radius:50%;border:3px solid var(--secondary)}
+.sh-end{width:40px;height:40px;border-radius:50%;border:5px solid var(--danger)}
+.sh-task{width:70px;height:38px;border-radius:8px;border:2px solid var(--primary);background:var(--primary-light)}
+.sh-gw{width:32px;height:32px;transform:rotate(45deg);border:2px solid var(--accent);background:var(--accent-light)}
+.sh-flow{width:80px;height:2px;background:var(--dark2);position:relative}
+.sh-flow::after{content:"";position:absolute;right:-2px;top:-5px;border-left:9px solid var(--dark2);border-top:6px solid transparent;border-bottom:6px solid transparent}
+.sh-doc{width:46px;height:40px;border:2px solid var(--purple);background:var(--purple-light);border-radius:4px 4px 12px 4px}
+/* Indicateurs de processus */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:14px 0}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;border-left:4px solid var(--accent)}
+.kpi .v{font-family:var(--mono);font-size:1.4rem;font-weight:700;color:var(--dark)}
+.kpi .l{font-size:.8rem;color:var(--muted)}
+@media print{header{background:#0f172a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+
+/* ===== Ajouts séances 3-4 ===== */
+.wf{display:flex;align-items:stretch;gap:0;margin:16px 0;overflow-x:auto;padding-bottom:6px}
+.wf .node{min-width:150px;flex:1;background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;position:relative;margin-right:26px}
+.wf .node:last-child{margin-right:0}
+.wf .node:not(:last-child)::after{content:"➜";position:absolute;right:-22px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:1.1rem}
+.wf .node .k{font-family:var(--mono);font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.wf .node h4{margin:4px 0;font-size:.92rem}
+.wf .node p{font-size:.78rem;color:var(--dark2);margin:0}
+.wf .trg{border-top:4px solid var(--secondary)}.wf .trg .k{color:var(--secondary)}
+.wf .act{border-top:4px solid var(--primary)}.wf .act .k{color:var(--primary)}
+.wf .llm{border-top:4px solid var(--purple);background:var(--purple-light)}.wf .llm .k{color:var(--purple)}
+.wf .hum{border-top:4px solid var(--accent);background:var(--accent-light)}.wf .hum .k{color:#92400e}
+.wf .flt{border-top:4px solid var(--danger)}.wf .flt .k{color:var(--danger)}
+.stairs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;align-items:end;margin:16px 0}
+.stairs > div{border-radius:10px;padding:12px;color:#fff;font-size:.82rem}
+.stairs > div b{display:block;font-size:.95rem;margin-bottom:4px}
+.stairs .s1{background:#64748b;min-height:110px}.stairs .s2{background:#1e3a8a;min-height:140px}.stairs .s3{background:#0e7490;min-height:170px}.stairs .s4{background:#7c3aed;min-height:200px}
+@media(max-width:720px){.stairs{grid-template-columns:1fr 1fr}.stairs > div{min-height:0!important}}
+.chainx{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:16px 0}
+.chainx > div{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;position:relative}
+.chainx > div .ic{font-size:1.5rem}
+.chainx > div b{display:block;font-size:.9rem;margin:4px 0}
+.chainx > div span{font-size:.76rem;color:var(--muted)}
+.chainx > div.hot{border:2px solid var(--primary);background:var(--primary-light)}
+@media(max-width:760px){.chainx{grid-template-columns:1fr 1fr}}
+.scoregrid td.c{text-align:center;font-family:var(--mono);font-weight:700}
+.dataset{font-family:var(--mono);font-size:.76rem}
+.dataset td,.dataset th{padding:6px 8px!important;white-space:nowrap}
+
+</style>
+</head>
+<body>
+<header class="practice">
+  <div class="header-inner">
+    <span class="badge">🏢 SIRH &amp; exploitation de la Data — IA · Séance 5 · Support pratique</span>
+    <h1>Modules talents : ATS, LMS, PMS et IA embarquée</h1>
+    <p class="subtitle">Manipuler le vocabulaire des modules talents et de l&#x27;IA embarquée, reconnaître les niveaux de risque dans des situations Habitéo, puis évaluer des fonctions d&#x27;IA et concevoir une pré-qualification de candidatures qui ne rejette jamais seule.</p>
+    <div class="meta-pills"><span class="meta-pill">🧭 Séance 5 sur 10</span><span class="meta-pill">🛠️ Support pratique</span><span class="meta-pill">🧩 30 termes</span><span class="meta-pill">🔀 Aléatoire</span><span class="meta-pill">🔒 Glossaire verrouillé</span><span class="meta-pill">🏠 Atelier Habitéo</span></div>
+    <div class="global-progress">
+      <div class="label"><span>Progression des activités</span><span id="globalPct">0 / 4</span></div>
+      <div class="track"><div class="fill" id="globalFill"></div></div>
+    </div>
+    <div class="mode-flag">Mode formateur actif — boutons « Révéler » visibles</div>
+  </div>
+</header>
+<div class="tabs-wrap"><nav class="tabs" role="tablist" aria-label="Activités pratiques"><button class="tab active" data-tab="0" role="tab">🚀 Démarrage</button><button class="tab" data-tab="c1" data-act="cas1" role="tab">🧩 Cas 1 — Correspondance <span class="done-mark">✅</span></button><button class="tab" data-tab="c2" data-act="cas2" role="tab">🔍 Cas 2 — Situations <span class="done-mark">✅</span></button><button class="tab" data-tab="c3" data-act="cas3" role="tab">✅ Cas 3 — Vrai / Faux <span class="done-mark">✅</span></button><button class="tab" data-tab="at" data-act="atelier" role="tab">🏠 Atelier Habitéo <span class="done-mark">✅</span></button><button class="tab" data-tab="gl" role="tab">📖 Glossaire <span class="lock-mark">🔒</span></button></nav></div>
+<main>
+<section class="panel active" data-panel="0">
+  <div class="card">
+    <div class="section-title"><span class="icon-bg green">🎯</span>Mettre en pratique la séance 5</div>
+    <p class="lead">Ce support vous fait manipuler les notions du support théorique, puis travailler sur le recrutement des techniciens d'Habitéo : évaluation des démonstrations d'éditeurs, test d'une extraction par LLM, spécification d'un scénario sous contrôle humain.</p>
+    <div class="objectif-box"><strong class="title">À la fin de cette séance, vous serez capable de :</strong><ul class="clean"><li>Décrire ce qu&#x27;automatisent un ATS, un LMS et un PMS, et les indicateurs qu&#x27;ils produisent ;</li><li>Relier les modules talents au Core RH : candidat devenu salarié, habilitation devenue droit de planifier, entretien devenu plan de formation ;</li><li>Distinguer, pour une fonctionnalité d&#x27;IA embarquée, ce qu&#x27;elle aide, recommande ou décide ;</li><li>Situer un usage d&#x27;IA RH dans les niveaux de risque de l&#x27;AI Act et appliquer l&#x27;article 22 du RGPD ;</li><li>Évaluer un module avec une grille automatisation × risque et formuler les questions à poser à l&#x27;éditeur ;</li><li>Concevoir une pré-qualification de candidatures automatisée qui ne rejette jamais seule.</li></ul></div>
+    <div class="grid grid-3">
+      <div class="mini-card"><h4>🧩 Cas 1 — Correspondance</h4><p class="muted">Associez 30 termes à leur définition, en 3 rounds de 10 tirés au hasard.</p></div>
+      <div class="mini-card"><h4>🔍 Cas 2 — Situations</h4><p class="muted">5 groupes de 4 situations chez Habitéo : identifiez la notion commune et repérez l'intruse.</p></div>
+      <div class="mini-card"><h4>✅ Cas 3 — Vrai / Faux</h4><p class="muted">12 affirmations à trancher, avec explication pour chacune.</p></div>
+      <div class="mini-card"><h4>🏠 Atelier Habitéo</h4><p class="muted">Évaluer les fonctions d'IA des éditeurs, tester une pré-qualification de candidatures, spécifier le scénario HAB-RH-02.</p></div>
+      <div class="mini-card"><h4>📖 Glossaire</h4><p class="muted">Débloqué uniquement lorsque les 3 cas sont terminés.</p></div>
+    </div>
+    <h3>Les familles de notions</h3>
+    <div class="chips"><span class="famille-tag f1">Recrutement (ATS) · 6</span><span class="famille-tag f2">Formation et compétences · 6</span><span class="famille-tag f3">Performance et carrières · 6</span><span class="famille-tag f4">IA embarquée · 6</span><span class="famille-tag f5">AI Act et RGPD · 6</span></div>
+    <div class="warn-box"><strong>⛔ Règle de la séance</strong> Candidatures fictives. Jamais de CV réel, de photo, ni de donnée de santé ou de situation familiale dans un outil d'IA.</div>
+    <div class="instruction-box"><strong class="title">Mode d'emploi</strong>Faites les cas dans l'ordre : chaque activité validée fait avancer la barre de progression, et tout est mélangé à chaque nouvel essai. Pour l'atelier, ouvrez votre assistant IA autorisé, Perplexity, votre offre de la séance 2 et vos livrables des séances 3 et 4.</div>
+    <div class="link-card"><span><strong>📚 Support théorique associé</strong><br><span class="muted">Relisez un chapitre en cas de doute.</span></span><a class="btn btn-ghost" href="seance-5-modules-talents-ia-theorie.html">◂ Ouvrir le support théorique</a></div>
+    <div class="nav-bottom"><span></span><button class="btn btn-primary" data-goto="c1">Commencer : Cas 1 ▸</button></div>
+  </div>
+</section>
+
+<section class="panel" data-panel="c1">
+  <div class="card">
+    <div class="section-title"><span class="icon-bg">🧩</span>Cas 1 — Correspondance termes / définitions</div>
+    <div class="objectif-box"><strong class="title">Objectif</strong>Maîtriser le vocabulaire des modules talents, de l'IA embarquée et du cadre légal pour dialoguer avec un éditeur, un juriste ou le CSE.</div>
+    <div class="instruction-box"><strong class="title">Consigne</strong>Cliquez sur un terme (colonne de gauche), puis sur la définition qui lui correspond. Le numéro du terme s'affiche sur la définition choisie. Cliquez sur une définition associée pour annuler. Quand les 10 associations sont faites, vérifiez, puis passez au round suivant.</div>
+    <div class="round-pills" id="c1Rounds"></div>
+    <div class="match-grid"><div class="match-col" id="c1Terms"></div><div class="match-col" id="c1Defs"></div></div>
+    <div class="progress-wrap"><div class="progress-label"><span>Associations du round</span><span id="c1Txt">0 / 10</span></div><div class="progress-track"><div class="progress-fill" id="c1Fill"></div></div></div>
+    <div class="actions-row">
+      <button class="btn btn-primary" id="c1Check">✔ Vérifier le round</button>
+      <button class="btn btn-success" id="c1Next" style="display:none">Round suivant ▸</button>
+      <button class="btn btn-warning btn-reveal" id="c1Reveal">👁 Révéler</button>
+      <button class="btn btn-ghost" id="c1Reset">↺ Recommencer</button>
+    </div>
+    <div class="result-panel" id="c1Result"></div>
+    <div class="nav-bottom" style="margin-top:20px"><span></span><button class="btn btn-primary" data-goto="c2">Suite : Cas 2 ▸</button></div>
+  </div>
+</section>
+
+<section class="panel" data-panel="c2">
+  <div class="card">
+    <div class="section-title"><span class="icon-bg amber">🔍</span>Cas 2 — Identification de situations</div>
+    <div class="objectif-box"><strong class="title">Objectif</strong>Reconnaître un module, un niveau d'intervention de l'IA ou une règle juridique dans des situations concrètes du Groupe Habitéo.</div>
+    <div class="instruction-box"><strong class="title">Consigne</strong>Chaque groupe contient 4 situations. Trois illustrent la même notion, <strong>une est une intruse</strong>. Pour chaque groupe : (1) choisissez la notion commune, (2) cliquez sur la situation intruse. Vérifiez, puis lisez les explications.</div>
+    <div id="c2Box"></div>
+    <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="c2Txt">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="c2Fill"></div></div></div>
+    <div class="actions-row">
+      <button class="btn btn-primary" id="c2Check">✔ Vérifier</button>
+      <button class="btn btn-warning btn-reveal" id="c2Reveal">👁 Révéler</button>
+      <button class="btn btn-ghost" id="c2Reset">↺ Recommencer</button>
+    </div>
+    <div class="result-panel" id="c2Result"></div>
+    <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c1">◂ Cas 1</button><button class="btn btn-primary" data-goto="c3">Suite : Cas 3 ▸</button></div>
+  </div>
+</section>
+
+<section class="panel" data-panel="c3">
+  <div class="card">
+    <div class="section-title"><span class="icon-bg green">✅</span>Cas 3 — Vrai ou faux ?</div>
+    <div class="objectif-box"><strong class="title">Objectif</strong>Déjouer les idées reçues sur les ATS, les entretiens obligatoires, l'IA de recrutement, l'AI Act et l'article 22.</div>
+    <div class="instruction-box"><strong class="title">Consigne</strong>Répondez à chaque affirmation, puis vérifiez. Lisez attentivement les explications, y compris pour les bonnes réponses.</div>
+    <div id="vfQuiz"></div>
+    <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="vfTxt">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="vfFill"></div></div></div>
+    <div class="actions-row">
+      <button class="btn btn-primary" id="vfCheck">✔ Vérifier</button>
+      <button class="btn btn-warning btn-reveal" id="vfReveal">👁 Révéler</button>
+      <button class="btn btn-ghost" id="vfReset">↺ Recommencer</button>
+    </div>
+    <div class="result-panel" id="vfResult"></div>
+    <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c2">◂ Cas 2</button><button class="btn btn-primary" data-goto="at">Suite : atelier Habitéo ▸</button></div>
+  </div>
+</section>
+
+<section class="panel" data-panel="at">
+  <div class="card">
+    <div class="section-title"><span class="icon-bg amber">🏠</span>Atelier Habitéo — Recruter vite sans laisser la machine trier</div>
+    <div class="objectif-box"><strong class="title">Objectif</strong>Évaluer ce que les modules talents et leur IA automatisent réellement, puis concevoir une pré-qualification qui fait gagner du temps au recruteur sans décider à sa place.</div>
+    <div class="instruction-box"><strong class="title">La demande de la DRH</strong>« Deux éditeurs nous ont montré leur IA de présélection. Dites-moi ce qu'on peut activer, ce qu'il faut refuser, et proposez-moi un scénario qui nous permette de rappeler chaque technicien en 48 heures. Aucune machine ne refuse un candidat à notre place. »</div>
+    <div class="instruction-box"><strong class="title">Déroulé (binôme, environ 2 h 30)</strong><div class="steps" id="atSteps"><div class="step"><input type="checkbox" id="as0"><span class="s-num">1</span><label for="as0">Reprenez votre offre de technicien PAC (séance 2) et ajoutez-lui une fourchette de rémunération, en notant d&#x27;où vient le montant.</label></div><div class="step"><input type="checkbox" id="as1"><span class="s-num">2</span><label for="as1">Listez les modules talents dont Habitéo a besoin (ATS, LMS, PMS), le besoin principal de chacun et les données qu&#x27;il reçoit du Core RH.</label></div><div class="step"><input type="checkbox" id="as2"><span class="s-num">3</span><label for="as2">Évaluez avec la grille automatisation × risque les fonctions d&#x27;IA démontrées par les éditeurs (voir la fiche ci-dessous).</label></div><div class="step"><input type="checkbox" id="as3"><span class="s-num">4</span><label for="as3">Lancez le prompt de pré-qualification dans un assistant IA autorisé par votre charte, sur les six candidatures fictives.</label></div><div class="step"><input type="checkbox" id="as4"><span class="s-num">5</span><label for="as4">Vérifiez chaque sortie : faits exacts ? statut juste ? donnée sensible recopiée ? recommandation de rejet glissée ?</label></div><div class="step"><input type="checkbox" id="as5"><span class="s-num">6</span><label for="as5">Avec Perplexity, vérifiez sur une source officielle la date d&#x27;application du haut risque de l&#x27;annexe III et le contenu de l&#x27;article 22 du RGPD.</label></div><div class="step"><input type="checkbox" id="as6"><span class="s-num">7</span><label for="as6">Complétez les deux générateurs : la grille d&#x27;évaluation et la spécification du scénario HAB-RH-02.</label></div></div></div>
+  </div>
+  <div class="card">
+  <div class="section-title"><span class="icon-bg">🎬</span>Étape 3 — Ce que les éditeurs ont montré</div>
+  <p class="muted">Deux éditeurs fictifs ont fait une démonstration à la DRH. Évaluez chaque fonction avec la grille du chapitre 6 du support théorique.</p>
+  <div class="grid grid-2">
+    <div class="mini-card"><h4>Éditeur A — suite internationale</h4><ul class="clean"><li>Score de matching de 0 à 100 sur chaque candidature, avec option « refus automatique sous 60 » ;</li><li>Agent conversationnel par SMS qui pose les questions de présélection et propose des créneaux ;</li><li>Analyse des entretiens vidéo différés : « détection de l'enthousiasme et de la confiance » ;</li><li>Rédaction automatique des offres à partir de la fiche de poste.</li></ul></div>
+    <div class="mini-card"><h4>Éditeur B — spécialiste français</h4><ul class="clean"><li>Parsing des CV et questions factuelles au dépôt de candidature ;</li><li>Tri des candidatures par « adéquation » sans seuil, toutes visibles ;</li><li>Recommandation de formations dans le LMS selon le poste et les habilitations ;</li><li>Alerte d'échéance d'habilitation reliée au planning.</li></ul></div>
+  </div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">📄</span>Étape 4 — Six candidatures fictives, agence de Grenoble</div>
+  <p class="muted">Textes libres saisis par les candidats dans le formulaire. Fictifs. Certains contiennent volontairement des données qui n'auraient jamais dû être transmises à un LLM.</p>
+  <div class="table-wrap"><table><tr><th>Id</th><th>Texte libre de la candidature (fictif)</th></tr><tr><td style="white-space:nowrap"><code>C-01</code></td><td>Technicien PAC depuis 6 ans chez un installateur à Chambéry. Permis B. Habilitation électrique BR à jour (2025). Attestation d&#x27;aptitude fluides frigorigènes catégorie I. Disponible avec un mois de préavis. Accepte des chantiers jusqu&#x27;à 50 km.</td></tr><tr><td style="white-space:nowrap"><code>C-02</code></td><td>Électricien bâtiment, 3 ans d&#x27;expérience, en reconversion vers les pompes à chaleur. CAP électricien, habilitation B1V. Pas encore d&#x27;attestation fluides. Permis B. Très motivé pour me former.</td></tr><tr><td style="white-space:nowrap"><code>C-03</code></td><td>J&#x27;ai 54 ans, 25 ans de chauffage et climatisation, chef d&#x27;équipe pendant 8 ans. Permis B et C. Attestation fluides catégorie I. Je cherche un poste plus stable près de Grenoble.</td></tr><tr><td style="white-space:nowrap"><code>C-04</code></td><td>Technicien de maintenance CVC, diplôme obtenu au Maroc (équivalent BTS fluides énergies), 4 ans d&#x27;expérience en France. Habilitation électrique BR. Permis en cours, examen pratique prévu en novembre.</td></tr><tr><td style="white-space:nowrap"><code>C-05</code></td><td>Technicienne PAC, 2 ans d&#x27;expérience. Je suis reconnue travailleuse handicapée (RQTH) pour un problème de dos, sans incidence sur les interventions courantes. Mère de deux enfants, je préfère les chantiers en journée. Permis B, habilitation BR, attestation fluides catégorie I.</td></tr><tr><td style="white-space:nowrap"><code>C-06</code></td><td>Intéressé par le poste. CV en pièce jointe.</td></tr></table></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg purple">🤖</span>Étape 4 — Le prompt de pré-qualification</div>
+  <p class="muted">Construit avec les 5 Piliers ; les candidatures sont incluses. À lancer uniquement dans un outil autorisé par votre charte.</p>
+  <pre class="prompt">Contexte : je suis chargé·e de mission SIRH pour le Groupe Habitéo (rénovation énergétique, 820 salariés). Nous recrutons des techniciens pompes à chaleur (PAC) pour l&#x27;agence de Grenoble. Exigences du poste, fixées par le responsable d&#x27;agence : permis B (déplacements quotidiens sur chantier) ; habilitation électrique (BR ou équivalent) ou capacité à l&#x27;obtenir à l&#x27;embauche ; attestation d&#x27;aptitude fluides frigorigènes catégorie I ou capacité à l&#x27;obtenir sous 3 mois ; expérience en chauffage, climatisation ou électricité. Les six candidatures ci-dessous sont fictives.
+
+C-01 : Technicien PAC depuis 6 ans chez un installateur à Chambéry. Permis B. Habilitation électrique BR à jour (2025). Attestation d&#x27;aptitude fluides frigorigènes catégorie I. Disponible avec un mois de préavis. Accepte des chantiers jusqu&#x27;à 50 km.
+C-02 : Électricien bâtiment, 3 ans d&#x27;expérience, en reconversion vers les pompes à chaleur. CAP électricien, habilitation B1V. Pas encore d&#x27;attestation fluides. Permis B. Très motivé pour me former.
+C-03 : J&#x27;ai 54 ans, 25 ans de chauffage et climatisation, chef d&#x27;équipe pendant 8 ans. Permis B et C. Attestation fluides catégorie I. Je cherche un poste plus stable près de Grenoble.
+C-04 : Technicien de maintenance CVC, diplôme obtenu au Maroc (équivalent BTS fluides énergies), 4 ans d&#x27;expérience en France. Habilitation électrique BR. Permis en cours, examen pratique prévu en novembre.
+C-05 : Technicienne PAC, 2 ans d&#x27;expérience. Je suis reconnue travailleuse handicapée (RQTH) pour un problème de dos, sans incidence sur les interventions courantes. Mère de deux enfants, je préfère les chantiers en journée. Permis B, habilitation BR, attestation fluides catégorie I.
+C-06 : Intéressé par le poste. CV en pièce jointe.
+
+Rôle : agis comme un assistant de recrutement chargé uniquement de structurer l&#x27;information pour un recruteur humain.
+
+Objectif : pour chaque candidature, extraire les faits utiles et indiquer ce qu&#x27;il reste à vérifier. La décision appartient au recruteur.
+
+Contraintes :
+- réponds en JSON, une entrée par candidature : id, permis_b (oui / non / en cours / non précisé), habilitation_electrique, attestation_fluides, experience_metier (résumé factuel), points_a_verifier (liste), statut (complet / à compléter / à examiner), donnees_sensibles_detectees (oui / non)
+- n&#x27;attribue aucune note, aucun classement, aucune recommandation de rejet
+- n&#x27;utilise jamais l&#x27;âge, le sexe, l&#x27;origine, la nationalité, la santé, le handicap ou la situation familiale ; si le texte en contient, mets donnees_sensibles_detectees à « oui » sans les recopier
+- « à examiner » signifie qu&#x27;un critère n&#x27;est pas rempli tel quel mais qu&#x27;un recruteur doit en juger (formation possible, équivalence, permis en cours)
+- termine par la liste des points dont tu n&#x27;es pas sûr
+
+Exemple : {&quot;id&quot;: &quot;C-00&quot;, &quot;permis_b&quot;: &quot;oui&quot;, &quot;habilitation_electrique&quot;: &quot;BR&quot;, &quot;attestation_fluides&quot;: &quot;non précisé&quot;, &quot;experience_metier&quot;: &quot;5 ans technicien chauffage&quot;, &quot;points_a_verifier&quot;: [&quot;attestation fluides&quot;], &quot;statut&quot;: &quot;à compléter&quot;, &quot;donnees_sensibles_detectees&quot;: &quot;non&quot;}</pre>
+  <div class="actions-row" style="margin-top:6px"><button class="btn btn-primary btn-sm" id="atCopyPrompt">📋 Copier le prompt</button></div>
+</div>
+  <div class="card">
+    <div class="section-title"><span class="icon-bg purple">📄</span>Générateur — <code>grille-evaluation-ia-modules-talents.md</code></div>
+    <label class="f-label" for="g0_name">Périmètre</label><input class="f-input" id="g0_name" data-gen="0" placeholder="Ex. Modules talents envisagés pour le Groupe Habitéo — démonstrations éditeurs"><label class="f-label" for="g0_modules">Modules talents nécessaires et données reprises du socle (un par ligne : module — besoin Habitéo — données reçues du Core RH)</label><textarea class="f-input" id="g0_modules" data-gen="0" placeholder="ATS — rappeler chaque technicien sous 48 h — agences, postes, managers&#10;…"></textarea><label class="f-label" for="g0_fonctions">Fonctions d&#x27;IA évaluées (une par ligne : fonction — tâche — A/R/D — données — niveau AI Act — art. 22 oui/non — contrôle humain — décision ✅/⚠️/⛔)</label><textarea class="f-input" id="g0_fonctions" data-gen="0" placeholder="Score de matching — classe les candidatures — R, D de fait — CV — haut risque — oui si seuil — … — ⛔ en mode seuil&#10;…"></textarea><label class="f-label" for="g0_questions">Questions à poser aux éditeurs (une par ligne)</label><textarea class="f-input" id="g0_questions" data-gen="0" placeholder="Sur quelles données le modèle de matching est-il entraîné ?&#10;…"></textarea><label class="f-label" for="g0_offre">Offre de technicien PAC : fourchette retenue et justification</label><textarea class="f-input" id="g0_offre" data-gen="0" placeholder="Fourchette … € à … € brut annuel, selon expérience et habilitations ; source : grille interne de l&#x27;agence…"></textarea><label class="f-label" for="g0_obligations">Obligations d&#x27;Habitéo avant tout déploiement (une par ligne)</label><textarea class="f-input" id="g0_obligations" data-gen="0" placeholder="Informer et consulter le CSE (L2312-8)&#10;…"></textarea>
+    <div class="actions-row">
+      <button class="btn btn-success" id="gGen0">⚙️ Générer la fiche</button>
+      <button class="btn btn-ghost" id="gReset0">↺ Vider</button>
+    </div>
+    <div id="gWrap0" style="display:none">
+      <h3>Fichier généré (Markdown)</h3>
+      <pre class="prompt" id="gOut0"></pre>
+      <div class="actions-row"><button class="btn btn-primary" id="gCopy0">📋 Copier</button><button class="btn btn-ghost" id="gDl0">⬇️ Télécharger grille-evaluation-ia-modules-talents.md</button></div>
+      <p class="muted" style="margin-top:10px">Cette grille sera reprise en séance 7 dans les exigences du cahier des charges et la grille de dépouillement des réponses éditeurs.</p>
+    </div>
+  </div><div class="card">
+    <div class="section-title"><span class="icon-bg purple">📄</span>Générateur — <code>specification-HAB-RH-02-prequalification.md</code></div>
+    <label class="f-label" for="g1_name">Nom du scénario</label><input class="f-input" id="g1_name" data-gen="1" placeholder="Ex. Pré-qualification des candidatures techniciens PAC"><label class="f-label" for="g1_objectif">Objectif et indicateurs (délai de premier contact, temps gagné…)</label><textarea class="f-input" id="g1_objectif" data-gen="1" placeholder="Rappeler chaque candidat sous 48 h ; délai actuel : jusqu&#x27;à 3 semaines…"></textarea><label class="f-label" for="g1_etapes">Étapes du scénario (une par ligne : type — action — outil)</label><textarea class="f-input" id="g1_etapes" data-gen="1" placeholder="Déclencheur — candidature reçue — formulaire&#10;Filtre — retrait des données non nécessaires — …&#10;…"></textarea><label class="f-label" for="g1_minimisation">Données envoyées au LLM et données exclues (une par ligne)</label><textarea class="f-input" id="g1_minimisation" data-gen="1" placeholder="Envoyé : réponses aux questions factuelles, texte d&#x27;expérience&#10;Exclu : nom, âge, photo, …&#10;…"></textarea><label class="f-label" for="g1_tests">Résultats du test sur les 6 candidatures (une par ligne : id — sortie de l&#x27;IA — correcte ? — correction)</label><textarea class="f-input" id="g1_tests" data-gen="1" placeholder="C-03 — … — …&#10;…"></textarea><label class="f-label" for="g1_garde_fous">Garde-fous (une ligne par règle)</label><textarea class="f-input" id="g1_garde_fous" data-gen="1" placeholder="Aucun refus sans décision d&#x27;un recruteur&#10;Mention de l&#x27;usage d&#x27;une IA dans l&#x27;information candidat&#10;…"></textarea><label class="f-label" for="g1_suivi">Surveillance après mise en service (indicateurs, fréquence, responsable)</label><textarea class="f-input" id="g1_suivi" data-gen="1" placeholder="Taux de passage à l&#x27;entretien par statut, revue mensuelle par la responsable recrutement…"></textarea>
+    <div class="actions-row">
+      <button class="btn btn-success" id="gGen1">⚙️ Générer la fiche</button>
+      <button class="btn btn-ghost" id="gReset1">↺ Vider</button>
+    </div>
+    <div id="gWrap1" style="display:none">
+      <h3>Fichier généré (Markdown)</h3>
+      <pre class="prompt" id="gOut1"></pre>
+      <div class="actions-row"><button class="btn btn-primary" id="gCopy1">📋 Copier</button><button class="btn btn-ghost" id="gDl1">⬇️ Télécharger specification-HAB-RH-02-prequalification.md</button></div>
+      <p class="muted" style="margin-top:10px">Ce scénario prolonge HAB-RH-01 : le candidat retenu basculera dans le Core RH et déclenchera la déclaration d&#x27;embauche.</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-title"><span class="icon-bg green">☑️</span>Auto-contrôle</div>
+    <div class="checklist" id="atCheck"><label><input type="checkbox"> L&#x27;offre porte une fourchette de rémunération justifiée.</label><label><input type="checkbox"> Chaque module talent est relié au Core RH par des données identifiées.</label><label><input type="checkbox"> Chaque fonction d&#x27;IA est classée aide / recommande / décide, avec son niveau AI Act.</label><label><input type="checkbox"> Aucune fonction retenue ne rejette un candidat sans décision humaine.</label><label><input type="checkbox"> Les six sorties de l&#x27;IA ont été vérifiées une par une et les erreurs notées.</label><label><input type="checkbox"> La minimisation des données est prévue avant l&#x27;envoi au LLM, pas seulement dans le prompt.</label><label><input type="checkbox"> Les obligations d&#x27;Habitéo (CSE, information, AIPD, contrat) sont listées.</label></div>
+    <div class="progress-wrap"><div class="progress-label"><span>Avancement de l'atelier</span><span id="atTxt">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="atFill"></div></div></div>
+    <div class="actions-row"><button class="btn btn-warning btn-reveal" id="atReveal">👁 Révéler un exemple corrigé</button></div>
+    <div class="reveal-content" id="atSolution"><h3>Exemple corrigé — Atelier séance 5</h3><pre class="prompt">## 1. Modules talents nécessaires (exemple)
+
+ATS — rappeler chaque technicien sous 48 h, suivre les sources, vivier de 2 ans — reçoit du Core RH : agences, postes ouverts, managers ; renvoie au Core RH : le candidat retenu (HAB-RH-01, DPAE).
+LMS — habilitations et échéances, recyclages, preuves pour les entretiens — reçoit : matricule, emploi, agence ; renvoie : habilitations à la planification (GTA).
+PMS — entretiens de parcours professionnel (1re année, 4 ans, 8 ans), entretien annuel, parcours technicien → chef d&#x27;équipe — reçoit : organisation, manager, emploi.
+
+## 2. Évaluation des fonctions d&#x27;IA démontrées
+
+| Fonction | Tâche | A/R/D | AI Act | Art. 22 | Décision |
+| Rédaction d&#x27;offres | Premier jet relu | A | Minimal | Non | ✅ avec la charte |
+| Chatbot candidat (questions sur le poste, planification) | Répond, propose des créneaux | A | Transparence art. 50 | Non s&#x27;il ne filtre pas | ✅ en disant que c&#x27;est une IA |
+| Chatbot avec questions éliminatoires | Clôt la candidature | D | Haut risque | Oui | ⛔ : questions conservées, clôture désactivée |
+| Score de matching en mode seuil | Rejette sous un score | D | Haut risque | Oui | ⛔ |
+| Score de matching sans seuil, toutes les candidatures lues | Ordonne la lecture | R | Haut risque | À surveiller | ⚠️ si documentation et tests de biais fournis |
+| Recommandation de formations | Propose des contenus | R | Minimal à limité | Non | ✅ |
+| Analyse vidéo des entretiens (expressions) | Évalue le comportement | D | Interdit | — | ⛔ |
+
+Questions aux éditeurs : données d&#x27;entraînement ; critères du score ; tests de biais et résultats ; possibilité de désactiver par fonction ; réutilisation de nos données ; localisation de l&#x27;hébergement ; notice d&#x27;utilisation et documentation AI Act ; journaux disponibles et durée.
+
+Fourchette : à fixer avec la DRH sur la grille interne (ex. fourchette brute annuelle selon expérience et habilitations) ; pas de question sur le salaire antérieur.
+
+Obligations : information-consultation du CSE (L2312-8) ; information des candidats sur les méthodes et l&#x27;usage d&#x27;une IA (L1221-8, art. 13-14 RGPD, art. 50 AI Act) ; AIPD si scoring ; registre des traitements ; formation des recruteurs au contrôle humain ; contrat éditeur (art. 28, désactivation, documentation).
+
+## 3. Résultats attendus sur les six candidatures
+
+C-01 : permis oui, BR, fluides cat. I, 6 ans PAC → complet ; sensibles : non.
+C-02 : permis oui, B1V, fluides non → à examiner (formation possible sous 3 mois, reconversion) ; ne pas rejeter.
+C-03 : permis oui, fluides cat. I, 25 ans → habilitation électrique non précisée → à compléter ; sensibles : OUI (âge). Erreur typique : recopier l&#x27;âge ou parler de « profil senior ».
+C-04 : permis en cours, BR, diplôme étranger → à examiner (date d&#x27;examen, équivalence) ; sensibles : OUI (origine du diplôme peut être un indice d&#x27;origine : à traiter avec prudence, seul le niveau compte).
+C-05 : permis oui, BR, fluides cat. I, 2 ans → complet ; sensibles : OUI (RQTH, santé, enfants). Erreur grave : mentionner le handicap ou les enfants dans la fiche ; la préférence horaire est à évoquer par le recruteur, pas par l&#x27;IA.
+C-06 : aucune information exploitable → à compléter ; relance automatique avec message figé demandant de répondre aux questions factuelles.
+
+Leçon : C-03, C-04 et C-05 montrent que la minimisation doit se faire AVANT l&#x27;envoi au LLM (filtre), pas seulement par une consigne. Dans le scénario réel, le texte libre est remplacé autant que possible par des questions factuelles.
+
+## 4. Spécification HAB-RH-02 (extrait)
+
+Déclencheur — candidature reçue — formulaire (questions factuelles : permis, habilitations, attestation fluides, expérience, mobilité, disponibilité + texte libre court)
+Action — création de la fiche dans le registre des candidatures — Sheets puis ATS
+Filtre — retrait nom, e-mail, téléphone, date de naissance ; pas de CV ni photo envoyés au LLM — module de transformation
+LLM — extraction JSON avec statut — module Claude, Gemini ou Mistral validé par la charte
+Routeur — à compléter → relance automatique (message figé) ; complet ou à examiner → file du recruteur
+Humain — le recruteur lit TOUTES les fiches, consulte le CV, décide et rappelle sous 48 h
+Action — refus éventuel rédigé et envoyé par le recruteur, jamais par le scénario
+
+Garde-fous : aucun refus automatique ; mention de l&#x27;usage d&#x27;une IA dans l&#x27;information candidat ; journaux conservés ; revue mensuelle des statuts « à examiner » transformés en entretien ; désactivation possible ; consultation du CSE avant mise en service.
+Suivi : délai de premier contact (cible 48 h), taux d&#x27;entretiens par statut, taux d&#x27;erreur d&#x27;extraction sur échantillon de 20 fiches par mois.
+</pre></div>
+    <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c3">◂ Cas 3</button><button class="btn btn-primary" data-goto="gl">Glossaire ▸</button></div>
+  </div>
+</section>
+
+<section class="panel" data-panel="gl">
+  <div class="card">
+    <div class="section-title"><span class="icon-bg">📖</span>Glossaire de la séance</div>
+    <div id="glossLocked" class="lock-wrap">
+      <div class="big-lock">🔒</div>
+      <h3>Glossaire verrouillé</h3>
+      <p class="muted">Terminez les trois cas pratiques pour débloquer les 30 définitions.</p>
+      <div class="lock-pills"><span class="lock-pill" data-lock="cas1">⏳ Cas 1</span><span class="lock-pill" data-lock="cas2">⏳ Cas 2</span><span class="lock-pill" data-lock="cas3">⏳ Cas 3</span></div>
+      <div class="actions-row" style="justify-content:center"><button class="btn btn-warning btn-reveal" id="glossForce">🔓 Déverrouiller (formateur)</button></div>
+    </div>
+    <div id="glossOpen" style="display:none">
+      <div class="filter-row" id="glossFilters"><button class="on" data-f="all">Tous</button><button data-f="f1">Recrutement (ATS)</button><button data-f="f2">Formation et compétences</button><button data-f="f3">Performance et carrières</button><button data-f="f4">IA embarquée</button><button data-f="f5">AI Act et RGPD</button></div>
+      <div class="gloss" id="gloss"></div>
+      <div class="key-box" style="margin-top:22px"><div class="big">Un module talent automatise des tâches ; il ne doit jamais trier seul des personnes.</div></div>
+      <div class="objectif-box"><strong class="title">Prochaine séance — Je sais positionner une solution et ses acteurs.</strong>Vous prendrez de la hauteur sur le marché : suites intégrées et spécialistes, SaaS et On-Premise, coût total de possession, intégration, et tous les acteurs d'un projet SIRH, de l'éditeur au CSE. Vous établirez une première liste restreinte de solutions pour Habitéo.</div>
+    </div>
+  </div>
+</section>
+</main>
+<footer>SIRH &amp; exploitation de la Data — IA — Séance 5 — Modules talents et IA embarquée — Pratique<br>Mode formateur : ajoutez <code>?formateur</code> à l'adresse de la page.</footer>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+"use strict";
+const FAMILIES={"f1": "Recrutement (ATS)", "f2": "Formation et compétences", "f3": "Performance et carrières", "f4": "IA embarquée", "f5": "AI Act et RGPD"};
+const EXPLORERS={};
+const TERMS=[{"t": "ATS", "f": "f1", "d": "Applicant Tracking System : logiciel qui gère le parcours des candidats, de l'offre à l'embauche."}, {"t": "Multidiffusion", "f": "f1", "d": "Publication d'une offre en une fois sur le site carrières et plusieurs jobboards, avec suivi de la source."}, {"t": "Parsing de CV", "f": "f1", "d": "Extraction automatique des informations d'un CV en champs structurés."}, {"t": "Pipeline de recrutement", "f": "f1", "d": "Suite des étapes par lesquelles passe une candidature, de la réception à l'embauche ou au refus."}, {"t": "Délai de recrutement", "f": "f1", "d": "Durée entre la candidature (ou l'ouverture du poste) et l'acceptation de l'offre, selon la définition retenue."}, {"t": "Vivier de candidats", "f": "f1", "d": "Ensemble de profils conservés, avec information du candidat et durée limitée, pour des besoins futurs."}, {"t": "LMS", "f": "f2", "d": "Learning Management System : plateforme qui gère catalogue, inscriptions, parcours obligatoires et preuves de formation."}, {"t": "LXP", "f": "f2", "d": "Learning Experience Platform : plateforme orientée découverte et recommandation de contenus d'apprentissage."}, {"t": "Habilitation", "f": "f2", "d": "Autorisation, délivrée après formation, d'effectuer certaines opérations (électriques, fluides frigorigènes), avec date d'échéance."}, {"t": "Référentiel de compétences", "f": "f2", "d": "Description des compétences attendues par emploi, qui relie recrutement, formation, entretiens et mobilité."}, {"t": "Entretien de parcours professionnel", "f": "f2", "d": "Entretien obligatoire dans la première année, puis tous les quatre ans, sur les perspectives et la formation (loi du 24 octobre 2025)."}, {"t": "Plan de développement des compétences", "f": "f2", "d": "Ensemble des actions de formation décidées par l'employeur pour ses salariés."}, {"t": "PMS", "f": "f3", "d": "Performance Management System : module qui outille objectifs, entretiens, feedback et revues de talents."}, {"t": "Entretien annuel d'évaluation", "f": "f3", "d": "Entretien d'appréciation de la performance, non imposé par la loi, distinct de l'entretien de parcours professionnel."}, {"t": "OKR", "f": "f3", "d": "Objectives and Key Results : méthode de fixation d'objectifs associés à des résultats clés mesurables."}, {"t": "Feedback continu", "f": "f3", "d": "Échanges réguliers entre manager et salarié, en complément ou à la place de l'entretien annuel."}, {"t": "Matrice 9-box", "f": "f3", "d": "Grille croisant performance et potentiel, support de discussion en revue de talents."}, {"t": "Plan de succession", "f": "f3", "d": "Identification et préparation des personnes pouvant reprendre des postes clés."}, {"t": "IA embarquée", "f": "f4", "d": "Fonctionnalité d'intelligence artificielle intégrée par l'éditeur dans un module du SIRH."}, {"t": "Matching", "f": "f4", "d": "Calcul de l'adéquation entre un profil et un poste, aboutissant souvent à un score ou un classement."}, {"t": "Agent conversationnel candidat", "f": "f4", "d": "Assistant qui échange avec les candidats, répond aux questions, pré-qualifie et planifie."}, {"t": "Inférence de compétences", "f": "f4", "d": "Déduction automatique de compétences à partir de CV, formations ou activités, à faire valider."}, {"t": "Biais algorithmique", "f": "f4", "d": "Écart systématique de traitement entre groupes, souvent hérité des données d'entraînement."}, {"t": "Niveau d'intervention", "f": "f4", "d": "Degré auquel une fonction d'IA aide, recommande ou décide, qui fixe le contrôle humain nécessaire."}, {"t": "AI Act", "f": "f5", "d": "Règlement (UE) 2024/1689 qui classe les systèmes d'IA selon leur risque et fixe les obligations des fournisseurs et déployeurs."}, {"t": "Système à haut risque", "f": "f5", "d": "Système d'IA listé notamment à l'annexe III de l'AI Act, dont le recrutement et la gestion des travailleurs."}, {"t": "Déployeur", "f": "f5", "d": "Organisation qui utilise un système d'IA sous sa propre autorité, comme Habitéo avec un ATS doté d'IA."}, {"t": "Pratique interdite", "f": "f5", "d": "Usage de l'IA prohibé par l'article 5 de l'AI Act, comme la reconnaissance des émotions au travail."}, {"t": "Article 22 du RGPD", "f": "f5", "d": "Droit de ne pas faire l'objet d'une décision exclusivement automatisée produisant des effets juridiques ou significatifs."}, {"t": "Intervention humaine", "f": "f5", "d": "Réexamen effectif d'une décision par une personne compétente, ayant l'information et le pouvoir de la modifier."}];
+const CAS2=[{"notion": "Pipeline de recrutement", "choices": ["Pipeline de recrutement", "Multidiffusion", "Vivier de candidats", "Pré-onboarding"], "situations": [{"s": "La chargée de recrutement voit que 9 candidatures de Valence attendent à l'étape « reçue » depuis plus de 5 jours.", "intruse": false}, {"s": "Une candidate passe de « entretien agence » à « proposition » après validation du responsable d'agence.", "intruse": false}, {"s": "Le tableau de bord montre que 40 % des candidats abandonnent entre l'entretien et la proposition.", "intruse": false}, {"s": "L'offre de technicien PAC part en une fois sur le site carrières, Indeed, HelloWork et France Travail.", "intruse": true}], "e": "Trois situations décrivent le suivi des candidatures étape par étape. L'intruse décrit la diffusion de l'offre : c'est la multidiffusion, en amont du pipeline."}, {"notion": "Habilitation", "choices": ["Habilitation", "Entretien de parcours professionnel", "Référentiel de compétences", "Feedback continu"], "situations": [{"s": "Le LMS alerte : le titre électrique d'un technicien d'Annecy expire dans 45 jours.", "intruse": false}, {"s": "Le planning refuse d'affecter seul sur une PAC un technicien sans attestation fluides frigorigènes.", "intruse": false}, {"s": "Une formation de recyclage est réservée automatiquement avant l'échéance du titre.", "intruse": false}, {"s": "Un technicien embauché en janvier est informé qu'il aura un entretien sur ses perspectives dans l'année.", "intruse": true}], "e": "Trois situations concernent une autorisation d'intervenir et son échéance. L'intruse relève de l'entretien de parcours professionnel, obligatoire dans la première année."}, {"notion": "Niveau d'intervention : décide", "choices": ["Niveau d'intervention : décide", "Niveau d'intervention : recommande", "Niveau d'intervention : aide", "Pratique interdite"], "situations": [{"s": "Les candidatures ayant un score de matching inférieur à 60 reçoivent automatiquement un e-mail de refus.", "intruse": false}, {"s": "Le chatbot clôt la candidature quand le candidat répond « non » à la question sur le permis.", "intruse": false}, {"s": "Le recruteur n'ouvre jamais les candidatures classées au-delà de la 20e place par l'outil.", "intruse": false}, {"s": "L'outil propose une liste de formations ; le technicien et son chef d'équipe choisissent.", "intruse": true}], "e": "Dans trois cas, la machine écarte des personnes, explicitement ou de fait : c'est une décision, au cœur de l'article 22. L'intruse est une recommandation sur laquelle les humains gardent le choix."}, {"notion": "Système à haut risque", "choices": ["Système à haut risque", "Obligation de transparence", "Risque minimal", "Pratique interdite"], "situations": [{"s": "Un outil classe automatiquement les candidatures de techniciens selon leur adéquation au poste.", "intruse": false}, {"s": "Un logiciel attribue les chantiers aux techniciens en fonction d'un score de productivité.", "intruse": false}, {"s": "Un module propose de noter le potentiel des chefs d'équipe pour la revue de talents.", "intruse": false}, {"s": "Un outil analyse les micro-expressions des candidats lors des entretiens vidéo.", "intruse": true}], "e": "Sélection, attribution des tâches, évaluation : trois usages de l'annexe III, à haut risque. L'intruse, la reconnaissance des émotions au travail, est une pratique interdite depuis février 2025."}, {"notion": "Article 22 du RGPD", "choices": ["Article 22 du RGPD", "Durée de conservation", "Obligation de transparence (AI Act)", "Consultation du CSE"], "situations": [{"s": "Un candidat refusé automatiquement demande qu'une personne réexamine sa candidature.", "intruse": false}, {"s": "Habitéo prévoit qu'aucun refus de candidature ne soit envoyé sans décision d'un recruteur.", "intruse": false}, {"s": "Un salarié conteste une affectation décidée par un algorithme sans relecture humaine.", "intruse": false}, {"s": "Avant de déployer l'outil d'IA, la DRH présente le projet aux élus pour avis.", "intruse": true}], "e": "Trois situations protègent la personne contre une décision exclusivement automatisée. L'intruse relève du droit du travail : consultation du CSE sur une nouvelle technologie."}];
+const CAS3=[{"q": "Un ATS sert d'abord à classer automatiquement les candidats du meilleur au moins bon.", "a": false, "e": "Sa fonction première est d'organiser le flux : diffusion, suivi, planification, vivier, bascule vers le Core RH. Le classement automatique est une option, à haut risque."}, {"q": "Pour Habitéo, le délai de premier contact est un indicateur plus urgent que le score de matching.", "a": true, "e": "Des techniciens très demandés acceptent la première offre sérieuse. Rappeler en 48 heures rapporte plus qu'un classement sophistiqué."}, {"q": "Un CV de candidat non retenu peut être conservé sans limite de durée s'il est dans un vivier.", "a": false, "e": "La CNIL recommande en principe deux ans après le dernier contact, avec information du candidat."}, {"q": "Une habilitation expirée doit pouvoir bloquer l'affectation d'un technicien à certaines interventions.", "a": true, "e": "C'est une donnée de production et de sécurité : le LMS ou le Core RH doit alimenter la planification."}, {"q": "Depuis la loi du 24 octobre 2025, l'entretien professionnel a lieu tous les deux ans.", "a": false, "e": "L'entretien de parcours professionnel a lieu dans la première année, puis tous les quatre ans, avec un état des lieux tous les huit ans."}, {"q": "L'entretien annuel d'évaluation et l'entretien de parcours professionnel peuvent être confondus en un seul document.", "a": false, "e": "Ils peuvent se tenir le même jour mais doivent rester distincts : objet, obligations et traces différents."}, {"q": "Si un recruteur ne lit que les candidatures retenues par l'IA, l'IA décide de fait pour les autres.", "a": true, "e": "L'intervention humaine doit porter sur l'ensemble : un humain qui ne voit que le haut de la liste ne contrôle pas l'écartement."}, {"q": "Analyser les émotions d'un candidat en entretien vidéo est autorisé si le candidat est informé.", "a": false, "e": "La reconnaissance des émotions au travail et en recrutement est interdite par l'AI Act depuis le 2 février 2025, hors raisons médicales ou de sécurité."}, {"q": "Le règlement omnibus de 2026 a supprimé les obligations des systèmes d'IA à haut risque en RH.", "a": false, "e": "Il les a reportées au 2 décembre 2027 pour l'annexe III. Les contrats signés aujourd'hui doivent déjà les anticiper."}, {"q": "Un chatbot qui répond aux candidats doit leur indiquer qu'ils échangent avec une IA.", "a": true, "e": "Obligation de transparence de l'article 50 de l'AI Act, applicable depuis le 2 août 2026."}, {"q": "Un LLM qui extrait les faits d'une candidature, sans recommander de rejet, avec lecture humaine de chaque dossier, ne constitue pas une décision exclusivement automatisée.", "a": true, "e": "La décision reste humaine et réelle. Il faut encore minimiser les données, informer le candidat et vérifier les sorties."}, {"q": "Habitéo n'a aucune obligation tant que l'éditeur de l'ATS est conforme à l'AI Act.", "a": false, "e": "Le déployeur a ses propres obligations : usage conforme, contrôle humain compétent, surveillance, journaux, information des travailleurs ; plus le RGPD et la consultation du CSE."}];
+const ATELIER={"prompt": "Contexte : je suis chargé·e de mission SIRH pour le Groupe Habitéo (rénovation énergétique, 820 salariés). Nous recrutons des techniciens pompes à chaleur (PAC) pour l'agence de Grenoble. Exigences du poste, fixées par le responsable d'agence : permis B (déplacements quotidiens sur chantier) ; habilitation électrique (BR ou équivalent) ou capacité à l'obtenir à l'embauche ; attestation d'aptitude fluides frigorigènes catégorie I ou capacité à l'obtenir sous 3 mois ; expérience en chauffage, climatisation ou électricité. Les six candidatures ci-dessous sont fictives.\n\nC-01 : Technicien PAC depuis 6 ans chez un installateur à Chambéry. Permis B. Habilitation électrique BR à jour (2025). Attestation d'aptitude fluides frigorigènes catégorie I. Disponible avec un mois de préavis. Accepte des chantiers jusqu'à 50 km.\nC-02 : Électricien bâtiment, 3 ans d'expérience, en reconversion vers les pompes à chaleur. CAP électricien, habilitation B1V. Pas encore d'attestation fluides. Permis B. Très motivé pour me former.\nC-03 : J'ai 54 ans, 25 ans de chauffage et climatisation, chef d'équipe pendant 8 ans. Permis B et C. Attestation fluides catégorie I. Je cherche un poste plus stable près de Grenoble.\nC-04 : Technicien de maintenance CVC, diplôme obtenu au Maroc (équivalent BTS fluides énergies), 4 ans d'expérience en France. Habilitation électrique BR. Permis en cours, examen pratique prévu en novembre.\nC-05 : Technicienne PAC, 2 ans d'expérience. Je suis reconnue travailleuse handicapée (RQTH) pour un problème de dos, sans incidence sur les interventions courantes. Mère de deux enfants, je préfère les chantiers en journée. Permis B, habilitation BR, attestation fluides catégorie I.\nC-06 : Intéressé par le poste. CV en pièce jointe.\n\nRôle : agis comme un assistant de recrutement chargé uniquement de structurer l'information pour un recruteur humain.\n\nObjectif : pour chaque candidature, extraire les faits utiles et indiquer ce qu'il reste à vérifier. La décision appartient au recruteur.\n\nContraintes :\n- réponds en JSON, une entrée par candidature : id, permis_b (oui / non / en cours / non précisé), habilitation_electrique, attestation_fluides, experience_metier (résumé factuel), points_a_verifier (liste), statut (complet / à compléter / à examiner), donnees_sensibles_detectees (oui / non)\n- n'attribue aucune note, aucun classement, aucune recommandation de rejet\n- n'utilise jamais l'âge, le sexe, l'origine, la nationalité, la santé, le handicap ou la situation familiale ; si le texte en contient, mets donnees_sensibles_detectees à « oui » sans les recopier\n- « à examiner » signifie qu'un critère n'est pas rempli tel quel mais qu'un recruteur doit en juger (formation possible, équivalence, permis en cours)\n- termine par la liste des points dont tu n'es pas sûr\n\nExemple : {\"id\": \"C-00\", \"permis_b\": \"oui\", \"habilitation_electrique\": \"BR\", \"attestation_fluides\": \"non précisé\", \"experience_metier\": \"5 ans technicien chauffage\", \"points_a_verifier\": [\"attestation fluides\"], \"statut\": \"à compléter\", \"donnees_sensibles_detectees\": \"non\"}", "generators": [{"filename": "grille-evaluation-ia-modules-talents.md", "heading": "Grille d'évaluation des fonctions d'IA — {name}", "fields": [{"id": "name", "label": "Périmètre", "ph": "Ex. Modules talents envisagés pour le Groupe Habitéo — démonstrations éditeurs", "type": "input"}, {"id": "modules", "label": "Modules talents nécessaires et données reprises du socle (un par ligne : module — besoin Habitéo — données reçues du Core RH)", "ph": "ATS — rappeler chaque technicien sous 48 h — agences, postes, managers\n…", "type": "textarea", "list": true}, {"id": "fonctions", "label": "Fonctions d'IA évaluées (une par ligne : fonction — tâche — A/R/D — données — niveau AI Act — art. 22 oui/non — contrôle humain — décision ✅/⚠️/⛔)", "ph": "Score de matching — classe les candidatures — R, D de fait — CV — haut risque — oui si seuil — … — ⛔ en mode seuil\n…", "type": "textarea", "list": true}, {"id": "questions", "label": "Questions à poser aux éditeurs (une par ligne)", "ph": "Sur quelles données le modèle de matching est-il entraîné ?\n…", "type": "textarea", "list": true}, {"id": "offre", "label": "Offre de technicien PAC : fourchette retenue et justification", "ph": "Fourchette … € à … € brut annuel, selon expérience et habilitations ; source : grille interne de l'agence…", "type": "textarea", "list": false}, {"id": "obligations", "label": "Obligations d'Habitéo avant tout déploiement (une par ligne)", "ph": "Informer et consulter le CSE (L2312-8)\n…", "type": "textarea", "list": true}], "note": "Cette grille sera reprise en séance 7 dans les exigences du cahier des charges et la grille de dépouillement des réponses éditeurs."}, {"filename": "specification-HAB-RH-02-prequalification.md", "heading": "Spécification du scénario HAB-RH-02 — {name}", "fields": [{"id": "name", "label": "Nom du scénario", "ph": "Ex. Pré-qualification des candidatures techniciens PAC", "type": "input"}, {"id": "objectif", "label": "Objectif et indicateurs (délai de premier contact, temps gagné…)", "ph": "Rappeler chaque candidat sous 48 h ; délai actuel : jusqu'à 3 semaines…", "type": "textarea", "list": false}, {"id": "etapes", "label": "Étapes du scénario (une par ligne : type — action — outil)", "ph": "Déclencheur — candidature reçue — formulaire\nFiltre — retrait des données non nécessaires — …\n…", "type": "textarea", "list": true}, {"id": "minimisation", "label": "Données envoyées au LLM et données exclues (une par ligne)", "ph": "Envoyé : réponses aux questions factuelles, texte d'expérience\nExclu : nom, âge, photo, …\n…", "type": "textarea", "list": true}, {"id": "tests", "label": "Résultats du test sur les 6 candidatures (une par ligne : id — sortie de l'IA — correcte ? — correction)", "ph": "C-03 — … — …\n…", "type": "textarea", "list": true}, {"id": "garde_fous", "label": "Garde-fous (une ligne par règle)", "ph": "Aucun refus sans décision d'un recruteur\nMention de l'usage d'une IA dans l'information candidat\n…", "type": "textarea", "list": true}, {"id": "suivi", "label": "Surveillance après mise en service (indicateurs, fréquence, responsable)", "ph": "Taux de passage à l'entretien par statut, revue mensuelle par la responsable recrutement…", "type": "textarea", "list": false}], "note": "Ce scénario prolonge HAB-RH-01 : le candidat retenu basculera dans le Core RH et déclenchera la déclaration d'embauche."}]};
+const ACTS=["cas1", "cas2", "cas3", "atelier"];
+const params = new URLSearchParams(location.search);
+if (params.has('formateur') || location.hash === '#formateur') document.body.classList.add('formateur');
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const shuffle = a => { const b=a.slice(); for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];} return b; };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2400); }
+function copyText(txt){
+  if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(txt).then(()=>toast('Copié dans le presse-papiers ✅')).catch(()=>fallbackCopy(txt)); }
+  else fallbackCopy(txt);
+}
+function fallbackCopy(txt){ const ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); toast('Copié dans le presse-papiers ✅');}catch(e){toast('Copie impossible : sélectionnez le texte manuellement');} ta.remove(); }
+function download(name, txt){ const blob=new Blob([txt],{type:'text/markdown;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); }
+function setProgress(fillId, txtId, done, total, suffix){ const p = total ? Math.round(done/total*100) : 0; $('#'+fillId).style.width = p+'%'; $('#'+txtId).textContent = done+' / '+total+(suffix||''); }
+function scoreMsg(pct){ if(pct>=90) return 'Excellent : les notions sont acquises.'; if(pct>=70) return 'Bon résultat. Relisez les explications des erreurs pour consolider.'; if(pct>=50) return 'Des bases, mais plusieurs confusions. Relisez le chapitre puis recommencez.'; return 'Reprenez le chapitre, puis recommencez l\'activité.'; }
+const done = new Set();
+function markDone(act){
+  if(done.has(act)) return false;
+  done.add(act);
+  $$('.tab[data-act="'+act+'"]').forEach(t=>t.classList.add('done'));
+  const n = done.size;
+  $('#globalFill').style.width = Math.round(n/ACTS.length*100)+'%';
+  $('#globalPct').textContent = n+' / '+ACTS.length;
+  toast(n===ACTS.length ? '🎉 Toutes les activités sont validées !' : 'Activité validée ✅');
+  if(typeof onDone==='function') onDone(act);
+  return true;
+}
+function openTab(i){
+  $$('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab==i));
+  $$('.panel').forEach(p=>p.classList.toggle('active', p.dataset.panel==i));
+  const tw = $('.tabs-wrap'); window.scrollTo({top: tw.offsetTop, behavior: 'smooth'});
+  const at = $('.tab[data-tab="'+i+'"]'); if(at) at.scrollIntoView({inline:'center', block:'nearest'});
+}
+$$('.tab').forEach(t=>t.addEventListener('click',()=>openTab(t.dataset.tab)));
+$$('[data-goto]').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.goto)));
+
+/* Explorateurs */
+$$('[data-explorer]').forEach(box=>{
+  const E = EXPLORERS[box.dataset.explorer]; const seen=new Set();
+  const chain=$('.chain',box), detail=$('.concept-detail',box);
+  E.items.forEach((k,i)=>{
+    const b=document.createElement('button'); b.className='chain-node'; b.textContent=k.id; b.dataset.i=i;
+    b.addEventListener('click',()=>show(i)); chain.appendChild(b);
+  });
+  function show(i){
+    const k=E.items[i]; seen.add(i);
+    $$('.chain-node',box).forEach(n=>{ n.classList.toggle('active', n.dataset.i==i); if(seen.has(+n.dataset.i)) n.classList.add('seen'); });
+    detail.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap"><span class="term-item">'+esc(k.id)+'</span><span class="famille-tag '+k.fam+'">'+esc(FAMILIES[k.fam]||'')+'</span></div>'+
+      k.rows.map(r=>'<div class="row"><span class="k">'+esc(r[0])+'</span><span>'+esc(r[1])+'</span></div>').join('');
+    const f=$('.progress-fill',box), t=$('.progress-label span:last-child',box);
+    f.style.width=Math.round(seen.size/E.items.length*100)+'%'; t.textContent=seen.size+' / '+E.items.length;
+  }
+  show(0);
+});
+/* ================= CAS 1 — CORRESPONDANCE ================= */
+const RSIZE = 10;
+let c1 = null;
+function initCas1(){
+  const order = shuffle(TERMS);
+  const rounds=[]; for(let i=0;i<order.length;i+=RSIZE) rounds.push(order.slice(i,i+RSIZE));
+  c1 = {rounds, r:0, scores:[], pairs:{}, active:null, checked:false, defOrder:[]};
+  $('#c1Result').classList.remove('show');
+  renderRound();
+}
+function renderRound(){
+  const R=c1.rounds[c1.r]; c1.pairs={}; c1.active=null; c1.checked=false; c1.defOrder=shuffle(R.map((_,i)=>i));
+  $('#c1Rounds').innerHTML=c1.rounds.map((_,i)=>'<span class="round-pill '+(i===c1.r?'cur':(i<c1.r?'ok':''))+'">Round '+(i+1)+(c1.scores[i]!==undefined?' · '+c1.scores[i]+'/'+c1.rounds[i].length:'')+'</span>').join('');
+  const tc=$('#c1Terms'), dc=$('#c1Defs'); tc.innerHTML='<h4>Termes</h4>'; dc.innerHTML='<h4>Définitions</h4>';
+  R.forEach((t,i)=>{ const b=document.createElement('button'); b.className='m-term'; b.dataset.i=i; b.innerHTML='<span>'+esc(t.t)+'</span><span class="pair-badge">'+(i+1)+'</span>'; b.addEventListener('click',()=>pickTerm(i)); tc.appendChild(b); });
+  c1.defOrder.forEach(di=>{ const b=document.createElement('button'); b.className='m-def'; b.dataset.d=di; b.innerHTML='<span class="pair-badge">·</span><span>'+esc(R[di].d)+'</span>'; b.addEventListener('click',()=>pickDef(di)); dc.appendChild(b); });
+  $('#c1Next').style.display='none'; $('#c1Check').disabled=false;
+  paintPairs();
+}
+function pickTerm(i){ if(c1.checked) return; c1.active = c1.active===i ? null : i; paintPairs(); }
+function pickDef(di){
+  if(c1.checked) return;
+  if(c1.active===null){ const owner=Object.keys(c1.pairs).find(k=>c1.pairs[k]===di); if(owner!==undefined){ delete c1.pairs[owner]; paintPairs(); } else toast('Sélectionnez d\'abord un terme à gauche.'); return; }
+  Object.keys(c1.pairs).forEach(k=>{ if(c1.pairs[k]===di) delete c1.pairs[k]; });
+  c1.pairs[c1.active]=di; c1.active=null; paintPairs();
+}
+function paintPairs(){
+  $$('#c1Terms .m-term').forEach(b=>{ const i=+b.dataset.i; b.classList.toggle('active',c1.active===i); b.classList.toggle('paired',c1.pairs[i]!==undefined); });
+  $$('#c1Defs .m-def').forEach(b=>{ const di=+b.dataset.d; const owner=Object.keys(c1.pairs).find(k=>c1.pairs[k]===di); b.classList.toggle('paired',owner!==undefined); $('.pair-badge',b).textContent= owner!==undefined ? (+owner+1) : '·'; });
+  const n=Object.keys(c1.pairs).length, tot=c1.rounds[c1.r].length;
+  setProgress('c1Fill','c1Txt',n,tot,' associations');
+}
+function checkRound(silent){
+  const R=c1.rounds[c1.r];
+  if(!silent && Object.keys(c1.pairs).length<R.length){ toast('Associez les '+R.length+' termes avant de vérifier.'); return; }
+  let ok=0;
+  $$('#c1Terms .m-term').forEach(b=>{ const i=+b.dataset.i; const g=c1.pairs[i]===i; if(g) ok++; b.classList.remove('active'); b.classList.add(g?'good':'bad'); });
+  $$('#c1Defs .m-def').forEach(b=>{ const di=+b.dataset.d; const owner=Object.keys(c1.pairs).find(k=>c1.pairs[k]===di); const g= owner!==undefined && +owner===di; b.classList.add(g?'good':'bad'); if(!g){ $('.pair-badge',b).textContent='→'+(di+1); } });
+  c1.checked=true; c1.scores[c1.r]=ok; $('#c1Check').disabled=true;
+  const last = c1.r===c1.rounds.length-1;
+  const tot=c1.scores.reduce((a,b)=>a+b,0), max=c1.rounds.slice(0,c1.r+1).reduce((a,r)=>a+r.length,0);
+  $('#c1Result').innerHTML='<div class="score">'+ok+' / '+R.length+'</div><div class="msg">Round '+(c1.r+1)+' sur '+c1.rounds.length+'. Les définitions en rouge indiquent le numéro du bon terme. '+(last?'<br><strong style="color:#34d399">Score total : '+tot+' / '+max+'</strong> — '+scoreMsg(Math.round(tot/max*100)):'Score cumulé : '+tot+' / '+max+'.')+'</div>';
+  $('#c1Result').classList.add('show');
+  if(last){ if(!silent) markDone('cas1'); }
+  else $('#c1Next').style.display='inline-flex';
+}
+$('#c1Check').addEventListener('click',()=>checkRound(false));
+$('#c1Next').addEventListener('click',()=>{ c1.r++; $('#c1Result').classList.remove('show'); renderRound(); });
+$('#c1Reveal').addEventListener('click',()=>{ if(c1.checked) return; c1.rounds[c1.r].forEach((_,i)=>c1.pairs[i]=i); paintPairs(); checkRound(true); });
+$('#c1Reset').addEventListener('click',initCas1);
+initCas1();
+
+/* ================= CAS 2 — IDENTIFICATION + INTRUSE ================= */
+let c2=[];
+function initCas2(){
+  c2 = shuffle(CAS2).map(g=>({g, choices:shuffle(g.choices), sits:shuffle(g.situations)}));
+  const box=$('#c2Box'); box.innerHTML='';
+  c2.forEach((G,gi)=>{
+    const d=document.createElement('div'); d.className='group';
+    d.innerHTML='<div class="group-head"><strong><span class="q-num">G'+(gi+1)+'</span>Groupe '+(gi+1)+'</strong><span class="famille-tag f3">4 situations · 1 intruse</span></div>'+
+      G.sits.map((s,si)=>'<button type="button" class="sit" data-si="'+si+'"><span class="tag">S'+(si+1)+'</span><span>'+esc(s.s)+'</span></button>').join('')+
+      '<div class="g-label">1 · Quelle notion illustrent la majorité de ces situations ?</div><div class="choice-row">'+
+      G.choices.map((c,ci)=>'<button type="button" class="choice" data-ci="'+ci+'">'+esc(c)+'</button>').join('')+'</div>'+
+      '<div class="g-label">2 · Cliquez sur la situation intruse ci-dessus.</div><div class="expl"></div>';
+    $$('.choice',d).forEach(b=>b.addEventListener('click',()=>{ if(d.classList.contains('checked')) return; $$('.choice',d).forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); d.dataset.ch=b.dataset.ci; upd2(); }));
+    $$('.sit',d).forEach(b=>b.addEventListener('click',()=>{ if(d.classList.contains('checked')) return; $$('.sit',d).forEach(x=>{x.classList.remove('sel');$('.tag',x).textContent='S'+(+x.dataset.si+1);}); b.classList.add('sel'); $('.tag',b).textContent='Intruse ?'; d.dataset.si=b.dataset.si; upd2(); }));
+    box.appendChild(d);
+  });
+  $('#c2Result').classList.remove('show'); upd2();
+}
+function upd2(){ const gs=$$('#c2Box .group'); let n=0; gs.forEach(g=>{ if(g.dataset.ch!==undefined) n++; if(g.dataset.si!==undefined) n++; }); setProgress('c2Fill','c2Txt',n,gs.length*2,' réponses'); }
+function check2(silent){
+  const gs=$$('#c2Box .group');
+  if(!silent && gs.some(g=>g.dataset.ch===undefined||g.dataset.si===undefined)){ toast('Choisissez une notion et une intruse pour chaque groupe.'); return; }
+  let ok=0;
+  gs.forEach((d,gi)=>{
+    const G=c2[gi]; const goodCi=G.choices.indexOf(G.g.notion); const goodSi=G.sits.findIndex(s=>s.intruse);
+    const a=+d.dataset.ch===goodCi, b=+d.dataset.si===goodSi; ok+=(a?1:0)+(b?1:0);
+    $$('.choice',d).forEach((x,ci)=>{ x.classList.toggle('good',ci===goodCi); x.classList.toggle('bad',ci===+d.dataset.ch&&!a); });
+    $$('.sit',d).forEach((x,si)=>{ x.classList.remove('sel'); x.classList.toggle('good',si===goodSi); x.classList.toggle('bad',si===+d.dataset.si&&!b); $('.tag',x).textContent= si===goodSi?'Intruse':(si===+d.dataset.si&&!b?'Pas l\'intruse':'S'+(si+1)); });
+    d.classList.remove('correct','wrong','half'); d.classList.add('checked', a&&b?'correct':(a||b?'half':'wrong'));
+    $('.expl',d).innerHTML=(a?'✅':'❌')+' Notion : <strong>'+esc(G.g.notion)+'</strong> · '+(b?'✅':'❌')+' Intruse : <strong>S'+(goodSi+1)+'</strong><br>'+esc(G.g.e);
+  });
+  const max=gs.length*2;
+  $('#c2Result').innerHTML='<div class="score">'+ok+' / '+max+'</div><div class="msg">1 point par notion identifiée, 1 point par intruse repérée. '+scoreMsg(Math.round(ok/max*100))+'</div>';
+  $('#c2Result').classList.add('show');
+  if(!silent) markDone('cas2');
+}
+$('#c2Check').addEventListener('click',()=>check2(false));
+$('#c2Reveal').addEventListener('click',()=>{ $$('#c2Box .group').forEach((d,gi)=>{ const G=c2[gi]; d.dataset.ch=G.choices.indexOf(G.g.notion); d.dataset.si=G.sits.findIndex(s=>s.intruse); }); upd2(); check2(true); });
+$('#c2Reset').addEventListener('click',initCas2);
+initCas2();
+
+/* ================= CAS 3 — VRAI / FAUX ================= */
+let vfOrder=[];
+function renderVF(){
+  vfOrder=shuffle(CAS3); const box=$('#vfQuiz'); box.innerHTML='';
+  vfOrder.forEach((it,i)=>{
+    const r=document.createElement('div'); r.className='vf-row';
+    r.innerHTML='<div class="vf-q"><span class="q-num">'+String(i+1).padStart(2,'0')+'</span>'+esc(it.q)+'</div><div class="vf-btns"><button class="vf-btn" data-v="true">Vrai</button><button class="vf-btn" data-v="false">Faux</button></div><div class="expl"></div>';
+    $$('.vf-btn',r).forEach(b=>b.addEventListener('click',()=>{ if(r.classList.contains('checked')) return; $$('.vf-btn',r).forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); r.dataset.ans=b.dataset.v; updateVF(); }));
+    box.appendChild(r);
+  });
+  $('#vfResult').classList.remove('show'); updateVF();
+}
+function updateVF(){ const rows=$$('#vfQuiz .vf-row'); setProgress('vfFill','vfTxt',rows.filter(r=>r.dataset.ans).length,rows.length); }
+function checkVF(silent){
+  const rows=$$('#vfQuiz .vf-row');
+  if(!silent && rows.some(r=>!r.dataset.ans)){ toast('Répondez à toutes les affirmations avant de vérifier.'); return; }
+  let ok=0;
+  rows.forEach((r,i)=>{
+    const it=vfOrder[i]; const good=(r.dataset.ans==='true')===it.a; if(good) ok++;
+    r.classList.remove('correct','wrong'); r.classList.add('checked',good?'correct':'wrong');
+    $('.expl',r).innerHTML=(good?'✅ ':'❌ ')+'<strong>'+(it.a?'Vrai':'Faux')+'.</strong> '+esc(it.e);
+  });
+  $('#vfResult').innerHTML='<div class="score">'+ok+' / '+rows.length+'</div><div class="msg">'+scoreMsg(Math.round(ok/rows.length*100))+'</div>';
+  $('#vfResult').classList.add('show');
+  if(!silent) markDone('cas3');
+}
+$('#vfCheck').addEventListener('click',()=>checkVF(false));
+$('#vfReveal').addEventListener('click',()=>{ $$('#vfQuiz .vf-row').forEach((r,i)=>{ r.dataset.ans=String(vfOrder[i].a); $$('.vf-btn',r).forEach(b=>b.classList.toggle('sel',b.dataset.v===r.dataset.ans)); }); updateVF(); checkVF(true); });
+$('#vfReset').addEventListener('click',renderVF);
+renderVF();
+
+/* ================= ATELIER ================= */
+const generated = new Set();
+function genMd(gi){
+  const G=ATELIER.generators[gi]; const v=id=>{ const el=$('#g'+gi+'_'+id); return el?el.value.trim():''; };
+  const title=G.heading.replace('{name}', v('name')||'Projet');
+  let md='# '+title+'\n';
+  G.fields.forEach(f=>{
+    if(f.id==='name') return;
+    let val=v(f.id);
+    if(f.list) val=val.split('\n').map(s=>s.trim()).filter(Boolean).map(s=>'- '+s.replace(/^[-*•]\s*/,'')).join('\n');
+    md+='\n## '+f.label.replace(/\s*\(.*?\)\s*$/,'')+'\n'+(val||'_À compléter_')+'\n';
+  });
+  return md;
+}
+function updAtelier(){
+  const s=$$('#atSteps input').filter(c=>c.checked).length, c=$$('#atCheck input').filter(c=>c.checked).length;
+  const tot=$$('#atSteps input').length+$$('#atCheck input').length+ATELIER.generators.length;
+  const n=s+c+generated.size; setProgress('atFill','atTxt',n,tot);
+  if(n===tot) markDone('atelier');
+}
+ATELIER.generators.forEach((G,gi)=>{
+  const inputs=()=>$$('[data-gen="'+gi+'"]');
+  $('#gGen'+gi).addEventListener('click',()=>{
+    const filled=inputs().filter(f=>f.value.trim().length>=2).length, need=Math.ceil(inputs().length*0.6);
+    if(filled<need){ toast('Complétez au moins '+need+' champs ('+filled+' / '+inputs().length+').'); return; }
+    $('#gOut'+gi).textContent=genMd(gi); $('#gWrap'+gi).style.display='block'; generated.add(gi); updAtelier();
+  });
+  $('#gCopy'+gi).addEventListener('click',()=>copyText(genMd(gi)));
+  $('#gDl'+gi).addEventListener('click',()=>download(G.filename,genMd(gi)));
+  $('#gReset'+gi).addEventListener('click',()=>{ inputs().forEach(f=>f.value=''); $('#gWrap'+gi).style.display='none'; generated.delete(gi); updAtelier(); });
+});
+$$('#atSteps input, #atCheck input').forEach(c=>c.addEventListener('change',updAtelier));
+$('#atCopyPrompt').addEventListener('click',()=>copyText(ATELIER.prompt));
+$('#atReveal').addEventListener('click',()=>$('#atSolution').classList.toggle('shown'));
+updAtelier();
+
+/* ================= GLOSSAIRE VERROUILLÉ ================= */
+let glossFilter='all';
+function renderGloss(){
+  const items=TERMS.slice().sort((a,b)=>a.t.localeCompare(b.t,'fr')).filter(t=>glossFilter==='all'||t.f===glossFilter);
+  $('#gloss').innerHTML=items.map(g=>'<div class="gloss-item"><div class="gt"><span class="term-item">'+esc(g.t)+'</span><span class="famille-tag '+g.f+'">'+esc(FAMILIES[g.f])+'</span></div><div>'+esc(g.d)+'</div></div>').join('');
+}
+function unlockGloss(){
+  $('#glossLocked').style.display='none'; $('#glossOpen').style.display='block';
+  const t=$('.tab[data-tab="gl"] .lock-mark'); if(t) t.textContent='🔓';
+  renderGloss();
+}
+function onDone(act){
+  const p=$('.lock-pill[data-lock="'+act+'"]'); if(p){ p.classList.add('ok'); p.textContent=p.textContent.replace('⏳','✅'); }
+  if(['cas1','cas2','cas3'].every(a=>done.has(a))){ unlockGloss(); toast('📖 Glossaire débloqué !'); }
+}
+$$('#glossFilters button').forEach(b=>b.addEventListener('click',()=>{ glossFilter=b.dataset.f; $$('#glossFilters button').forEach(x=>x.classList.toggle('on',x===b)); renderGloss(); }));
+$('#glossForce').addEventListener('click',unlockGloss);
+
+})();
+
+</script>
+</body>
+</html>

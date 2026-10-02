@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Séance 9 — Prédire, scénariser, décider : maturité et virage RH · Théorie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2563eb;--primary-dark:#1d4ed8;--primary-light:#dbeafe;
+  --secondary:#059669;--secondary-light:#d1fae5;
+  --accent:#d97706;--accent-light:#fef3c7;
+  --danger:#dc2626;--danger-light:#fee2e2;
+  --purple:#7c3aed;--purple-light:#ede9fe;
+  --dark:#0f172a;--dark2:#1e293b;
+  --text:#1e293b;--muted:#64748b;--border:#e2e8f0;
+  --bg:#f1f5f9;--card:#ffffff;--radius:14px;
+  --sans:'Sora',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.6;font-size:15px;min-height:100vh}
+code,.mono{font-family:var(--mono)}
+code{background:#f1f5f9;border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-size:.84em}
+pre code,.key-box code,.nest.n4 code{background:transparent;border:none;padding:0;color:inherit}
+button{font-family:inherit;cursor:pointer}
+a{color:var(--primary)}
+:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+
+header{background:linear-gradient(135deg,#0f172a 0%,#4c1d95 60%,#6d28d9 100%);color:#fff;padding:42px 24px 34px;position:relative;overflow:hidden}
+header.practice{background:linear-gradient(135deg,#0f172a 0%,#6d28d9 60%,#7c3aed 100%)}
+header::after{content:"";position:absolute;right:-120px;top:-120px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(167,139,250,.25),transparent 70%)}
+.header-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:6px 14px;border-radius:999px;font-size:.8rem;font-weight:600;margin-bottom:16px}
+header h1{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;line-height:1.2;margin-bottom:10px}
+header .subtitle{color:#cbd5e1;max-width:720px;font-size:1rem}
+.meta-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.meta-pill{background:rgba(15,23,42,.45);border:1px solid rgba(255,255,255,.15);padding:6px 14px;border-radius:999px;font-size:.8rem;display:inline-flex;align-items:center;gap:6px}
+.global-progress{margin-top:24px;max-width:520px}
+.global-progress .label{display:flex;justify-content:space-between;font-size:.8rem;color:#cbd5e1;margin-bottom:6px}
+.global-progress .track{height:8px;background:rgba(255,255,255,.15);border-radius:999px;overflow:hidden}
+.global-progress .fill{height:100%;width:0;background:linear-gradient(90deg,#10b981,#34d399);border-radius:999px;transition:width .5s ease}
+.mode-flag{display:none;margin-top:14px;background:var(--accent);color:#fff;font-size:.75rem;font-weight:700;padding:4px 10px;border-radius:6px;width:max-content}
+body.formateur .mode-flag{display:block}
+
+.tabs-wrap{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--border);box-shadow:0 2px 8px rgba(15,23,42,.04)}
+.tabs{max-width:1100px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding:0 16px;scrollbar-width:thin}
+.tab{border:none;background:none;padding:15px 14px;font-size:.85rem;font-weight:600;color:var(--muted);white-space:nowrap;border-bottom:3px solid transparent;display:flex;align-items:center;gap:6px}
+.tab:hover{color:var(--primary)}
+.tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab .done-mark{display:none;color:var(--secondary)}
+.tab.done .done-mark{display:inline}
+.tab .lock-mark{font-size:.8rem}
+
+main{max-width:1100px;margin:0 auto;padding:28px 16px 80px}
+.panel{display:none}
+.panel.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.panel.active{animation:none}.global-progress .fill,.progress-fill{transition:none}}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:22px;box-shadow:0 1px 3px rgba(15,23,42,.05)}
+@media(max-width:600px){.card{padding:20px 16px}}
+.section-title{display:flex;align-items:center;gap:14px;font-size:1.3rem;font-weight:700;margin-bottom:18px;color:var(--dark)}
+.icon-bg{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:1.3rem;flex-shrink:0;background:var(--primary-light)}
+.icon-bg.green{background:var(--secondary-light)}.icon-bg.amber{background:var(--accent-light)}.icon-bg.purple{background:var(--purple-light)}.icon-bg.red{background:var(--danger-light)}
+h3{font-size:1.05rem;font-weight:700;margin:22px 0 10px;color:var(--dark)}
+p{margin-bottom:10px}
+.lead{font-size:1.05rem;color:var(--dark2)}
+.muted{color:var(--muted);font-size:.88rem}
+ul.clean{list-style:none}
+ul.clean li{padding:6px 0 6px 26px;position:relative}
+ul.clean li::before{content:"▸";position:absolute;left:6px;color:var(--primary);font-weight:700}
+ol{padding-left:22px}ol li{padding:3px 0}
+
+.objectif-box{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid var(--primary);border-radius:10px;padding:18px 20px;margin:16px 0}
+.objectif-box strong.title{display:block;color:var(--primary-dark);margin-bottom:8px}
+.instruction-box{background:#fffbeb;border:1px solid #fde68a;border-left:5px solid var(--accent);border-radius:10px;padding:18px 20px;margin:16px 0}
+.instruction-box strong.title{display:block;color:#92400e;margin-bottom:8px}
+.key-box{background:var(--dark);color:#e2e8f0;border-radius:12px;padding:22px 24px;margin:18px 0;border-left:5px solid #10b981}
+.key-box .big{font-size:1.15rem;font-weight:700;color:#fff}
+.warn-box{background:#fef2f2;border:1px solid #fecaca;border-left:5px solid var(--danger);border-radius:10px;padding:16px 20px;margin:16px 0}
+
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.grid-3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.mini-card{border:1px solid var(--border);border-radius:12px;padding:18px;background:#fff}
+.mini-card h4{font-size:1rem;margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mini-card.bad{border-color:#fecaca;background:#fef2f2}
+.mini-card.good{border-color:#a7f3d0;background:#f0fdf4}
+.mini-card pre.prompt{margin-top:8px}
+
+.famille-tag{display:inline-block;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:999px;letter-spacing:.2px}
+.f1{background:var(--primary-light);color:#1e40af}
+.f2{background:var(--secondary-light);color:#065f46}
+.f3{background:var(--accent-light);color:#92400e}
+.f4{background:var(--purple-light);color:#5b21b6}
+.f5{background:var(--danger-light);color:#991b1b}
+
+.term-item{background:var(--dark);color:#e2e8f0;font-family:var(--mono);font-size:.85rem;padding:10px 14px;border-radius:8px;display:inline-block}
+.chain .term-item,.objectif-box .term-item{padding:6px 12px}
+pre.prompt{background:var(--dark);color:#e2e8f0;font-family:var(--mono);font-size:.84rem;padding:18px 20px;border-radius:10px;white-space:pre-wrap;word-break:break-word;line-height:1.65;overflow-x:auto;position:relative;margin:12px 0}
+pre.prompt .hl{color:#34d399}
+pre.prompt .hl2{color:#fbbf24}
+pre.prompt .hl3{color:#93c5fd}
+
+.btn{border:none;border-radius:10px;padding:11px 18px;font-weight:600;font-size:.88rem;display:inline-flex;align-items:center;gap:8px;transition:transform .1s,background .2s}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-dark)}
+.btn-success{background:var(--secondary);color:#fff}.btn-success:hover{background:#047857}
+.btn-ghost{background:#fff;color:var(--dark2);border:1px solid var(--border)}.btn-ghost:hover{background:#f8fafc}
+.btn-warning{background:var(--accent);color:#fff}
+.btn-sm{padding:7px 12px;font-size:.8rem}
+.actions-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;align-items:center}
+.btn-reveal{display:none}
+body.formateur .btn-reveal{display:inline-flex}
+.reveal-content{display:none}
+.reveal-content.shown{display:block}
+
+.progress-wrap{margin:14px 0 4px}
+.progress-label{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:5px;font-weight:600}
+.progress-track{height:8px;background:#e2e8f0;border-radius:999px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#059669,#10b981);border-radius:999px;transition:width .4s ease}
+
+.result-panel{display:none;background:var(--dark);color:#e2e8f0;border-radius:12px;padding:22px 24px;margin-top:20px}
+.result-panel.show{display:block}
+.result-panel .score{font-family:var(--mono);font-size:2rem;font-weight:700;color:#34d399}
+.result-panel .msg{margin-top:6px;color:#cbd5e1}
+
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:18px 0}
+.chain-node{border:2px solid var(--border);background:#fff;border-radius:10px;padding:10px 16px;font-weight:700;font-size:.9rem;color:var(--dark2)}
+.chain-node:hover{border-color:var(--primary)}
+.chain-node.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.chain-node.seen:not(.active){border-color:#93c5fd}
+.chain-arrow{color:var(--muted);font-weight:700}
+.concept-detail{border:1px solid var(--border);border-radius:12px;padding:22px;background:#f8fafc;min-height:180px}
+.concept-detail .row{display:grid;grid-template-columns:130px 1fr;gap:10px;padding:8px 0;border-bottom:1px dashed var(--border)}
+.concept-detail .row:last-child{border-bottom:none}
+.concept-detail .k{font-weight:700;font-size:.82rem;color:var(--muted)}
+@media(max-width:600px){.concept-detail .row{grid-template-columns:1fr;gap:2px}}
+
+/* QCM */
+.qcm-q{border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:12px;background:#fff}
+.qcm-q .qt{font-weight:600;margin-bottom:10px}
+.qcm-opts{display:grid;gap:8px}
+.qcm-opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--border);border-radius:9px;padding:10px 12px;cursor:pointer;font-size:.9rem;background:#fff;text-align:left;width:100%;color:var(--text)}
+.qcm-opt:hover{background:#f8fafc;border-color:#93c5fd}
+.qcm-opt .l{font-family:var(--mono);font-weight:700;color:var(--primary);min-width:18px}
+.qcm-opt.sel{border-color:var(--primary);background:#eff6ff}
+.qcm-q.checked .qcm-opt{cursor:default}
+.qcm-opt.good{border-color:#6ee7b7;background:#ecfdf5}
+.qcm-opt.bad{border-color:#fca5a5;background:#fef2f2}
+.qcm-q.correct{border-color:#6ee7b7}
+.qcm-q.wrong{border-color:#fca5a5}
+.qcm-q .expl{display:none;margin-top:10px;font-size:.86rem;padding-top:8px;border-top:1px dashed var(--border)}
+.qcm-q.checked .expl{display:block}
+.q-num{font-family:var(--mono);font-size:.75rem;color:var(--muted);margin-right:6px}
+
+/* V/F */
+.vf-row{padding:16px;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;background:#fff}
+.vf-row .vf-q{font-weight:500;margin-bottom:10px}
+.vf-btns{display:flex;gap:8px}
+.vf-btn{border:1px solid var(--border);background:#fff;border-radius:8px;padding:7px 18px;font-weight:600;font-size:.85rem;color:var(--text)}
+.vf-btn.sel{background:var(--dark);color:#fff;border-color:var(--dark)}
+.vf-row.correct{border-color:#6ee7b7;background:#ecfdf5}
+.vf-row.wrong{border-color:#fca5a5;background:#fef2f2}
+.vf-row .expl{display:none;margin-top:10px;font-size:.85rem}
+.vf-row.checked .expl{display:block}
+
+/* Cas 1 matching */
+.match-grid{display:grid;grid-template-columns:minmax(200px,1fr) 2fr;gap:16px;margin-top:10px}
+@media(max-width:760px){.match-grid{grid-template-columns:1fr}}
+.match-col{display:flex;flex-direction:column;gap:8px}
+.match-col h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+.m-term{background:var(--dark);color:#e2e8f0;font-family:var(--mono);font-size:.84rem;padding:10px 12px;border-radius:8px;border:2px solid var(--dark);text-align:left;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.m-term:hover{border-color:#60a5fa}
+.m-term.active{border-color:#fbbf24;box-shadow:0 0 0 3px rgba(251,191,36,.35)}
+.m-def{background:#fff;border:2px solid var(--border);border-radius:8px;padding:10px 12px;font-size:.86rem;text-align:left;display:flex;gap:10px;align-items:flex-start;color:var(--text)}
+.m-def:hover{border-color:#93c5fd}
+.pair-badge{font-family:var(--mono);font-size:.72rem;font-weight:700;min-width:24px;height:24px;border-radius:6px;display:inline-grid;place-items:center;background:#e2e8f0;color:var(--muted);flex-shrink:0}
+.paired .pair-badge{background:var(--primary);color:#fff}
+.m-def.paired{border-color:#93c5fd;background:#eff6ff}
+.m-term.good,.m-def.good{border-color:#10b981}
+.m-def.good{background:#ecfdf5}
+.m-term.bad,.m-def.bad{border-color:#ef4444}
+.m-def.bad{background:#fef2f2}
+.round-pills{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 4px}
+.round-pill{font-family:var(--mono);font-size:.75rem;padding:4px 10px;border-radius:999px;background:#f1f5f9;border:1px solid var(--border);color:var(--muted)}
+.round-pill.cur{background:var(--primary);color:#fff;border-color:var(--primary)}
+.round-pill.ok{background:var(--secondary-light);color:#065f46;border-color:#6ee7b7}
+
+/* Cas 2 */
+.group{border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;background:#fff}
+.group-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.group-head strong{font-size:1rem}
+.g-label{font-size:.8rem;font-weight:700;color:var(--muted);margin:12px 0 6px;text-transform:uppercase;letter-spacing:.5px}
+.choice-row{display:flex;flex-wrap:wrap;gap:8px}
+.choice{border:1px solid var(--border);background:#fff;border-radius:999px;padding:6px 14px;font-size:.84rem;font-weight:600;color:var(--dark2)}
+.choice.sel{background:var(--dark);color:#fff;border-color:var(--dark)}
+.choice.good{background:#10b981;color:#fff;border-color:#10b981}
+.choice.bad{background:#ef4444;color:#fff;border-color:#ef4444}
+.sit{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:1px solid var(--border);border-radius:9px;padding:10px 12px;background:#f8fafc;font-size:.88rem;margin-bottom:8px;color:var(--text)}
+.sit:hover{border-color:#fbbf24}
+.sit .tag{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:999px;background:#e2e8f0;color:var(--muted);white-space:nowrap}
+.sit.sel{border-color:var(--accent);background:#fffbeb}
+.sit.sel .tag{background:var(--accent);color:#fff}
+.sit.good{border-color:#10b981;background:#ecfdf5}
+.sit.good .tag{background:#10b981;color:#fff}
+.sit.bad{border-color:#ef4444;background:#fef2f2}
+.sit.bad .tag{background:#ef4444;color:#fff}
+.group .expl{display:none;margin-top:10px;font-size:.86rem;padding-top:10px;border-top:1px dashed var(--border)}
+.group.checked .expl{display:block}
+.group.correct{border-color:#6ee7b7}
+.group.wrong{border-color:#fca5a5}
+.group.half{border-color:#fcd34d}
+
+/* forms */
+label.f-label{display:block;font-weight:600;font-size:.85rem;margin:14px 0 6px;color:var(--dark2)}
+input.f-input,textarea.f-input{width:100%;padding:11px 13px;border:1px solid var(--border);border-radius:9px;font-family:var(--sans);font-size:.9rem;background:#fff;color:var(--text)}
+textarea.f-input{min-height:78px;resize:vertical}
+
+.steps{margin:14px 0}
+.step{display:flex;gap:14px;padding:12px 0;border-bottom:1px dashed var(--border);align-items:flex-start}
+.step:last-child{border-bottom:none}
+.step input[type=checkbox]{width:20px;height:20px;accent-color:var(--secondary);margin-top:3px;flex-shrink:0}
+.step .s-num{font-family:var(--mono);font-weight:700;color:var(--primary);min-width:24px}
+.checklist label{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;cursor:pointer}
+.checklist label:hover{background:#f8fafc}
+.checklist input{width:18px;height:18px;accent-color:var(--secondary);margin-top:3px;flex-shrink:0}
+
+.table-wrap{overflow-x:auto;margin:14px 0}
+table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:520px}
+th{background:var(--dark);color:#fff;text-align:left;padding:11px 14px;font-weight:600}
+th:first-child{border-top-left-radius:10px}th:last-child{border-top-right-radius:10px}
+td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:top;background:#fff}
+tr:nth-child(even) td{background:#f8fafc}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font-size:.75rem;background:#f1f5f9;border:1px solid var(--border);padding:3px 10px;border-radius:999px;color:var(--dark2)}
+
+.route{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:14px 0}
+.route-step{background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+.route-step .n{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.route-step .t{font-weight:700;font-size:.9rem;color:var(--dark)}
+.route-step .c{font-size:.75rem;color:var(--muted)}
+.route-step.past{background:#ecfdf5;border-color:#a7f3d0}
+.route-step.here{background:var(--primary);border-color:var(--primary)}
+.route-step.here .t,.route-step.here .n,.route-step.here .c{color:#fff}
+
+.levels{display:grid;gap:8px;margin:14px 0}
+.level{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:#fff}
+.level .lv{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--primary)}
+.level .risk{font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:999px}
+@media(max-width:600px){.level{grid-template-columns:40px 1fr}.level .risk{grid-column:2;justify-self:start}}
+
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
+.pillar{border-radius:12px;padding:16px;background:#fff;border:1px solid var(--border);border-top:4px solid var(--primary)}
+.pillar:nth-child(5n+2){border-top-color:var(--purple)}
+.pillar:nth-child(5n+3){border-top-color:var(--secondary)}
+.pillar:nth-child(5n+4){border-top-color:var(--accent)}
+.pillar:nth-child(5n+5){border-top-color:var(--danger)}
+.pillar .n{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+.pillar h4{font-size:1rem;margin:4px 0 6px}
+.pillar p{font-size:.84rem;color:var(--dark2);margin:0}
+.pillar .q{font-size:.8rem;color:var(--muted);font-style:italic;margin-top:8px}
+
+details.acc{border:1px solid var(--border);border-radius:10px;margin:10px 0;background:#fff}
+details.acc summary{cursor:pointer;padding:12px 16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:10px}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary::after{content:"+";font-family:var(--mono);color:var(--primary);font-weight:700}
+details.acc[open] summary::after{content:"−"}
+details.acc[open] summary{border-bottom:1px dashed var(--border)}
+details.acc > div{padding:12px 16px;font-size:.9rem}
+
+.gloss{display:grid;gap:10px;margin-top:10px}
+.gloss-item{display:grid;grid-template-columns:190px 1fr;gap:14px;align-items:start;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:#fff}
+.gloss-item .gt{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+@media(max-width:620px){.gloss-item{grid-template-columns:1fr}}
+.lock-wrap{text-align:center;padding:30px 10px}
+.lock-wrap .big-lock{font-size:3rem}
+.lock-pills{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:16px}
+.lock-pill{font-size:.82rem;font-weight:600;padding:6px 14px;border-radius:999px;background:#f1f5f9;border:1px solid var(--border)}
+.lock-pill.ok{background:var(--secondary-light);border-color:#6ee7b7;color:#065f46}
+.filter-row{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}
+.filter-row button{border:1px solid var(--border);background:#fff;border-radius:999px;padding:5px 12px;font-size:.78rem;font-weight:600;color:var(--dark2)}
+.filter-row button.on{background:var(--dark);color:#fff;border-color:var(--dark)}
+
+.score-table td:last-child{font-family:var(--mono);font-weight:700}
+.link-card{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:#f8fafc;border:1px dashed #93c5fd;border-radius:12px;padding:16px 18px;margin-top:16px}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--dark);color:#fff;padding:10px 18px;border-radius:10px;font-size:.85rem;opacity:0;pointer-events:none;transition:all .25s;z-index:100;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.nav-bottom{display:flex;justify-content:space-between;gap:10px;margin-top:10px;flex-wrap:wrap}
+footer{text-align:center;color:var(--muted);font-size:.78rem;padding:30px 16px 50px}
+@media print{.tabs-wrap,.actions-row,.nav-bottom{display:none}.panel{display:block!important}}
+
+
+
+/* ===== Identité module SIRH ===== */
+header{background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 55%,#0e7490 100%)}
+header.practice{background:linear-gradient(135deg,#0f172a 0%,#0e7490 55%,#0891b2 100%)}
+header::after{background:radial-gradient(circle,rgba(103,232,249,.22),transparent 70%)}
+.route.r10{grid-template-columns:repeat(5,1fr)}
+@media(max-width:640px){.route.r10{grid-template-columns:repeat(2,1fr)}}
+/* Fil rouge */
+.company{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:18px 20px;margin:14px 0}
+.company .logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#0e7490,#059669);display:grid;place-items:center;font-size:1.7rem;color:#fff}
+.company h4{font-size:1.05rem;margin-bottom:4px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px}
+.fact{background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.fact .v{font-family:var(--mono);font-weight:700;font-size:1.05rem;color:var(--dark)}
+.fact .l{font-size:.75rem;color:var(--muted)}
+/* Fonctions du SI */
+.flow4{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:16px 0;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.flow4 > div{padding:14px;background:#fff;border-right:1px solid var(--border);position:relative}
+.flow4 > div:last-child{border-right:none}
+.flow4 .n{font-family:var(--mono);font-size:.72rem;color:var(--primary);font-weight:700}
+.flow4 h4{margin:2px 0 4px;font-size:.98rem}
+.flow4 p{font-size:.82rem;color:var(--dark2);margin:0}
+@media(max-width:720px){.flow4{grid-template-columns:1fr 1fr}.flow4 > div:nth-child(2){border-right:none}.flow4 > div:nth-child(-n+2){border-bottom:1px solid var(--border)}}
+/* Pyramide donnée -> décision */
+.dikw{display:grid;gap:6px;margin:16px auto;max-width:620px}
+.dikw > div{border-radius:8px;padding:10px 14px;color:#fff;display:flex;justify-content:space-between;gap:12px;font-size:.88rem;margin:0 auto;width:100%}
+.dikw > div strong{white-space:nowrap}
+.dikw .d1{width:58%;background:#0f172a}.dikw .d2{width:72%;background:#1e3a8a}.dikw .d3{width:86%;background:#0e7490}.dikw .d4{width:100%;background:#059669}
+@media(max-width:620px){.dikw > div{width:100%!important;flex-direction:column}}
+/* Timeline */
+.timeline{position:relative;margin:16px 0 8px;padding-left:22px;border-left:3px solid #bfdbfe}
+.timeline .t-item{position:relative;margin-bottom:14px}
+.timeline .t-item::before{content:"";position:absolute;left:-30px;top:5px;width:13px;height:13px;border-radius:50%;background:var(--primary);border:3px solid #fff;box-shadow:0 0 0 2px #bfdbfe}
+.timeline .t-item.now::before{background:var(--secondary)}
+.timeline .when{font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--primary)}
+.timeline .t-item.now .when{color:var(--secondary)}
+/* Architecture SIRH */
+.archi{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:12px;align-items:stretch;margin:16px 0}
+.archi .col{display:grid;gap:8px;align-content:start}
+.archi .mod{background:#fff;border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:.84rem}
+.archi .mod b{display:block;font-size:.88rem}
+.archi .core{background:var(--dark);color:#e2e8f0;border-radius:14px;padding:18px;display:flex;flex-direction:column;justify-content:center;text-align:center;gap:8px}
+.archi .core b{color:#fff;font-size:1.05rem}
+.archi .core small{color:#94a3b8}
+.archi .ext{border-style:dashed;background:#f8fafc}
+.archi .when-s{font-family:var(--mono);font-size:.7rem;color:var(--muted)}
+@media(max-width:760px){.archi{grid-template-columns:1fr}}
+/* Couloirs (swimlane) */
+.swim-wrap{overflow-x:auto;margin:16px 0;border:1px solid var(--border);border-radius:12px}
+.swim{border-collapse:separate;border-spacing:0;min-width:860px;width:100%}
+.swim th.lane{background:var(--dark2);color:#fff;font-size:.78rem;width:130px;text-align:left;padding:10px;position:sticky;left:0;z-index:1}
+.swim td{border-bottom:1px dashed var(--border);border-right:1px dashed #eef2f7;padding:8px;vertical-align:middle;background:#fff;min-width:118px}
+.swim tr:nth-child(even) td{background:#f8fafc}
+.swim .stephead th{background:#f1f5f9;color:var(--muted);font-family:var(--mono);font-size:.72rem;padding:6px;border-bottom:1px solid var(--border)}
+.task{display:block;border-radius:8px;padding:7px 9px;font-size:.76rem;line-height:1.35;background:var(--primary-light);border:1px solid #93c5fd;color:#1e3a8a}
+.task.paper{background:var(--accent-light);border-color:#fcd34d;color:#78350f}
+.task.risk{background:var(--danger-light);border-color:#fca5a5;color:#7f1d1d}
+.task.evt{background:var(--secondary-light);border-color:#6ee7b7;color:#064e3b;border-radius:999px;text-align:center}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.legend .task{display:inline-block}
+/* Matrice / BPMN symboles */
+.symbols{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:14px 0}
+.symbol{border:1px solid var(--border);border-radius:10px;padding:12px;background:#fff;text-align:center;font-size:.82rem}
+.symbol .shape{height:46px;display:grid;place-items:center;margin-bottom:6px}
+.sh-evt{width:40px;height:40px;border-radius:50%;border:3px solid var(--secondary)}
+.sh-end{width:40px;height:40px;border-radius:50%;border:5px solid var(--danger)}
+.sh-task{width:70px;height:38px;border-radius:8px;border:2px solid var(--primary);background:var(--primary-light)}
+.sh-gw{width:32px;height:32px;transform:rotate(45deg);border:2px solid var(--accent);background:var(--accent-light)}
+.sh-flow{width:80px;height:2px;background:var(--dark2);position:relative}
+.sh-flow::after{content:"";position:absolute;right:-2px;top:-5px;border-left:9px solid var(--dark2);border-top:6px solid transparent;border-bottom:6px solid transparent}
+.sh-doc{width:46px;height:40px;border:2px solid var(--purple);background:var(--purple-light);border-radius:4px 4px 12px 4px}
+/* Indicateurs de processus */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:14px 0}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;border-left:4px solid var(--accent)}
+.kpi .v{font-family:var(--mono);font-size:1.4rem;font-weight:700;color:var(--dark)}
+.kpi .l{font-size:.8rem;color:var(--muted)}
+@media print{header{background:#0f172a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+
+/* ===== Ajouts séances 3-4 ===== */
+.wf{display:flex;align-items:stretch;gap:0;margin:16px 0;overflow-x:auto;padding-bottom:6px}
+.wf .node{min-width:150px;flex:1;background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;position:relative;margin-right:26px}
+.wf .node:last-child{margin-right:0}
+.wf .node:not(:last-child)::after{content:"➜";position:absolute;right:-22px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:1.1rem}
+.wf .node .k{font-family:var(--mono);font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.wf .node h4{margin:4px 0;font-size:.92rem}
+.wf .node p{font-size:.78rem;color:var(--dark2);margin:0}
+.wf .trg{border-top:4px solid var(--secondary)}.wf .trg .k{color:var(--secondary)}
+.wf .act{border-top:4px solid var(--primary)}.wf .act .k{color:var(--primary)}
+.wf .llm{border-top:4px solid var(--purple);background:var(--purple-light)}.wf .llm .k{color:var(--purple)}
+.wf .hum{border-top:4px solid var(--accent);background:var(--accent-light)}.wf .hum .k{color:#92400e}
+.wf .flt{border-top:4px solid var(--danger)}.wf .flt .k{color:var(--danger)}
+.stairs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;align-items:end;margin:16px 0}
+.stairs > div{border-radius:10px;padding:12px;color:#fff;font-size:.82rem}
+.stairs > div b{display:block;font-size:.95rem;margin-bottom:4px}
+.stairs .s1{background:#64748b;min-height:110px}.stairs .s2{background:#1e3a8a;min-height:140px}.stairs .s3{background:#0e7490;min-height:170px}.stairs .s4{background:#7c3aed;min-height:200px}
+@media(max-width:720px){.stairs{grid-template-columns:1fr 1fr}.stairs > div{min-height:0!important}}
+.chainx{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:16px 0}
+.chainx > div{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;position:relative}
+.chainx > div .ic{font-size:1.5rem}
+.chainx > div b{display:block;font-size:.9rem;margin:4px 0}
+.chainx > div span{font-size:.76rem;color:var(--muted)}
+.chainx > div.hot{border:2px solid var(--primary);background:var(--primary-light)}
+@media(max-width:760px){.chainx{grid-template-columns:1fr 1fr}}
+.scoregrid td.c{text-align:center;font-family:var(--mono);font-weight:700}
+.dataset{font-family:var(--mono);font-size:.76rem}
+.dataset td,.dataset th{padding:6px 8px!important;white-space:nowrap}
+.dataset.wrap td,.dataset.wrap th{white-space:normal}
+.formula{font-family:var(--mono);background:#0f172a;color:#e2e8f0;border-radius:10px;padding:10px 14px;font-size:.82rem;margin:8px 0;overflow-x:auto;white-space:pre}
+.levels{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+.levels > div{border-radius:12px;padding:12px;color:#fff;font-size:.8rem}
+.levels > div b{display:block;font-size:.95rem;margin-bottom:2px}
+.levels > div i{display:block;font-style:normal;font-family:var(--mono);font-size:.72rem;opacity:.85;margin-bottom:6px}
+.levels .l1{background:#64748b}.levels .l2{background:#1e3a8a}.levels .l3{background:#0e7490}.levels .l4{background:#7c3aed}
+@media(max-width:760px){.levels{grid-template-columns:1fr 1fr}}
+.mat td.lv{text-align:center;font-family:var(--mono);font-weight:700}
+.mat td.now{background:#fef3c7}.mat td.tgt{background:#d1fae5}
+.mat td.both{background:linear-gradient(135deg,#fef3c7 50%,#d1fae5 50%)}
+.cm{display:grid;grid-template-columns:auto 1fr 1fr;gap:6px;max-width:560px;margin:14px 0;font-size:.8rem}
+.cm > div{border-radius:8px;padding:10px;text-align:center}
+.cm .h{background:#f1f5f9;font-weight:700}
+.cm .ok{background:#d1fae5}.cm .ko{background:#fee2e2}
+
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <span class="badge">🏢 SIRH &amp; exploitation de la Data — IA · Séance 9 · Support théorique</span>
+    <h1>Prédire, scénariser, décider : maturité et virage RH</h1>
+    <p class="subtitle">Passer du constat à l&#x27;anticipation : niveaux d&#x27;analyse, modèles prédictifs et leurs limites, GEPP et compétences, scénarios décisionnels chiffrés, maturité data et IA, et virage des métiers RH.</p>
+    <div class="meta-pills"><span class="meta-pill">🧭 Séance 9 sur 10</span><span class="meta-pill">📚 Support théorique</span><span class="meta-pill">📖 6 chapitres</span><span class="meta-pill">❓ 30 questions de QCM</span><span class="meta-pill">🏠 Fil rouge : Groupe Habitéo</span></div>
+    <div class="global-progress">
+      <div class="label"><span>QCM de chapitre validés</span><span id="globalPct">0 / 6</span></div>
+      <div class="track"><div class="fill" id="globalFill"></div></div>
+    </div>
+    <div class="mode-flag">Mode formateur actif — boutons « Révéler » visibles</div>
+  </div>
+</header>
+<div class="tabs-wrap"><nav class="tabs" role="tablist" aria-label="Chapitres de la séance"><button class="tab active" data-tab="0" role="tab">🚀 Démarrage</button><button class="tab" data-tab="c0" data-act="ch0" role="tab">🔭 Du constat à l&#x27;anticipation <span class="done-mark">✅</span></button><button class="tab" data-tab="c1" data-act="ch1" role="tab">🤖 Prédire le turnover : promesses et limites <span class="done-mark">✅</span></button><button class="tab" data-tab="c2" data-act="ch2" role="tab">🧩 GEPP et compétences augmentées <span class="done-mark">✅</span></button><button class="tab" data-tab="c3" data-act="ch3" role="tab">🧮 Construire un scénario décisionnel <span class="done-mark">✅</span></button><button class="tab" data-tab="c4" data-act="ch4" role="tab">📈 Mesurer la maturité data et IA <span class="done-mark">✅</span></button><button class="tab" data-tab="c5" data-act="ch5" role="tab">🔄 Le virage des métiers RH <span class="done-mark">✅</span></button><button class="tab" data-tab="syn" role="tab">🏁 Synthèse</button></nav></div>
+<main>
+<section class="panel active" data-panel="0">
+  <div class="card">
+    <div class="section-title"><span class="icon-bg">🎯</span>Où en est-on dans le parcours ?</div>
+    <div class="key-box"><div class="big">Je sais construire un scénario décisionnel.</div><p style="margin:8px 0 0">Vous savez lire le SI RH, l'outiller, cadrer un projet et produire des indicateurs fiables. Il reste à transformer ces indicateurs en décisions : anticiper, comparer des options, et situer la fonction RH dans la transformation que l'IA lui impose.</p></div>
+    <div class="route r10"><div class="route-step past"><div class="n">S1</div><div class="t">Lire</div><div class="c">SI, data, processus</div></div><div class="route-step past"><div class="n">S2</div><div class="t">Outiller</div><div class="c">IA générative</div></div><div class="route-step past"><div class="n">S3</div><div class="t">Automatiser</div><div class="c">Workflow + LLM</div></div><div class="route-step past"><div class="n">S4</div><div class="t">Socle</div><div class="c">Core RH, paie, GTA</div></div><div class="route-step past"><div class="n">S5</div><div class="t">Talents</div><div class="c">ATS, LMS, PMS</div></div><div class="route-step past"><div class="n">S6</div><div class="t">Marché</div><div class="c">Solutions, acteurs</div></div><div class="route-step past"><div class="n">S7</div><div class="t">Projet</div><div class="c">CDC, déploiement</div></div><div class="route-step past"><div class="n">S8</div><div class="t">Data</div><div class="c">KPI, tableaux de bord</div></div><div class="route-step here"><div class="n">S9</div><div class="t">Prédire</div><div class="c">Scénarios, virage RH</div></div><div class="route-step "><div class="n">S10</div><div class="t">Évaluer</div><div class="c">Révision + CCF</div></div></div>
+    <p class="muted">En vert : les séances franchies. En bleu : la séance d'aujourd'hui.</p>
+    <h3>Le fil pédagogique</h3>
+    <div class="table-wrap"><table><tr><th>Séance</th><th>Ce que vous saurez faire</th></tr><tr><td>Séance 1</td><td>Je sais lire le SI RH d&#x27;une entreprise.</td></tr><tr><td>Séance 2</td><td>Je sais choisir le bon outil IA et lui parler.</td></tr><tr><td>Séance 3</td><td>Je sais concevoir un workflow RH augmenté par l&#x27;IA.</td></tr><tr><td>Séance 4</td><td>Je sais relier les données du planning à la DSN.</td></tr><tr><td>Séance 5</td><td>Je sais évaluer ce qu&#x27;un module automatise, et ses risques.</td></tr><tr><td>Séance 6</td><td>Je sais positionner une solution et ses acteurs.</td></tr><tr><td>Séance 7</td><td>Je sais cadrer et piloter un projet SIRH.</td></tr><tr><td>Séance 8</td><td>Je sais transformer un export en KPI de climat social.</td></tr><tr><td><strong>Séance 9</strong> — aujourd&#39;hui</td><td><strong>Je sais construire un scénario décisionnel.</strong></td></tr><tr><td>Séance 10</td><td>Je sais mobiliser l&#x27;ensemble du module.</td></tr></table></div>
+  </div>
+  <div class="card">
+    <div class="section-title"><span class="icon-bg green">🏠</span>Le fil rouge : où en est Habitéo ?</div>
+    <p class="lead">Le tableau de bord du climat social (séance 8) a été présenté au comité de direction : Grenoble cumule les alertes, avec 34 % de départs et 44 % de départs précoces. Dans la foulée, un éditeur propose un module d'IA qui « prédit les démissions trois mois à l'avance ». Le directeur général veut un choix argumenté avant la fin de l'année, et les élus du CSE demandent ce que l'IA va changer pour les équipes RH.</p>
+    <div class="instruction-box"><strong class="title">La demande de la DRH</strong>« Je ne veux pas une solution miracle, je veux des options chiffrées. Que se passe-t-il si on ne fait rien à Grenoble ? Que vaut vraiment l'outil prédictif qu'on nous propose ? Où en sommes-nous en maturité, et que dois-je dire à Sophie et au CSE sur l'avenir de l'équipe RH ? »</div>
+    <p>L'atelier pratique vous fait chiffrer et comparer cinq scénarios pour Grenoble, rendre un avis sur l'offre de modèle prédictif, positionner Habitéo sur la matrice de maturité et cartographier les tâches de l'assistante RH pour préparer le débat sur le virage RH.</p>
+  </div>
+  <div class="card">
+    <div class="section-title"><span class="icon-bg green">✅</span>Objectifs de la séance</div>
+    <div class="objectif-box"><strong class="title">À la fin de cette séance, vous serez capable de :</strong><ul class="clean"><li>Distinguer les analyses descriptive, diagnostique, prédictive et prescriptive, et situer un besoin de pilotage sur cette échelle ;</li><li>Expliquer le fonctionnement d&#x27;un modèle prédictif d&#x27;attrition, lire ses performances et en identifier les limites techniques, juridiques et éthiques ;</li><li>Projeter des besoins d&#x27;effectifs et de compétences dans une démarche de GEPP, avec ou sans outil d&#x27;IA ;</li><li>Construire, chiffrer et comparer plusieurs scénarios décisionnels sur des critères explicites, avec une analyse de sensibilité ;</li><li>Évaluer la maturité data et IA d&#x27;une fonction RH et en déduire une feuille de route réaliste ;</li><li>Argumenter une position nuancée sur l&#x27;impact de l&#x27;IA sur l&#x27;emploi et sur l&#x27;évolution des métiers RH.</li></ul></div>
+    <div class="grid grid-2">
+      <div class="mini-card"><h4>🎒 À avoir avec vous</h4><ul class="clean"><li>Le tableau de bord du climat social de la séance 8 (Grenoble en particulier).</li><li>Un tableur pour chiffrer les scénarios et l'analyse de sensibilité.</li><li>Un assistant IA d'entreprise, pour des données agrégées uniquement.</li></ul></div>
+      <div class="mini-card"><h4>🧩 Les 5 familles de notions</h4><div class="chips" style="margin-top:4px"><span class="famille-tag f1">Niveaux d&#x27;analyse</span><span class="famille-tag f2">Modèles prédictifs</span><span class="famille-tag f3">GEPP et compétences</span><span class="famille-tag f4">Scénarios décisionnels</span><span class="famille-tag f5">Maturité et virage RH</span></div><p class="muted" style="margin-top:10px">Ces familles organisent les chapitres, les cas pratiques et le glossaire.</p></div>
+    </div>
+    <div class="warn-box"><strong>⛔ Règle de la séance</strong> Chaque hypothèse est écrite et chiffrée. Aucun score individuel, aucune donnée nominative ni de santé dans un outil d'IA. La décision reste humaine et motivée.</div>
+    <div class="instruction-box"><strong class="title">Comment utiliser ce support</strong>Chaque onglet est un chapitre. Lisez-le, explorez les éléments interactifs, puis répondez au <strong>QCM de fin de chapitre</strong> : sa validation fait avancer la barre de progression. La mise en application se fait dans le <strong>support pratique</strong>.</div>
+    <div class="link-card"><span><strong>🛠️ Support pratique associé</strong><br><span class="muted">Cas pratiques, atelier Habitéo et glossaire de la séance.</span></span><a class="btn btn-success" href="seance-9-predictif-scenarios-pratique.html">Ouvrir le support pratique ▸</a></div>
+    <div class="nav-bottom"><span></span><button class="btn btn-primary" data-goto="c0">Commencer : 🔭 Du constat à l&#x27;anticipation ▸</button></div>
+  </div>
+</section>
+<section class="panel" data-panel="c0">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 1 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">🔭</span>Du constat à l'anticipation</div>
+  <p class="lead">En séance 8, le tableau de bord a mis Grenoble en alerte. La DRH ne demande plus seulement ce qui s'est passé : elle veut savoir ce qui va se passer si rien ne change, et quelle option choisir. On monte d'un cran dans l'échelle de l'analyse, sans en sauter les marches.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Situer un besoin de pilotage sur les quatre niveaux d'analyse et comprendre ce que chacun exige.</div>
+  <div class="stairs">
+    <div class="s1"><b>Descriptif</b>Que s'est-il passé ?<br>Taux, tableaux de bord</div>
+    <div class="s2"><b>Diagnostique</b>Pourquoi ?<br>Croisements, entretiens</div>
+    <div class="s3"><b>Prédictif</b>Que va-t-il se passer ?<br>Projections, modèles</div>
+    <div class="s4"><b>Prescriptif</b>Que faire ?<br>Scénarios, recommandation</div>
+  </div>
+  <p class="muted">Plus on monte, plus la valeur pour la décision augmente, et plus les exigences de données, de compétences et de garde-fous augmentent aussi. <span class="famille-tag f1">Niveaux d'analyse</span></p>
+</div>
+<div class="card" data-explorer="x1">
+  <div class="section-title"><span class="icon-bg purple">🔭</span>Explorateur — les niveaux d&#x27;analyse appliqués à Habitéo</div>
+  <p class="muted">Cliquez sur chaque notion pour afficher sa fiche.</p>
+  <div class="chain"></div>
+  <div class="concept-detail"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Notions consultées</span><span>0 / 5</span></div><div class="progress-track"><div class="progress-fill"></div></div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">🧭</span>Ce que chaque niveau exige</div>
+  <div class="table-wrap"><table>
+    <tr><th>Niveau</th><th>Données</th><th>Compétences</th><th>Risques à maîtriser</th></tr>
+    <tr><td>Descriptif</td><td>Un export propre, des définitions écrites</td><td>Tableur, tableau croisé</td><td>Erreurs de périmètre, petits effectifs</td></tr>
+    <tr><td>Diagnostique</td><td>Plusieurs sources croisées, verbatims</td><td>Analyse, entretiens</td><td>Confondre corrélation et causalité</td></tr>
+    <tr><td>Prédictif</td><td>Historique long, stable, volumineux</td><td>Statistiques, lecture critique d'un modèle</td><td>Biais, profilage, opacité, dérive</td></tr>
+    <tr><td>Prescriptif</td><td>Hypothèses chiffrées, coûts, contraintes</td><td>Arbitrage, dialogue social</td><td>Déléguer la décision à l'outil</td></tr>
+  </table></div>
+  <div class="key-box"><div class="big">On ne prédit bien que ce que l'on sait déjà décrire et expliquer.</div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 1</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm0"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt0">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill0"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="0">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="0">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="0">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres0"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="0">◂ Précédent</button><button class="btn btn-primary" data-goto="c1">Suite : 🤖 Prédire le turnover : promesses et limites ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="c1">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 2 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">🤖</span>Prédire le turnover : comment ça marche</div>
+  <p class="lead">Les suites SIRH (Workday, SAP SuccessFactors, Oracle) et les spécialistes de la people analytics comme Visier proposent des modèles qui attribuent à chaque salarié un risque de départ. La promesse : agir avant la démission. La réalité : un outil puissant dans une grande organisation aux données riches, souvent inadapté et risqué dans une ETI.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Comprendre un modèle d'attrition, lire ses performances et qualifier ses risques.</div>
+  <div class="wf">
+    <div class="node trg"><div class="k">1 · Historique</div><h4>Départs passés</h4><p>Qui est parti, qui est resté, avec quelles caractéristiques</p></div>
+    <div class="node act"><div class="k">2 · Variables</div><h4>Choix des données</h4><p>Ancienneté, emploi, évolution, trajets… sans critère interdit</p></div>
+    <div class="node llm"><div class="k">3 · Apprentissage</div><h4>Le modèle</h4><p>Régression, arbres de décision, réseaux</p></div>
+    <div class="node flt"><div class="k">4 · Score</div><h4>Risque individuel</h4><p>Profilage : AIPD, information, CSE</p></div>
+    <div class="node hum"><div class="k">5 · Action</div><h4>Décision humaine</h4><p>Entretien, mobilité, jamais une sanction</p></div>
+  </div>
+</div>
+<div class="card" data-explorer="x2">
+  <div class="section-title"><span class="icon-bg purple">🤖</span>Explorateur — le vocabulaire des modèles prédictifs</div>
+  <p class="muted">Cliquez sur chaque notion pour afficher sa fiche.</p>
+  <div class="chain"></div>
+  <div class="concept-detail"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Notions consultées</span><span>0 / 7</span></div><div class="progress-track"><div class="progress-fill"></div></div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">🎯</span>Lire les performances d'un modèle</div>
+  <p class="muted">Exemple fictif : un modèle testé sur 100 salariés, dont 15 sont effectivement partis. <span class="famille-tag f2">Modèles prédictifs</span></p>
+  <div class="cm">
+    <div class="h"></div><div class="h">Est parti</div><div class="h">Est resté</div>
+    <div class="h">Signalé « à risque »</div><div class="ok">9 bien signalés</div><div class="ko">21 fausses alertes</div>
+    <div class="h">Non signalé</div><div class="ko">6 départs manqués</div><div class="ok">64 bien ignorés</div>
+  </div>
+  <div class="formula">Justesse  = (9 + 64) / 100  = 73 %
+Précision = 9 / (9 + 21)    = 30 %   → 7 alertes sur 10 sont fausses
+Rappel    = 9 / (9 + 6)     = 60 %   → 4 départs sur 10 échappent au modèle</div>
+  <div class="grid grid-2">
+    <div class="mini-card bad"><h4>⚖️ Le cadre juridique</h4><p class="muted">Un score individuel est un profilage (RGPD) : base légale, information des salariés, AIPD. Si une décision produisant des effets juridiques ou significatifs reposait uniquement sur lui, l'article 22 s'appliquerait. Un système de gestion des travailleurs est classé haut risque par l'AI Act, avec des obligations reportées au 2 décembre 2027 par le règlement omnibus 2026/1744. Introduire un tel outil relève de la consultation du CSE.</p></div>
+    <div class="mini-card bad"><h4>🧪 Les limites pratiques</h4><p class="muted">Peu de départs historisés dans une ETI, des définitions qui changent avec le nouveau SIRH, des biais hérités, des effets pervers (un salarié « à risque » privé de projets) et une défiance qui peut elle-même provoquer des départs.</p></div>
+  </div>
+  <div class="key-box"><div class="big">Un facteur de risque collectif et explicable vaut souvent mieux qu'un score individuel opaque.</div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 2</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm1"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt1">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill1"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="1">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="1">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="1">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres1"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c0">◂ Précédent</button><button class="btn btn-primary" data-goto="c2">Suite : 🧩 GEPP et compétences augmentées ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="c2">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 3 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">🧩</span>GEPP : anticiper les effectifs et les compétences</div>
+  <p class="lead">La gestion des emplois et des parcours professionnels (GEPP) relie la stratégie aux ressources humaines : de quelles compétences aurons-nous besoin, combien de personnes partiront, comment combler l'écart ? Une entreprise ou un groupe d'au moins 300 salariés, comme Habitéo, doit la négocier tous les trois ans.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Construire une projection simple de besoins et identifier l'apport et les limites de l'IA pour les compétences.</div>
+  <div class="wf">
+    <div class="node trg"><div class="k">Besoins</div><h4>Demain</h4><p>Activité, stratégie, technologies</p></div>
+    <div class="node act"><div class="k">Ressources</div><h4>Aujourd'hui → demain</h4><p>Effectifs, départs prévisibles, compétences</p></div>
+    <div class="node flt"><div class="k">Écart</div><h4>Le delta</h4><p>Quantitatif et qualitatif</p></div>
+    <div class="node hum"><div class="k">Leviers</div><h4>Plans d'action</h4><p>Recruter, former, mobiliser, fidéliser</p></div>
+  </div>
+  <h3>Exemple : les techniciens d'Habitéo en 2027 <span class="famille-tag f3">GEPP et compétences</span></h3>
+  <div class="formula">Techniciens au 1er janvier 2027 : 574  (70 % de 820)
+Hypothèse d'activité : +5 %     → 29 postes à créer
+Turnover 24 %          → 138 départs → besoin de recrutement : 167
+Turnover ramené à 18 % → 103 départs → besoin de recrutement : 132
+Écart : 35 recrutements de moins par an, soit ≈ 350 k€ à 10 k€ par remplacement</div>
+  <p class="muted">Une simulation simple suffit à montrer que la fidélisation est un levier de GEPP au même titre que le recrutement.</p>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">🧠</span>Les compétences augmentées par l'IA</div>
+  <div class="grid grid-2">
+    <div class="mini-card"><h4>🗂️ Référentiel et inférence</h4><p class="muted">Workday Skills Cloud, SAP SuccessFactors, Cornerstone ou Eightfold déduisent des compétences probables à partir des CV, postes et formations, et relient recrutement, formation et mobilité interne.</p></div>
+    <div class="mini-card"><h4>🧭 Mobilité et parcours</h4><p class="muted">Suggestions de postes ou de formations proches du profil : utile pour la mobilité interne, à condition que le salarié voie, corrige et complète son profil.</p></div>
+    <div class="mini-card"><h4>📜 Le cadre français</h4><p class="muted">Entretien de parcours professionnel (loi du 24 octobre 2025) la première année puis tous les quatre ans ; CPF ; consultation du CSE sur les orientations stratégiques et la GEPP.</p></div>
+    <div class="mini-card bad"><h4>⚠️ Les limites</h4><p class="muted">Une compétence déduite n'est pas une compétence prouvée ; les habilitations du BTP restent des certifications réglementaires, pas des inférences.</p></div>
+  </div>
+  <div class="key-box"><div class="big">La GEPP chiffre l'écart ; l'IA aide à le décrire, pas à le décider.</div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 3</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm2"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt2">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill2"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="2">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="2">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="2">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres2"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c1">◂ Précédent</button><button class="btn btn-primary" data-goto="c3">Suite : 🧮 Construire un scénario décisionnel ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="c3">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 4 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">🧮</span>Construire un scénario décisionnel</div>
+  <p class="lead">Un comité de direction n'a pas besoin d'une seule recommandation, mais d'options comparées honnêtement. Le scénario décisionnel rend visibles les hypothèses, les coûts, les effets attendus et les risques, pour que la décision soit discutable et assumée.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Formuler, chiffrer, comparer et tester des scénarios, puis rédiger une recommandation.</div>
+  <div class="wf">
+    <div class="node trg"><div class="k">1 · Question</div><h4>Décision à prendre</h4><p>Réduire les départs à Grenoble en 2027</p></div>
+    <div class="node act"><div class="k">2 · Options</div><h4>3 à 5 scénarios</h4><p>Dont le statu quo</p></div>
+    <div class="node act"><div class="k">3 · Hypothèses</div><h4>Chiffrées et sourcées</h4><p>Coût d'un départ, effet attendu</p></div>
+    <div class="node llm"><div class="k">4 · Comparaison</div><h4>Multicritère</h4><p>Coût, effet, délai, risque, acceptabilité</p></div>
+    <div class="node hum"><div class="k">5 · Décision</div><h4>Recommandation</h4><p>Conditions, indicateurs de suivi</p></div>
+  </div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">📐</span>Les outils du raisonnement <span class="famille-tag f4">Scénarios décisionnels</span></div>
+  <div class="formula">Coût annuel d'un scénario = départs restants × coût d'un départ + coût des actions
+Gain net                  = coût du statu quo − coût du scénario
+Seuil de rentabilité      = coût des actions / coût d'un départ   (départs à éviter)</div>
+  <div class="grid grid-2">
+    <div class="mini-card"><h4>⚖️ Matrice multicritère</h4><p class="muted">Critères pondérés à l'avance : coût net, effet attendu, délai, risque juridique et éthique, acceptabilité sociale, réversibilité. On note chaque scénario, puis on discute les écarts plutôt que le seul total.</p></div>
+    <div class="mini-card"><h4>🔁 Analyse de sensibilité</h4><p class="muted">Faire varier l'hypothèse la plus fragile (souvent l'effet attendu) : la recommandation tient-elle si l'effet est divisé par deux ? Si oui, elle est robuste.</p></div>
+    <div class="mini-card"><h4>🤖 L'IA comme sparring-partner</h4><p class="muted">Sur données agrégées : calculer, proposer des critères oubliés, jouer l'avocat du diable. Les hypothèses et la décision restent humaines, et chaque chiffre est recalculé.</p></div>
+    <div class="mini-card bad"><h4>⚠️ Les pièges</h4><p class="muted">Oublier le statu quo, cacher une hypothèse, présenter un effet espéré comme certain, ne comparer que les coûts, ignorer les élus.</p></div>
+  </div>
+  <div class="key-box"><div class="big">Un bon scénario se discute : ses hypothèses sont écrites, ses chiffres refaits, ses risques nommés.</div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 4</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm3"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt3">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill3"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="3">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="3">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="3">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres3"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c2">◂ Précédent</button><button class="btn btn-primary" data-goto="c4">Suite : 📈 Mesurer la maturité data et IA ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="c4">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 5 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">📈</span>Mesurer la maturité data et IA de la fonction RH</div>
+  <p class="lead">Avant d'acheter un module d'IA, une DRH doit savoir d'où elle part. Une matrice de maturité situe l'organisation sur plusieurs axes, fixe une cible réaliste et fait apparaître les marches à franchir, dans l'ordre.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Positionner une fonction RH sur une matrice de maturité et en déduire une feuille de route.</div>
+  <div class="levels">
+    <div class="l1"><b>1 · Artisanal</b><i>Fichiers dispersés</i>Saisies multiples, définitions locales, papier</div>
+    <div class="l2"><b>2 · Outillé</b><i>Outils isolés</i>Logiciels par processus, premiers usages individuels de l'IA</div>
+    <div class="l3"><b>3 · Intégré</b><i>Référentiel unique</i>Core RH, données maîtres, indicateurs définis</div>
+    <div class="l4"><b>4-5 · Piloté, augmenté</b><i>Décision et IA</i>Tableaux de bord utilisés, IA gouvernée et évaluée</div>
+  </div>
+  <h3>Habitéo à l'automne 2026 <span class="famille-tag f5">Maturité et virage RH</span></h3>
+  <p class="muted">● position actuelle · ◎ cible fin 2028 (proposition à discuter dans l'atelier)</p>
+  <div class="table-wrap"><table class="mat"><tr><th>Axe</th><th>1 · Artisanal</th><th>2 · Outillé</th><th>3 · Intégré</th><th>4 · Piloté par la donnée</th><th>5 · Augmenté par l&#x27;IA</th></tr><tr><td><strong>Données</strong></td><td class="lv now">●</td><td class="lv "></td><td class="lv tgt">◎</td><td class="lv "></td><td class="lv "></td></tr><tr><td><strong>Outils SIRH</strong></td><td class="lv now">●</td><td class="lv "></td><td class="lv tgt">◎</td><td class="lv "></td><td class="lv "></td></tr><tr><td><strong>Automatisation et IA</strong></td><td class="lv "></td><td class="lv now">●</td><td class="lv tgt">◎</td><td class="lv "></td><td class="lv "></td></tr><tr><td><strong>Compétences data et IA de l&#x27;équipe RH</strong></td><td class="lv now">●</td><td class="lv "></td><td class="lv tgt">◎</td><td class="lv "></td><td class="lv "></td></tr><tr><td><strong>Gouvernance et éthique</strong></td><td class="lv "></td><td class="lv now">●</td><td class="lv "></td><td class="lv tgt">◎</td><td class="lv "></td></tr></table></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">🗺️</span>De la matrice à la feuille de route</div>
+  <div class="grid grid-2">
+    <div class="mini-card"><h4>🪜 Une marche à la fois</h4><p class="muted">On ne vise pas le niveau 5 partout : on comble d'abord l'axe le plus bas qui bloque les autres. Chez Habitéo, les données et les outils (lot 1) conditionnent tout usage prédictif.</p></div>
+    <div class="mini-card"><h4>🏛️ La gouvernance d'abord</h4><p class="muted">Charte d'usage, registre des usages d'IA, comité réunissant RH, DSI, DPO et élus, grille de risque : c'est l'axe sur lequel Habitéo peut progresser le plus vite et le moins cher.</p></div>
+    <div class="mini-card"><h4>🎓 La maîtrise de l'IA</h4><p class="muted">L'article 4 de l'AI Act, réécrit en 2026, demande aux entreprises de prendre des mesures pour favoriser la maîtrise de l'IA par leurs équipes : un plan de formation RH en est la traduction.</p></div>
+    <div class="mini-card bad"><h4>⚠️ Les biais d'autodiagnostic</h4><p class="muted">Matrices d'éditeurs centrées sur leurs outils, surévaluation par l'équipe projet : faire noter par plusieurs acteurs et justifier chaque note par un fait observable.</p></div>
+  </div>
+  <div class="key-box"><div class="big">La maturité ne s'achète pas : elle se construit axe par axe, en commençant par les données et la gouvernance.</div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 5</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm4"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt4">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill4"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="4">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="4">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="4">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres4"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c3">◂ Précédent</button><button class="btn btn-primary" data-goto="c5">Suite : 🔄 Le virage des métiers RH ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="c5">
+<div class="card" style="padding:14px 22px;background:#f8fafc"><span class="muted" style="font-weight:600">Chapitre 6 sur 6</span></div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg">🔄</span>L'IA va-t-elle supprimer des emplois ?</div>
+  <p class="lead">La question revient dans chaque comité de direction et chaque CSE. Le manager RH doit pouvoir y répondre avec des sources, sans catastrophisme ni angélisme, et surtout la traduire en actions pour sa propre organisation.</p>
+  <div class="objectif-box"><strong class="title">Objectif du chapitre</strong>Argumenter une position nuancée et préparer le virage des métiers RH.</div>
+  <div class="grid grid-2">
+    <div class="mini-card"><h4>🌍 OIT, mai 2025</h4><p class="muted">L'indice affiné de l'OIT et de l'institut polonais NASK estime qu'environ un emploi sur quatre dans le monde est exposé à l'IA générative. Les emplois administratifs sont les plus exposés ; l'exposition décrit un potentiel de transformation des tâches, pas des pertes d'emploi. Dans les pays à haut revenu, les emplois les plus exposés représentent 9,6 % de l'emploi féminin, près de trois fois la part masculine.</p></div>
+    <div class="mini-card"><h4>📊 Forum économique mondial, janvier 2025</h4><p class="muted">Le Future of Jobs Report 2025 anticipe d'ici 2030 la création de 170 millions d'emplois et la suppression de 92 millions, soit un solde net de 78 millions, avec 59 travailleurs sur 100 ayant besoin de se former ou de se reconvertir. Ce sont des projections déclaratives d'employeurs.</p></div>
+  </div>
+  <div class="table-wrap"><table>
+    <tr><th>Argument « l'IA détruit des emplois » <span class="famille-tag f5">Maturité et virage RH</span></th><th>Argument « l'IA transforme les emplois »</th></tr>
+    <tr><td>Des tâches entières de saisie, de tri et de rédaction deviennent automatisables</td><td>Peu d'emplois sont composés uniquement de tâches automatisables</td></tr>
+    <tr><td>Les gains de productivité peuvent réduire les recrutements futurs</td><td>Le temps libéré peut être réinvesti dans le conseil et l'accompagnement</td></tr>
+    <tr><td>Les postes administratifs, souvent occupés par des femmes, sont les plus exposés</td><td>De nouveaux rôles apparaissent : people analytics, gouvernance de l'IA, conception de parcours</td></tr>
+  </table></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">🧑‍💼</span>Le virage des métiers RH</div>
+  <div class="grid grid-3">
+    <div class="mini-card"><h4>⚙️ Automatisé</h4><p class="muted">Saisies, relances, consolidations, alertes de conformité : confiés aux workflows et au SIRH.</p></div>
+    <div class="mini-card"><h4>🤝 Augmenté</h4><p class="muted">Réponses aux salariés, rédaction, analyse : l'IA prépare, le RH vérifie et personnalise.</p></div>
+    <div class="mini-card"><h4>❤️ Humain</h4><p class="muted">Écoute, médiation, dialogue social, décisions sur les personnes : le cœur du métier.</p></div>
+  </div>
+  <div class="grid grid-2">
+    <div class="mini-card"><h4>🆕 Les compétences qui montent</h4><p class="muted">Lecture critique des données et des modèles, conception de processus, maîtrise des outils d'IA, gouvernance et conformité, accompagnement du changement.</p></div>
+    <div class="mini-card"><h4>🛠️ Les leviers du manager RH</h4><p class="muted">Cartographier les tâches par métier, associer les salariés concernés, négocier dans le cadre de la GEPP, former, réaffecter le temps libéré et le mesurer.</p></div>
+  </div>
+  <div class="key-box"><div class="big">L'IA transforme d'abord des tâches ; c'est la décision managériale qui en fait des suppressions ou des évolutions.</div></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg amber">❓</span>QCM — Chapitre 6</div>
+  <div class="instruction-box"><strong class="title">Consigne</strong>Une seule bonne réponse par question. Répondez à tout, vérifiez, puis lisez les explications, y compris pour les bonnes réponses. Questions et options sont mélangées à chaque essai.</div>
+  <div id="qcm5"></div>
+  <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="qtxt5">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="qfill5"></div></div></div>
+  <div class="actions-row">
+    <button class="btn btn-primary" data-qcheck="5">✔ Vérifier</button>
+    <button class="btn btn-warning btn-reveal" data-qreveal="5">👁 Révéler</button>
+    <button class="btn btn-ghost" data-qreset="5">↺ Recommencer</button>
+  </div>
+  <div class="result-panel" id="qres5"></div>
+  <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c4">◂ Précédent</button><button class="btn btn-primary" data-goto="syn">Synthèse de la séance ▸</button></div>
+</div>
+</section>
+<section class="panel" data-panel="syn">
+  <div class="card">
+    <div class="section-title"><span class="icon-bg green">📊</span>Vos résultats aux QCM</div>
+    <div class="table-wrap score-table"><table><tr><th>Chapitre</th><th>Thème</th><th>Meilleur score</th></tr><tr><td>Chapitre 1</td><td>🔭 Du constat à l&#x27;anticipation</td><td id="score0">—</td></tr><tr><td>Chapitre 2</td><td>🤖 Prédire le turnover : promesses et limites</td><td id="score1">—</td></tr><tr><td>Chapitre 3</td><td>🧩 GEPP et compétences augmentées</td><td id="score2">—</td></tr><tr><td>Chapitre 4</td><td>🧮 Construire un scénario décisionnel</td><td id="score3">—</td></tr><tr><td>Chapitre 5</td><td>📈 Mesurer la maturité data et IA</td><td id="score4">—</td></tr><tr><td>Chapitre 6</td><td>🔄 Le virage des métiers RH</td><td id="score5">—</td></tr><tr><td colspan="2"><strong>Total</strong></td><td id="scoreTotal">0 / 30</td></tr></table></div>
+    <p class="muted">Un chapitre sous 4 / 5 ? Relisez-le et refaites son QCM avant de passer au support pratique.</p>
+  </div>
+  <div class="card">
+    <div class="section-title"><span class="icon-bg">🔑</span>Le message clé</div>
+    <div class="key-box"><div class="big">Anticiper, c&#x27;est rendre une décision discutable : des hypothèses écrites, des scénarios comparés, des risques nommés, et une IA qui éclaire sans décider.</div></div>
+    <div class="table-wrap"><table><tr><th>Notion</th><th>À retenir en une phrase</th></tr><tr><td>Niveaux d&#x27;analyse</td><td>Descriptif, diagnostique, prédictif, prescriptif : chaque marche suppose la précédente.</td></tr><tr><td>Modèle prédictif</td><td>Score individuel = profilage ; précision et rappel ; biais, dérive, explicabilité ; AI Act haut risque au 2/12/2027, AIPD, CSE.</td></tr><tr><td>GEPP</td><td>Besoins − ressources = écart ; négociation triennale dès 300 salariés ; la fidélisation est un levier de GEPP.</td></tr><tr><td>Scénario décisionnel</td><td>Statu quo inclus, hypothèses chiffrées, seuil de rentabilité, multicritère, sensibilité, recommandation sous conditions.</td></tr><tr><td>Maturité</td><td>Cinq axes dont gouvernance et compétences ; une cible réaliste ; on comble d&#x27;abord l&#x27;axe qui bloque.</td></tr><tr><td>Virage RH</td><td>Exposition ≠ suppression ; tâches automatisées, augmentées, humaines ; le temps libéré se réinvestit et se négocie.</td></tr></table></div>
+    <div class="objectif-box"><strong class="title">À la fin de cette séance, vous êtes capable de :</strong><ul class="clean"><li>Distinguer les analyses descriptive, diagnostique, prédictive et prescriptive, et situer un besoin de pilotage sur cette échelle ;</li><li>Expliquer le fonctionnement d&#x27;un modèle prédictif d&#x27;attrition, lire ses performances et en identifier les limites techniques, juridiques et éthiques ;</li><li>Projeter des besoins d&#x27;effectifs et de compétences dans une démarche de GEPP, avec ou sans outil d&#x27;IA ;</li><li>Construire, chiffrer et comparer plusieurs scénarios décisionnels sur des critères explicites, avec une analyse de sensibilité ;</li><li>Évaluer la maturité data et IA d&#x27;une fonction RH et en déduire une feuille de route réaliste ;</li><li>Argumenter une position nuancée sur l&#x27;impact de l&#x27;IA sur l&#x27;emploi et sur l&#x27;évolution des métiers RH.</li></ul></div>
+  </div>
+  <div class="card">
+    <div class="section-title"><span class="icon-bg amber">📦</span>À la fin de la séance, vous devez avoir</div>
+    <div class="checklist" id="finCheck"><label><input type="checkbox"> Validé les six QCM de chapitre ;</label><label><input type="checkbox"> Réalisé les trois cas pratiques et débloqué le glossaire ;</label><label><input type="checkbox"> Chiffré les cinq scénarios de Grenoble et leur seuil de rentabilité ;</label><label><input type="checkbox"> Rédigé la note de décision avec analyse de sensibilité ;</label><label><input type="checkbox"> Rendu un avis motivé sur l&#x27;offre de modèle prédictif ;</label><label><input type="checkbox"> Positionné Habitéo sur la matrice de maturité et qualifié les tâches de Sophie.</label></div>
+    <div class="link-card"><span><strong>🛠️ Passez à la pratique</strong><br><span class="muted">Cas 1, 2, 3, atelier Habitéo et glossaire à débloquer.</span></span><a class="btn btn-success" href="seance-9-predictif-scenarios-pratique.html">Ouvrir le support pratique ▸</a></div>
+    <div class="objectif-box"><strong class="title">Prochaine séance — Je sais mobiliser l&#x27;ensemble du module.</strong>Dernière séance : révision de tout le parcours par cas pratiques interactifs, répétition de la méthode de l'étude de cas, puis évaluation individuelle (CCF).</div>
+  </div>
+</section>
+</main>
+<footer>SIRH &amp; exploitation de la Data — IA — Séance 9 — Prédictif, scénarios et virage RH — Théorie<br>Mode formateur : ajoutez <code>?formateur</code> à l'adresse de la page.</footer>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+"use strict";
+const FAMILIES={"f1": "Niveaux d'analyse", "f2": "Modèles prédictifs", "f3": "GEPP et compétences", "f4": "Scénarios décisionnels", "f5": "Maturité et virage RH"};
+const EXPLORERS={"x1": {"items": [{"id": "Descriptive", "fam": "f1", "rows": [["Question", "Que s'est-il passé ?"], ["Exemple", "Taux de départ de Grenoble : 34 % sur 12 mois (séance 8)."], ["Outils", "Tableur, tableau de bord, rapports du SIRH."]]}, {"id": "Diagnostique", "fam": "f1", "rows": [["Question", "Pourquoi est-ce arrivé ?"], ["Exemple", "44 % des entrants partent avant un an : l'intégration est une piste à vérifier."], ["Outils", "Croisements, entretiens de départ, verbatims du baromètre."]]}, {"id": "Prédictive", "fam": "f1", "rows": [["Question", "Que va-t-il probablement se passer ?"], ["Exemple", "Projection des besoins de recrutement de techniciens en 2027 ; probabilité de départ."], ["Outils", "Projections, régression, apprentissage automatique (Visier, Workday, SAP SuccessFactors)."]]}, {"id": "Prescriptive", "fam": "f1", "rows": [["Question", "Que devrait-on faire ?"], ["Exemple", "Comparer cinq scénarios d'action pour Grenoble et recommander le meilleur compromis."], ["Vigilance", "La recommandation reste une aide : la décision et sa justification sont humaines."]]}, {"id": "Simulation", "fam": "f4", "rows": [["Question", "Que se passerait-il si… ?"], ["Exemple", "Si le turnover des techniciens passait de 24 % à 18 %, combien de recrutements en moins ?"], ["Outils", "Tableur, modules de planification des effectifs, assistant IA sur données agrégées."]]}]}, "x2": {"items": [{"id": "Variables d'entrée", "fam": "f2", "rows": [["Définition", "Les données dont le modèle se sert : ancienneté, site, emploi, salaire, évolution, absences…"], ["Vigilance", "Exclure les critères discriminatoires et leurs substituts (âge, santé, situation familiale, lieu de résidence)."]]}, {"id": "Apprentissage", "fam": "f2", "rows": [["Définition", "Le modèle apprend sur les départs passés les combinaisons qui les précédaient."], ["Condition", "Plusieurs centaines de départs historisés, définis de façon stable : rarement le cas dans une ETI."]]}, {"id": "Score de risque", "fam": "f2", "rows": [["Définition", "Probabilité estimée qu'une personne quitte l'entreprise dans un délai donné."], ["Vigilance", "Un score individuel est un profilage : RGPD, AIPD, information des salariés, consultation du CSE."]]}, {"id": "Précision et rappel", "fam": "f2", "rows": [["Précision", "Parmi les personnes signalées, combien partent vraiment ?"], ["Rappel", "Parmi les personnes qui partent, combien ont été signalées ?"], ["Lecture", "Un éditeur qui annonce « 90 % de justesse » sur une population où 80 % restent ne dit presque rien."]]}, {"id": "Biais", "fam": "f2", "rows": [["Définition", "Erreur systématique héritée des données ou des choix de conception."], ["Exemple", "Si les femmes ont plus souvent quitté un site mal équipé, le modèle peut « apprendre » le sexe au lieu de l'équipement."]]}, {"id": "Explicabilité", "fam": "f2", "rows": [["Définition", "Capacité à dire pourquoi le modèle produit un résultat."], ["Utilité", "Un facteur collectif explicable (trajets longs) est actionnable ; un score opaque ne l'est pas."]]}, {"id": "Dérive", "fam": "f2", "rows": [["Définition", "Baisse de fiabilité quand la réalité change : nouveau SIRH, nouvelle politique salariale, marché de l'emploi."], ["Réponse", "Surveillance continue des performances et réentraînement documenté."]]}]}};
+const QCMS=[[{"q": "« Pourquoi Grenoble perd-elle autant de techniciens ? » relève de quel niveau d'analyse ?", "o": ["Descriptif", "Diagnostique", "Prédictif", "Prescriptif"], "a": 1, "e": "On cherche des causes : croisements, entretiens de départ, verbatims. Le constat (34 %) était descriptif."}, {"q": "Quelle question relève de l'analyse prescriptive ?", "o": ["Combien de départs l'an dernier ?", "Quelle action réduit le mieux les départs à coût donné ?", "Quels sites ont le plus d'absences ?", "Quelle part des départs sont des démissions ?"], "a": 1, "e": "Le prescriptif recommande une action en comparant des options ; c'est l'objet des scénarios décisionnels."}, {"q": "Pourquoi l'analyse prédictive vient-elle après le descriptif dans une feuille de route ?", "o": ["Parce qu'elle coûte toujours moins cher", "Parce qu'elle a besoin de données fiables et historisées", "Parce que la loi l'impose dans cet ordre", "Parce que les éditeurs ne la proposent pas avant"], "a": 1, "e": "Sans historique propre et définitions stables (séance 8), un modèle apprend des erreurs de saisie plutôt que des comportements."}, {"q": "Qu'est-ce qu'une simulation « et si… » ?", "o": ["Un score de risque individuel calculé chaque mois", "Le calcul de l'effet d'une hypothèse sur un indicateur", "Une enquête d'opinion auprès des managers", "Un audit de conformité des données RH"], "a": 1, "e": "Exemple : si le turnover des techniciens passe de 24 % à 18 %, le besoin de recrutement baisse d'environ 35 postes par an."}, {"q": "Que reste-t-il au manager RH quand un outil propose une recommandation ?", "o": ["La saisie des résultats dans le SIRH", "La décision, sa justification et son suivi", "Rien, si l'outil est certifié", "La seule validation du budget"], "a": 1, "e": "L'outil éclaire ; la décision, sa motivation et sa responsabilité restent humaines, d'autant plus qu'elle touche des personnes."}], [{"q": "Qu'est-ce qu'un modèle prédictif d'attrition ?", "o": ["Un tableau des départs passés par site", "Un modèle qui estime la probabilité de départ d'une personne", "Un questionnaire de départ standardisé", "Un indicateur de turnover glissant"], "a": 1, "e": "Il apprend sur les départs passés et attribue à chaque salarié un score de risque : c'est un profilage."}, {"q": "Un éditeur annonce 90 % de « justesse » alors que 85 % des salariés restent. Qu'en déduire ?", "o": ["Que le modèle est excellent", "Que le chiffre seul ne prouve rien : il faut la précision et le rappel", "Que le modèle prédit surtout les démissions", "Qu'il faut acheter le module sans attendre"], "a": 1, "e": "Un modèle qui répond toujours « reste » aurait déjà 85 % de justesse. Précision et rappel disent s'il repère vraiment les départs."}, {"q": "Selon le calendrier en vigueur à l'automne 2026, quand s'appliquent les obligations « haut risque » de l'AI Act aux systèmes de gestion des travailleurs ?", "o": ["Depuis le 2 février 2025", "À partir du 2 décembre 2027", "Depuis le 2 août 2026", "Jamais : les RH sont exclues"], "a": 1, "e": "Le règlement omnibus 2026/1744 a reporté au 2 décembre 2027 les obligations de l'annexe III (recrutement, gestion des travailleurs). Anticiper reste nécessaire pour un projet lancé en 2027."}, {"q": "Pourquoi un score individuel de risque de départ appelle-t-il une analyse d'impact (AIPD) ?", "o": ["Parce qu'il utilise un logiciel en SaaS", "Parce qu'il évalue et profile des salariés", "Parce qu'il est calculé chaque mois", "Parce qu'il est hébergé hors de France"], "a": 1, "e": "Évaluation et profilage de personnes en situation de dépendance : le traitement présente un risque élevé pour leurs droits."}, {"q": "Quelle variable faut-il exclure d'un modèle d'attrition, même si elle « améliore » ses résultats ?", "o": ["L'ancienneté dans le poste", "Le nombre d'arrêts maladie", "Le site de rattachement", "L'emploi occupé"], "a": 1, "e": "L'état de santé est un critère de discrimination interdit ; l'utiliser pour cibler des salariés est illégal, quelle que soit la performance."}], [{"q": "Quelle entreprise doit négocier tous les trois ans sur la GEPP ?", "o": ["Toute entreprise d'au moins 50 salariés", "Une entreprise ou un groupe d'au moins 300 salariés", "Seulement les entreprises cotées en bourse", "Uniquement les entreprises en difficulté"], "a": 1, "e": "Avec 820 salariés, Habitéo est concernée : la négociation porte notamment sur l'emploi, les compétences et les parcours."}, {"q": "Que projette-t-on dans une GEPP ?", "o": ["Uniquement la masse salariale de l'année", "Les besoins d'effectifs et de compétences face aux départs prévisibles", "La seule liste des salariés à former", "Le calendrier des entretiens annuels"], "a": 1, "e": "Besoins futurs (activité, stratégie) moins ressources futures (départs, mobilités, montée en compétences) : l'écart guide recrutement, formation et mobilité."}, {"q": "Qu'apporte une organisation fondée sur les compétences ?", "o": ["La suppression des fiches de poste", "Un langage commun pour recruter, former et mobiliser par compétence", "Un classement automatique des salariés", "Un calcul plus rapide de la paie"], "a": 1, "e": "Un référentiel de compétences partagé relie l'ATS, le LMS, l'entretien et la mobilité interne (séance 5)."}, {"q": "Que fait une « inférence de compétences » dans un outil comme Workday Skills Cloud ?", "o": ["Elle remplace l'entretien annuel", "Elle déduit des compétences probables à partir de CV, postes et formations", "Elle certifie officiellement des compétences", "Elle fixe les salaires selon les compétences"], "a": 1, "e": "La déduction reste une hypothèse : le salarié doit pouvoir la voir, la corriger et la compléter."}, {"q": "Chez Habitéo, quel besoin de compétences la GEPP doit-elle anticiper en priorité ?", "o": ["Des développeurs pour le site internet", "Des techniciens habilités aux nouvelles technologies de chauffage", "Des comptables pour la paie externalisée", "Des commerciaux pour l'export"], "a": 1, "e": "Pompes à chaleur, isolation, habilitations : le cœur de métier, en tension, avec 24 % de turnover."}], [{"q": "Un scénario décisionnel bien construit comporte d'abord :", "o": ["Un graphique en couleur", "Des hypothèses explicites et chiffrées", "La recommandation de l'éditeur", "Un vote des managers"], "a": 1, "e": "Chaque hypothèse (coût d'un départ, effet attendu) est écrite pour pouvoir être discutée et vérifiée."}, {"q": "Le scénario B coûte 32 k€ par an ; un départ coûte 10 k€. Quel est son seuil de rentabilité ?", "o": ["0,3 départ évité", "3,2 départs évités", "32 départs évités", "10 départs évités"], "a": 1, "e": "32 000 / 10 000 = 3,2 : au-delà de 4 départs évités, le scénario rapporte plus qu'il ne coûte."}, {"q": "À quoi sert une analyse de sensibilité ?", "o": ["À choisir les couleurs du tableau de bord", "À tester si la recommandation tient quand une hypothèse varie", "À mesurer l'adhésion du CSE au projet", "À calculer précisément le turnover futur"], "a": 1, "e": "Si l'effet attendu est divisé par deux, le scénario reste-t-il le meilleur ? Une recommandation robuste survit à ce test."}, {"q": "Pourquoi comparer les scénarios sur plusieurs critères et pas seulement le coût ?", "o": ["Pour retarder la décision", "Parce que délai, risque, acceptabilité et réversibilité comptent aussi", "Parce que le coût n'est jamais connu", "Parce que la loi interdit le critère financier"], "a": 1, "e": "Une revalorisation salariale est rapide mais irréversible ; un modèle prédictif est moins cher mais risqué et mal accepté."}, {"q": "Qu'apporte un assistant IA dans la construction des scénarios ?", "o": ["Il fixe lui-même les hypothèses", "Il structure, calcule et contre-argumente sur données agrégées", "Il prend la décision à la place de la DRH", "Il garantit l'exactitude des chiffres"], "a": 1, "e": "Utile pour calculer, proposer des critères et jouer l'avocat du diable ; les hypothèses et la décision restent humaines et vérifiées."}], [{"q": "À quoi sert une matrice de maturité data et IA ?", "o": ["À classer les salariés selon leur niveau numérique", "À situer la fonction RH sur plusieurs axes et fixer une cible", "À choisir un éditeur de SIRH", "À calculer le retour sur investissement"], "a": 1, "e": "Position actuelle, cible, écarts par axe : la base d'une feuille de route réaliste."}, {"q": "Quel axe manque souvent dans les matrices de maturité proposées par les éditeurs ?", "o": ["Les outils et les licences", "La gouvernance et l'éthique de l'IA", "Le nombre d'utilisateurs connectés", "Les fonctionnalités du module"], "a": 1, "e": "Une matrice d'éditeur valorise ses outils. Charte, comité, contrôle humain et dialogue social sont pourtant des conditions de succès."}, {"q": "Habitéo est au niveau 1 sur les données. Que viser d'abord ?", "o": ["Le niveau 5, augmenté par l'IA", "Un niveau intégré : référentiel unique et définitions stables", "Aucun objectif tant que le lot 1 n'est pas fini", "Un modèle prédictif pour gagner du temps"], "a": 1, "e": "On ne saute pas les marches : le Core RH et les fiches indicateurs (séances 7 et 8) conditionnent tout usage avancé."}, {"q": "Quel est le signe d'un niveau « piloté par la donnée » ?", "o": ["Chaque manager a accès à toutes les données individuelles", "Les décisions s'appuient sur des indicateurs partagés et suivis", "La DRH dispose d'un data scientist", "Tous les processus sont automatisés"], "a": 1, "e": "Indicateurs définis, tableaux de bord utilisés en comité, actions suivies dans le temps."}, {"q": "Que prévoit l'article 4 de l'AI Act, réécrit en 2026, pour les entreprises utilisatrices ?", "o": ["Un diplôme obligatoire en IA", "Des mesures pour favoriser la maîtrise de l'IA par leurs équipes", "L'interdiction de l'IA générative", "Une déclaration annuelle à la CNIL"], "a": 1, "e": "La formation des équipes RH à l'IA (séance 2) est donc un axe de maturité à part entière."}], [{"q": "Selon l'indice de l'OIT publié en mai 2025, quelle part des emplois mondiaux est exposée à l'IA générative ?", "o": ["Environ 1 sur 10", "Environ 1 sur 4", "Environ 3 sur 4", "La quasi-totalité"], "a": 1, "e": "L'OIT souligne que l'exposition signifie surtout une transformation des tâches, pas une disparition des emplois."}, {"q": "Quelles professions sont les plus exposées selon cette étude ?", "o": ["Les métiers manuels du bâtiment", "Les emplois administratifs", "Les métiers du soin", "Les métiers de l'enseignement"], "a": 1, "e": "Saisie, mise en forme, planification : des tâches proches de celles d'une assistante RH."}, {"q": "Que prévoit le Future of Jobs Report 2025 du Forum économique mondial d'ici 2030 ?", "o": ["Une baisse nette de l'emploi mondial", "170 millions d'emplois créés et 92 millions supprimés", "Une stabilité complète des emplois", "La disparition des fonctions RH"], "a": 1, "e": "Solde net positif de 78 millions, mais une forte rotation des emplois et des besoins de reconversion massifs."}, {"q": "Pour un métier, quelle approche est la plus pertinente pour anticiper l'impact de l'IA ?", "o": ["Classer le métier entier « menacé » ou « protégé »", "Décomposer le métier en tâches et qualifier chacune", "Attendre le retour d'expérience des concurrents", "Se fier au discours de l'éditeur"], "a": 1, "e": "Un emploi est un ensemble de tâches : certaines s'automatisent, d'autres sont augmentées, d'autres restent humaines."}, {"q": "Quelle évolution du rôle de l'équipe RH la séance défend-elle ?", "o": ["Moins de RH, remplacés par des agents IA", "Moins d'administratif, plus de conseil, d'analyse et d'accompagnement", "Aucune évolution : l'IA reste un gadget", "Une RH entièrement externalisée"], "a": 1, "e": "Le temps libéré doit être réinvesti, et cela se négocie, se forme et s'accompagne : c'est l'objet de la GEPP."}]];
+const ACTS=["ch0", "ch1", "ch2", "ch3", "ch4", "ch5"];
+const params = new URLSearchParams(location.search);
+if (params.has('formateur') || location.hash === '#formateur') document.body.classList.add('formateur');
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const shuffle = a => { const b=a.slice(); for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];} return b; };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2400); }
+function copyText(txt){
+  if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(txt).then(()=>toast('Copié dans le presse-papiers ✅')).catch(()=>fallbackCopy(txt)); }
+  else fallbackCopy(txt);
+}
+function fallbackCopy(txt){ const ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); toast('Copié dans le presse-papiers ✅');}catch(e){toast('Copie impossible : sélectionnez le texte manuellement');} ta.remove(); }
+function download(name, txt){ const blob=new Blob([txt],{type:'text/markdown;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); }
+function setProgress(fillId, txtId, done, total, suffix){ const p = total ? Math.round(done/total*100) : 0; $('#'+fillId).style.width = p+'%'; $('#'+txtId).textContent = done+' / '+total+(suffix||''); }
+function scoreMsg(pct){ if(pct>=90) return 'Excellent : les notions sont acquises.'; if(pct>=70) return 'Bon résultat. Relisez les explications des erreurs pour consolider.'; if(pct>=50) return 'Des bases, mais plusieurs confusions. Relisez le chapitre puis recommencez.'; return 'Reprenez le chapitre, puis recommencez l\'activité.'; }
+const done = new Set();
+function markDone(act){
+  if(done.has(act)) return false;
+  done.add(act);
+  $$('.tab[data-act="'+act+'"]').forEach(t=>t.classList.add('done'));
+  const n = done.size;
+  $('#globalFill').style.width = Math.round(n/ACTS.length*100)+'%';
+  $('#globalPct').textContent = n+' / '+ACTS.length;
+  toast(n===ACTS.length ? '🎉 Toutes les activités sont validées !' : 'Activité validée ✅');
+  if(typeof onDone==='function') onDone(act);
+  return true;
+}
+function openTab(i){
+  $$('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab==i));
+  $$('.panel').forEach(p=>p.classList.toggle('active', p.dataset.panel==i));
+  const tw = $('.tabs-wrap'); window.scrollTo({top: tw.offsetTop, behavior: 'smooth'});
+  const at = $('.tab[data-tab="'+i+'"]'); if(at) at.scrollIntoView({inline:'center', block:'nearest'});
+}
+$$('.tab').forEach(t=>t.addEventListener('click',()=>openTab(t.dataset.tab)));
+$$('[data-goto]').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.goto)));
+
+/* Explorateurs */
+$$('[data-explorer]').forEach(box=>{
+  const E = EXPLORERS[box.dataset.explorer]; const seen=new Set();
+  const chain=$('.chain',box), detail=$('.concept-detail',box);
+  E.items.forEach((k,i)=>{
+    const b=document.createElement('button'); b.className='chain-node'; b.textContent=k.id; b.dataset.i=i;
+    b.addEventListener('click',()=>show(i)); chain.appendChild(b);
+  });
+  function show(i){
+    const k=E.items[i]; seen.add(i);
+    $$('.chain-node',box).forEach(n=>{ n.classList.toggle('active', n.dataset.i==i); if(seen.has(+n.dataset.i)) n.classList.add('seen'); });
+    detail.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap"><span class="term-item">'+esc(k.id)+'</span><span class="famille-tag '+k.fam+'">'+esc(FAMILIES[k.fam]||'')+'</span></div>'+
+      k.rows.map(r=>'<div class="row"><span class="k">'+esc(r[0])+'</span><span>'+esc(r[1])+'</span></div>').join('');
+    const f=$('.progress-fill',box), t=$('.progress-label span:last-child',box);
+    f.style.width=Math.round(seen.size/E.items.length*100)+'%'; t.textContent=seen.size+' / '+E.items.length;
+  }
+  show(0);
+});
+const qState = {};
+const L = ['A','B','C','D','E'];
+function renderQCM(ci){
+  const box=$('#qcm'+ci); box.innerHTML='';
+  const qs = shuffle(QCMS[ci]).map(q=>{ const opts=shuffle(q.o.map((t,i)=>({t,good:i===q.a}))); return {q:q.q,e:q.e,opts}; });
+  qState[ci]={qs};
+  qs.forEach((q,qi)=>{
+    const d=document.createElement('div'); d.className='qcm-q';
+    d.innerHTML='<div class="qt"><span class="q-num">Q'+(qi+1)+'</span>'+esc(q.q)+'</div><div class="qcm-opts" role="radiogroup">'+
+      q.opts.map((o,oi)=>'<button type="button" class="qcm-opt" role="radio" aria-checked="false" data-oi="'+oi+'"><span class="l">'+L[oi]+'</span><span>'+esc(o.t)+'</span></button>').join('')+
+      '</div><div class="expl"></div>';
+    $$('.qcm-opt',d).forEach(b=>b.addEventListener('click',()=>{
+      if(d.classList.contains('checked')) return;
+      $$('.qcm-opt',d).forEach(x=>{x.classList.remove('sel');x.setAttribute('aria-checked','false');});
+      b.classList.add('sel'); b.setAttribute('aria-checked','true'); d.dataset.ans=b.dataset.oi; updQ(ci);
+    }));
+    box.appendChild(d);
+  });
+  $('#qres'+ci).classList.remove('show'); updQ(ci);
+}
+function updQ(ci){ const rows=$$('#qcm'+ci+' .qcm-q'); setProgress('qfill'+ci,'qtxt'+ci,rows.filter(r=>r.dataset.ans!==undefined).length,rows.length); }
+const scores = {};
+function checkQCM(ci, silent){
+  const rows=$$('#qcm'+ci+' .qcm-q');
+  if(!silent && rows.some(r=>r.dataset.ans===undefined)){ toast('Répondez à toutes les questions avant de vérifier.'); return; }
+  let ok=0;
+  rows.forEach((r,qi)=>{
+    const q=qState[ci].qs[qi]; const ans=r.dataset.ans===undefined?-1:+r.dataset.ans;
+    const gi=q.opts.findIndex(o=>o.good); const good=ans===gi; if(good) ok++;
+    r.classList.remove('correct','wrong'); r.classList.add('checked', good?'correct':'wrong');
+    $$('.qcm-opt',r).forEach((b,oi)=>{ b.classList.toggle('good',oi===gi); b.classList.toggle('bad',oi===ans&&!good); });
+    $('.expl',r).innerHTML=(good?'✅ ':'❌ Bonne réponse : <strong>'+L[gi]+'</strong>. ')+esc(q.e);
+  });
+  const pct=Math.round(ok/rows.length*100);
+  $('#qres'+ci).innerHTML='<div class="score">'+ok+' / '+rows.length+'</div><div class="msg">'+scoreMsg(pct)+'</div>';
+  $('#qres'+ci).classList.add('show');
+  if(!silent){ scores[ci]=Math.max(scores[ci]||0,ok); updScores(); markDone('ch'+ci); }
+}
+function revealQCM(ci){
+  $$('#qcm'+ci+' .qcm-q').forEach((r,qi)=>{ const gi=qState[ci].qs[qi].opts.findIndex(o=>o.good); r.dataset.ans=gi; $$('.qcm-opt',r).forEach((b,oi)=>b.classList.toggle('sel',oi===gi)); });
+  updQ(ci); checkQCM(ci,true);
+}
+function updScores(){
+  let tot=0,max=0;
+  QCMS.forEach((q,ci)=>{ const c=$('#score'+ci); if(scores[ci]!==undefined){ c.textContent=scores[ci]+' / '+q.length; tot+=scores[ci]; } max+=q.length; });
+  $('#scoreTotal').textContent=tot+' / '+max;
+}
+QCMS.forEach((_,ci)=>renderQCM(ci));
+$$('[data-qcheck]').forEach(b=>b.addEventListener('click',()=>checkQCM(+b.dataset.qcheck)));
+$$('[data-qreveal]').forEach(b=>b.addEventListener('click',()=>revealQCM(+b.dataset.qreveal)));
+$$('[data-qreset]').forEach(b=>b.addEventListener('click',()=>renderQCM(+b.dataset.qreset)));
+$$('#finCheck input').forEach(c=>c.addEventListener('change',()=>{}));
+
+})();
+
+</script>
+</body>
+</html>
