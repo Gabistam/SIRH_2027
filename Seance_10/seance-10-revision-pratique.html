@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Séance 10 — Révision générale : mobiliser l&#x27;ensemble du module · Pratique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2563eb;--primary-dark:#1d4ed8;--primary-light:#dbeafe;
+  --secondary:#059669;--secondary-light:#d1fae5;
+  --accent:#d97706;--accent-light:#fef3c7;
+  --danger:#dc2626;--danger-light:#fee2e2;
+  --purple:#7c3aed;--purple-light:#ede9fe;
+  --dark:#0f172a;--dark2:#1e293b;
+  --text:#1e293b;--muted:#64748b;--border:#e2e8f0;
+  --bg:#f1f5f9;--card:#ffffff;--radius:14px;
+  --sans:'Sora',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.6;font-size:15px;min-height:100vh}
+code,.mono{font-family:var(--mono)}
+code{background:#f1f5f9;border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-size:.84em}
+pre code,.key-box code,.nest.n4 code{background:transparent;border:none;padding:0;color:inherit}
+button{font-family:inherit;cursor:pointer}
+a{color:var(--primary)}
+:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+
+header{background:linear-gradient(135deg,#0f172a 0%,#4c1d95 60%,#6d28d9 100%);color:#fff;padding:42px 24px 34px;position:relative;overflow:hidden}
+header.practice{background:linear-gradient(135deg,#0f172a 0%,#6d28d9 60%,#7c3aed 100%)}
+header::after{content:"";position:absolute;right:-120px;top:-120px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(167,139,250,.25),transparent 70%)}
+.header-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:6px 14px;border-radius:999px;font-size:.8rem;font-weight:600;margin-bottom:16px}
+header h1{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;line-height:1.2;margin-bottom:10px}
+header .subtitle{color:#cbd5e1;max-width:720px;font-size:1rem}
+.meta-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.meta-pill{background:rgba(15,23,42,.45);border:1px solid rgba(255,255,255,.15);padding:6px 14px;border-radius:999px;font-size:.8rem;display:inline-flex;align-items:center;gap:6px}
+.global-progress{margin-top:24px;max-width:520px}
+.global-progress .label{display:flex;justify-content:space-between;font-size:.8rem;color:#cbd5e1;margin-bottom:6px}
+.global-progress .track{height:8px;background:rgba(255,255,255,.15);border-radius:999px;overflow:hidden}
+.global-progress .fill{height:100%;width:0;background:linear-gradient(90deg,#10b981,#34d399);border-radius:999px;transition:width .5s ease}
+.mode-flag{display:none;margin-top:14px;background:var(--accent);color:#fff;font-size:.75rem;font-weight:700;padding:4px 10px;border-radius:6px;width:max-content}
+body.formateur .mode-flag{display:block}
+
+.tabs-wrap{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--border);box-shadow:0 2px 8px rgba(15,23,42,.04)}
+.tabs{max-width:1100px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding:0 16px;scrollbar-width:thin}
+.tab{border:none;background:none;padding:15px 14px;font-size:.85rem;font-weight:600;color:var(--muted);white-space:nowrap;border-bottom:3px solid transparent;display:flex;align-items:center;gap:6px}
+.tab:hover{color:var(--primary)}
+.tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab .done-mark{display:none;color:var(--secondary)}
+.tab.done .done-mark{display:inline}
+.tab .lock-mark{font-size:.8rem}
+
+main{max-width:1100px;margin:0 auto;padding:28px 16px 80px}
+.panel{display:none}
+.panel.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.panel.active{animation:none}.global-progress .fill,.progress-fill{transition:none}}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:22px;box-shadow:0 1px 3px rgba(15,23,42,.05)}
+@media(max-width:600px){.card{padding:20px 16px}}
+.section-title{display:flex;align-items:center;gap:14px;font-size:1.3rem;font-weight:700;margin-bottom:18px;color:var(--dark)}
+.icon-bg{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:1.3rem;flex-shrink:0;background:var(--primary-light)}
+.icon-bg.green{background:var(--secondary-light)}.icon-bg.amber{background:var(--accent-light)}.icon-bg.purple{background:var(--purple-light)}.icon-bg.red{background:var(--danger-light)}
+h3{font-size:1.05rem;font-weight:700;margin:22px 0 10px;color:var(--dark)}
+p{margin-bottom:10px}
+.lead{font-size:1.05rem;color:var(--dark2)}
+.muted{color:var(--muted);font-size:.88rem}
+ul.clean{list-style:none}
+ul.clean li{padding:6px 0 6px 26px;position:relative}
+ul.clean li::before{content:"▸";position:absolute;left:6px;color:var(--primary);font-weight:700}
+ol{padding-left:22px}ol li{padding:3px 0}
+
+.objectif-box{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid var(--primary);border-radius:10px;padding:18px 20px;margin:16px 0}
+.objectif-box strong.title{display:block;color:var(--primary-dark);margin-bottom:8px}
+.instruction-box{background:#fffbeb;border:1px solid #fde68a;border-left:5px solid var(--accent);border-radius:10px;padding:18px 20px;margin:16px 0}
+.instruction-box strong.title{display:block;color:#92400e;margin-bottom:8px}
+.key-box{background:var(--dark);color:#e2e8f0;border-radius:12px;padding:22px 24px;margin:18px 0;border-left:5px solid #10b981}
+.key-box .big{font-size:1.15rem;font-weight:700;color:#fff}
+.warn-box{background:#fef2f2;border:1px solid #fecaca;border-left:5px solid var(--danger);border-radius:10px;padding:16px 20px;margin:16px 0}
+
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.grid-3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.mini-card{border:1px solid var(--border);border-radius:12px;padding:18px;background:#fff}
+.mini-card h4{font-size:1rem;margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mini-card.bad{border-color:#fecaca;background:#fef2f2}
+.mini-card.good{border-color:#a7f3d0;background:#f0fdf4}
+.mini-card pre.prompt{margin-top:8px}
+
+.famille-tag{display:inline-block;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:999px;letter-spacing:.2px}
+.f1{background:var(--primary-light);color:#1e40af}
+.f2{background:var(--secondary-light);color:#065f46}
+.f3{background:var(--accent-light);color:#92400e}
+.f4{background:var(--purple-light);color:#5b21b6}
+.f5{background:var(--danger-light);color:#991b1b}
+
+.term-item{background:var(--dark);color:#e2e8f0;font-family:var(--mono);font-size:.85rem;padding:10px 14px;border-radius:8px;display:inline-block}
+.chain .term-item,.objectif-box .term-item{padding:6px 12px}
+pre.prompt{background:var(--dark);color:#e2e8f0;font-family:var(--mono);font-size:.84rem;padding:18px 20px;border-radius:10px;white-space:pre-wrap;word-break:break-word;line-height:1.65;overflow-x:auto;position:relative;margin:12px 0}
+pre.prompt .hl{color:#34d399}
+pre.prompt .hl2{color:#fbbf24}
+pre.prompt .hl3{color:#93c5fd}
+
+.btn{border:none;border-radius:10px;padding:11px 18px;font-weight:600;font-size:.88rem;display:inline-flex;align-items:center;gap:8px;transition:transform .1s,background .2s}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-dark)}
+.btn-success{background:var(--secondary);color:#fff}.btn-success:hover{background:#047857}
+.btn-ghost{background:#fff;color:var(--dark2);border:1px solid var(--border)}.btn-ghost:hover{background:#f8fafc}
+.btn-warning{background:var(--accent);color:#fff}
+.btn-sm{padding:7px 12px;font-size:.8rem}
+.actions-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;align-items:center}
+.btn-reveal{display:none}
+body.formateur .btn-reveal{display:inline-flex}
+.reveal-content{display:none}
+.reveal-content.shown{display:block}
+
+.progress-wrap{margin:14px 0 4px}
+.progress-label{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:5px;font-weight:600}
+.progress-track{height:8px;background:#e2e8f0;border-radius:999px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#059669,#10b981);border-radius:999px;transition:width .4s ease}
+
+.result-panel{display:none;background:var(--dark);color:#e2e8f0;border-radius:12px;padding:22px 24px;margin-top:20px}
+.result-panel.show{display:block}
+.result-panel .score{font-family:var(--mono);font-size:2rem;font-weight:700;color:#34d399}
+.result-panel .msg{margin-top:6px;color:#cbd5e1}
+
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:18px 0}
+.chain-node{border:2px solid var(--border);background:#fff;border-radius:10px;padding:10px 16px;font-weight:700;font-size:.9rem;color:var(--dark2)}
+.chain-node:hover{border-color:var(--primary)}
+.chain-node.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.chain-node.seen:not(.active){border-color:#93c5fd}
+.chain-arrow{color:var(--muted);font-weight:700}
+.concept-detail{border:1px solid var(--border);border-radius:12px;padding:22px;background:#f8fafc;min-height:180px}
+.concept-detail .row{display:grid;grid-template-columns:130px 1fr;gap:10px;padding:8px 0;border-bottom:1px dashed var(--border)}
+.concept-detail .row:last-child{border-bottom:none}
+.concept-detail .k{font-weight:700;font-size:.82rem;color:var(--muted)}
+@media(max-width:600px){.concept-detail .row{grid-template-columns:1fr;gap:2px}}
+
+/* QCM */
+.qcm-q{border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:12px;background:#fff}
+.qcm-q .qt{font-weight:600;margin-bottom:10px}
+.qcm-opts{display:grid;gap:8px}
+.qcm-opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--border);border-radius:9px;padding:10px 12px;cursor:pointer;font-size:.9rem;background:#fff;text-align:left;width:100%;color:var(--text)}
+.qcm-opt:hover{background:#f8fafc;border-color:#93c5fd}
+.qcm-opt .l{font-family:var(--mono);font-weight:700;color:var(--primary);min-width:18px}
+.qcm-opt.sel{border-color:var(--primary);background:#eff6ff}
+.qcm-q.checked .qcm-opt{cursor:default}
+.qcm-opt.good{border-color:#6ee7b7;background:#ecfdf5}
+.qcm-opt.bad{border-color:#fca5a5;background:#fef2f2}
+.qcm-q.correct{border-color:#6ee7b7}
+.qcm-q.wrong{border-color:#fca5a5}
+.qcm-q .expl{display:none;margin-top:10px;font-size:.86rem;padding-top:8px;border-top:1px dashed var(--border)}
+.qcm-q.checked .expl{display:block}
+.q-num{font-family:var(--mono);font-size:.75rem;color:var(--muted);margin-right:6px}
+
+/* V/F */
+.vf-row{padding:16px;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;background:#fff}
+.vf-row .vf-q{font-weight:500;margin-bottom:10px}
+.vf-btns{display:flex;gap:8px}
+.vf-btn{border:1px solid var(--border);background:#fff;border-radius:8px;padding:7px 18px;font-weight:600;font-size:.85rem;color:var(--text)}
+.vf-btn.sel{background:var(--dark);color:#fff;border-color:var(--dark)}
+.vf-row.correct{border-color:#6ee7b7;background:#ecfdf5}
+.vf-row.wrong{border-color:#fca5a5;background:#fef2f2}
+.vf-row .expl{display:none;margin-top:10px;font-size:.85rem}
+.vf-row.checked .expl{display:block}
+
+/* Cas 1 matching */
+.match-grid{display:grid;grid-template-columns:minmax(200px,1fr) 2fr;gap:16px;margin-top:10px}
+@media(max-width:760px){.match-grid{grid-template-columns:1fr}}
+.match-col{display:flex;flex-direction:column;gap:8px}
+.match-col h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+.m-term{background:var(--dark);color:#e2e8f0;font-family:var(--mono);font-size:.84rem;padding:10px 12px;border-radius:8px;border:2px solid var(--dark);text-align:left;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.m-term:hover{border-color:#60a5fa}
+.m-term.active{border-color:#fbbf24;box-shadow:0 0 0 3px rgba(251,191,36,.35)}
+.m-def{background:#fff;border:2px solid var(--border);border-radius:8px;padding:10px 12px;font-size:.86rem;text-align:left;display:flex;gap:10px;align-items:flex-start;color:var(--text)}
+.m-def:hover{border-color:#93c5fd}
+.pair-badge{font-family:var(--mono);font-size:.72rem;font-weight:700;min-width:24px;height:24px;border-radius:6px;display:inline-grid;place-items:center;background:#e2e8f0;color:var(--muted);flex-shrink:0}
+.paired .pair-badge{background:var(--primary);color:#fff}
+.m-def.paired{border-color:#93c5fd;background:#eff6ff}
+.m-term.good,.m-def.good{border-color:#10b981}
+.m-def.good{background:#ecfdf5}
+.m-term.bad,.m-def.bad{border-color:#ef4444}
+.m-def.bad{background:#fef2f2}
+.round-pills{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 4px}
+.round-pill{font-family:var(--mono);font-size:.75rem;padding:4px 10px;border-radius:999px;background:#f1f5f9;border:1px solid var(--border);color:var(--muted)}
+.round-pill.cur{background:var(--primary);color:#fff;border-color:var(--primary)}
+.round-pill.ok{background:var(--secondary-light);color:#065f46;border-color:#6ee7b7}
+
+/* Cas 2 */
+.group{border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;background:#fff}
+.group-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.group-head strong{font-size:1rem}
+.g-label{font-size:.8rem;font-weight:700;color:var(--muted);margin:12px 0 6px;text-transform:uppercase;letter-spacing:.5px}
+.choice-row{display:flex;flex-wrap:wrap;gap:8px}
+.choice{border:1px solid var(--border);background:#fff;border-radius:999px;padding:6px 14px;font-size:.84rem;font-weight:600;color:var(--dark2)}
+.choice.sel{background:var(--dark);color:#fff;border-color:var(--dark)}
+.choice.good{background:#10b981;color:#fff;border-color:#10b981}
+.choice.bad{background:#ef4444;color:#fff;border-color:#ef4444}
+.sit{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:1px solid var(--border);border-radius:9px;padding:10px 12px;background:#f8fafc;font-size:.88rem;margin-bottom:8px;color:var(--text)}
+.sit:hover{border-color:#fbbf24}
+.sit .tag{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:999px;background:#e2e8f0;color:var(--muted);white-space:nowrap}
+.sit.sel{border-color:var(--accent);background:#fffbeb}
+.sit.sel .tag{background:var(--accent);color:#fff}
+.sit.good{border-color:#10b981;background:#ecfdf5}
+.sit.good .tag{background:#10b981;color:#fff}
+.sit.bad{border-color:#ef4444;background:#fef2f2}
+.sit.bad .tag{background:#ef4444;color:#fff}
+.group .expl{display:none;margin-top:10px;font-size:.86rem;padding-top:10px;border-top:1px dashed var(--border)}
+.group.checked .expl{display:block}
+.group.correct{border-color:#6ee7b7}
+.group.wrong{border-color:#fca5a5}
+.group.half{border-color:#fcd34d}
+
+/* forms */
+label.f-label{display:block;font-weight:600;font-size:.85rem;margin:14px 0 6px;color:var(--dark2)}
+input.f-input,textarea.f-input{width:100%;padding:11px 13px;border:1px solid var(--border);border-radius:9px;font-family:var(--sans);font-size:.9rem;background:#fff;color:var(--text)}
+textarea.f-input{min-height:78px;resize:vertical}
+
+.steps{margin:14px 0}
+.step{display:flex;gap:14px;padding:12px 0;border-bottom:1px dashed var(--border);align-items:flex-start}
+.step:last-child{border-bottom:none}
+.step input[type=checkbox]{width:20px;height:20px;accent-color:var(--secondary);margin-top:3px;flex-shrink:0}
+.step .s-num{font-family:var(--mono);font-weight:700;color:var(--primary);min-width:24px}
+.checklist label{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;cursor:pointer}
+.checklist label:hover{background:#f8fafc}
+.checklist input{width:18px;height:18px;accent-color:var(--secondary);margin-top:3px;flex-shrink:0}
+
+.table-wrap{overflow-x:auto;margin:14px 0}
+table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:520px}
+th{background:var(--dark);color:#fff;text-align:left;padding:11px 14px;font-weight:600}
+th:first-child{border-top-left-radius:10px}th:last-child{border-top-right-radius:10px}
+td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:top;background:#fff}
+tr:nth-child(even) td{background:#f8fafc}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font-size:.75rem;background:#f1f5f9;border:1px solid var(--border);padding:3px 10px;border-radius:999px;color:var(--dark2)}
+
+.route{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:14px 0}
+.route-step{background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+.route-step .n{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.route-step .t{font-weight:700;font-size:.9rem;color:var(--dark)}
+.route-step .c{font-size:.75rem;color:var(--muted)}
+.route-step.past{background:#ecfdf5;border-color:#a7f3d0}
+.route-step.here{background:var(--primary);border-color:var(--primary)}
+.route-step.here .t,.route-step.here .n,.route-step.here .c{color:#fff}
+
+.levels{display:grid;gap:8px;margin:14px 0}
+.level{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:#fff}
+.level .lv{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--primary)}
+.level .risk{font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:999px}
+@media(max-width:600px){.level{grid-template-columns:40px 1fr}.level .risk{grid-column:2;justify-self:start}}
+
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
+.pillar{border-radius:12px;padding:16px;background:#fff;border:1px solid var(--border);border-top:4px solid var(--primary)}
+.pillar:nth-child(5n+2){border-top-color:var(--purple)}
+.pillar:nth-child(5n+3){border-top-color:var(--secondary)}
+.pillar:nth-child(5n+4){border-top-color:var(--accent)}
+.pillar:nth-child(5n+5){border-top-color:var(--danger)}
+.pillar .n{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+.pillar h4{font-size:1rem;margin:4px 0 6px}
+.pillar p{font-size:.84rem;color:var(--dark2);margin:0}
+.pillar .q{font-size:.8rem;color:var(--muted);font-style:italic;margin-top:8px}
+
+details.acc{border:1px solid var(--border);border-radius:10px;margin:10px 0;background:#fff}
+details.acc summary{cursor:pointer;padding:12px 16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:10px}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary::after{content:"+";font-family:var(--mono);color:var(--primary);font-weight:700}
+details.acc[open] summary::after{content:"−"}
+details.acc[open] summary{border-bottom:1px dashed var(--border)}
+details.acc > div{padding:12px 16px;font-size:.9rem}
+
+.gloss{display:grid;gap:10px;margin-top:10px}
+.gloss-item{display:grid;grid-template-columns:190px 1fr;gap:14px;align-items:start;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:#fff}
+.gloss-item .gt{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+@media(max-width:620px){.gloss-item{grid-template-columns:1fr}}
+.lock-wrap{text-align:center;padding:30px 10px}
+.lock-wrap .big-lock{font-size:3rem}
+.lock-pills{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:16px}
+.lock-pill{font-size:.82rem;font-weight:600;padding:6px 14px;border-radius:999px;background:#f1f5f9;border:1px solid var(--border)}
+.lock-pill.ok{background:var(--secondary-light);border-color:#6ee7b7;color:#065f46}
+.filter-row{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}
+.filter-row button{border:1px solid var(--border);background:#fff;border-radius:999px;padding:5px 12px;font-size:.78rem;font-weight:600;color:var(--dark2)}
+.filter-row button.on{background:var(--dark);color:#fff;border-color:var(--dark)}
+
+.score-table td:last-child{font-family:var(--mono);font-weight:700}
+.link-card{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:#f8fafc;border:1px dashed #93c5fd;border-radius:12px;padding:16px 18px;margin-top:16px}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--dark);color:#fff;padding:10px 18px;border-radius:10px;font-size:.85rem;opacity:0;pointer-events:none;transition:all .25s;z-index:100;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.nav-bottom{display:flex;justify-content:space-between;gap:10px;margin-top:10px;flex-wrap:wrap}
+footer{text-align:center;color:var(--muted);font-size:.78rem;padding:30px 16px 50px}
+@media print{.tabs-wrap,.actions-row,.nav-bottom{display:none}.panel{display:block!important}}
+
+
+
+/* ===== Identité module SIRH ===== */
+header{background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 55%,#0e7490 100%)}
+header.practice{background:linear-gradient(135deg,#0f172a 0%,#0e7490 55%,#0891b2 100%)}
+header::after{background:radial-gradient(circle,rgba(103,232,249,.22),transparent 70%)}
+.route.r10{grid-template-columns:repeat(5,1fr)}
+@media(max-width:640px){.route.r10{grid-template-columns:repeat(2,1fr)}}
+/* Fil rouge */
+.company{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:18px 20px;margin:14px 0}
+.company .logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#0e7490,#059669);display:grid;place-items:center;font-size:1.7rem;color:#fff}
+.company h4{font-size:1.05rem;margin-bottom:4px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px}
+.fact{background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.fact .v{font-family:var(--mono);font-weight:700;font-size:1.05rem;color:var(--dark)}
+.fact .l{font-size:.75rem;color:var(--muted)}
+/* Fonctions du SI */
+.flow4{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:16px 0;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.flow4 > div{padding:14px;background:#fff;border-right:1px solid var(--border);position:relative}
+.flow4 > div:last-child{border-right:none}
+.flow4 .n{font-family:var(--mono);font-size:.72rem;color:var(--primary);font-weight:700}
+.flow4 h4{margin:2px 0 4px;font-size:.98rem}
+.flow4 p{font-size:.82rem;color:var(--dark2);margin:0}
+@media(max-width:720px){.flow4{grid-template-columns:1fr 1fr}.flow4 > div:nth-child(2){border-right:none}.flow4 > div:nth-child(-n+2){border-bottom:1px solid var(--border)}}
+/* Pyramide donnée -> décision */
+.dikw{display:grid;gap:6px;margin:16px auto;max-width:620px}
+.dikw > div{border-radius:8px;padding:10px 14px;color:#fff;display:flex;justify-content:space-between;gap:12px;font-size:.88rem;margin:0 auto;width:100%}
+.dikw > div strong{white-space:nowrap}
+.dikw .d1{width:58%;background:#0f172a}.dikw .d2{width:72%;background:#1e3a8a}.dikw .d3{width:86%;background:#0e7490}.dikw .d4{width:100%;background:#059669}
+@media(max-width:620px){.dikw > div{width:100%!important;flex-direction:column}}
+/* Timeline */
+.timeline{position:relative;margin:16px 0 8px;padding-left:22px;border-left:3px solid #bfdbfe}
+.timeline .t-item{position:relative;margin-bottom:14px}
+.timeline .t-item::before{content:"";position:absolute;left:-30px;top:5px;width:13px;height:13px;border-radius:50%;background:var(--primary);border:3px solid #fff;box-shadow:0 0 0 2px #bfdbfe}
+.timeline .t-item.now::before{background:var(--secondary)}
+.timeline .when{font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--primary)}
+.timeline .t-item.now .when{color:var(--secondary)}
+/* Architecture SIRH */
+.archi{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:12px;align-items:stretch;margin:16px 0}
+.archi .col{display:grid;gap:8px;align-content:start}
+.archi .mod{background:#fff;border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:.84rem}
+.archi .mod b{display:block;font-size:.88rem}
+.archi .core{background:var(--dark);color:#e2e8f0;border-radius:14px;padding:18px;display:flex;flex-direction:column;justify-content:center;text-align:center;gap:8px}
+.archi .core b{color:#fff;font-size:1.05rem}
+.archi .core small{color:#94a3b8}
+.archi .ext{border-style:dashed;background:#f8fafc}
+.archi .when-s{font-family:var(--mono);font-size:.7rem;color:var(--muted)}
+@media(max-width:760px){.archi{grid-template-columns:1fr}}
+/* Couloirs (swimlane) */
+.swim-wrap{overflow-x:auto;margin:16px 0;border:1px solid var(--border);border-radius:12px}
+.swim{border-collapse:separate;border-spacing:0;min-width:860px;width:100%}
+.swim th.lane{background:var(--dark2);color:#fff;font-size:.78rem;width:130px;text-align:left;padding:10px;position:sticky;left:0;z-index:1}
+.swim td{border-bottom:1px dashed var(--border);border-right:1px dashed #eef2f7;padding:8px;vertical-align:middle;background:#fff;min-width:118px}
+.swim tr:nth-child(even) td{background:#f8fafc}
+.swim .stephead th{background:#f1f5f9;color:var(--muted);font-family:var(--mono);font-size:.72rem;padding:6px;border-bottom:1px solid var(--border)}
+.task{display:block;border-radius:8px;padding:7px 9px;font-size:.76rem;line-height:1.35;background:var(--primary-light);border:1px solid #93c5fd;color:#1e3a8a}
+.task.paper{background:var(--accent-light);border-color:#fcd34d;color:#78350f}
+.task.risk{background:var(--danger-light);border-color:#fca5a5;color:#7f1d1d}
+.task.evt{background:var(--secondary-light);border-color:#6ee7b7;color:#064e3b;border-radius:999px;text-align:center}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.legend .task{display:inline-block}
+/* Matrice / BPMN symboles */
+.symbols{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:14px 0}
+.symbol{border:1px solid var(--border);border-radius:10px;padding:12px;background:#fff;text-align:center;font-size:.82rem}
+.symbol .shape{height:46px;display:grid;place-items:center;margin-bottom:6px}
+.sh-evt{width:40px;height:40px;border-radius:50%;border:3px solid var(--secondary)}
+.sh-end{width:40px;height:40px;border-radius:50%;border:5px solid var(--danger)}
+.sh-task{width:70px;height:38px;border-radius:8px;border:2px solid var(--primary);background:var(--primary-light)}
+.sh-gw{width:32px;height:32px;transform:rotate(45deg);border:2px solid var(--accent);background:var(--accent-light)}
+.sh-flow{width:80px;height:2px;background:var(--dark2);position:relative}
+.sh-flow::after{content:"";position:absolute;right:-2px;top:-5px;border-left:9px solid var(--dark2);border-top:6px solid transparent;border-bottom:6px solid transparent}
+.sh-doc{width:46px;height:40px;border:2px solid var(--purple);background:var(--purple-light);border-radius:4px 4px 12px 4px}
+/* Indicateurs de processus */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:14px 0}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;border-left:4px solid var(--accent)}
+.kpi .v{font-family:var(--mono);font-size:1.4rem;font-weight:700;color:var(--dark)}
+.kpi .l{font-size:.8rem;color:var(--muted)}
+@media print{header{background:#0f172a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+
+/* ===== Ajouts séances 3-4 ===== */
+.wf{display:flex;align-items:stretch;gap:0;margin:16px 0;overflow-x:auto;padding-bottom:6px}
+.wf .node{min-width:150px;flex:1;background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;position:relative;margin-right:26px}
+.wf .node:last-child{margin-right:0}
+.wf .node:not(:last-child)::after{content:"➜";position:absolute;right:-22px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:1.1rem}
+.wf .node .k{font-family:var(--mono);font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.wf .node h4{margin:4px 0;font-size:.92rem}
+.wf .node p{font-size:.78rem;color:var(--dark2);margin:0}
+.wf .trg{border-top:4px solid var(--secondary)}.wf .trg .k{color:var(--secondary)}
+.wf .act{border-top:4px solid var(--primary)}.wf .act .k{color:var(--primary)}
+.wf .llm{border-top:4px solid var(--purple);background:var(--purple-light)}.wf .llm .k{color:var(--purple)}
+.wf .hum{border-top:4px solid var(--accent);background:var(--accent-light)}.wf .hum .k{color:#92400e}
+.wf .flt{border-top:4px solid var(--danger)}.wf .flt .k{color:var(--danger)}
+.stairs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;align-items:end;margin:16px 0}
+.stairs > div{border-radius:10px;padding:12px;color:#fff;font-size:.82rem}
+.stairs > div b{display:block;font-size:.95rem;margin-bottom:4px}
+.stairs .s1{background:#64748b;min-height:110px}.stairs .s2{background:#1e3a8a;min-height:140px}.stairs .s3{background:#0e7490;min-height:170px}.stairs .s4{background:#7c3aed;min-height:200px}
+@media(max-width:720px){.stairs{grid-template-columns:1fr 1fr}.stairs > div{min-height:0!important}}
+.chainx{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:16px 0}
+.chainx > div{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;position:relative}
+.chainx > div .ic{font-size:1.5rem}
+.chainx > div b{display:block;font-size:.9rem;margin:4px 0}
+.chainx > div span{font-size:.76rem;color:var(--muted)}
+.chainx > div.hot{border:2px solid var(--primary);background:var(--primary-light)}
+@media(max-width:760px){.chainx{grid-template-columns:1fr 1fr}}
+.scoregrid td.c{text-align:center;font-family:var(--mono);font-weight:700}
+.dataset{font-family:var(--mono);font-size:.76rem}
+.dataset td,.dataset th{padding:6px 8px!important;white-space:nowrap}
+.dataset.wrap td,.dataset.wrap th{white-space:normal}
+.formula{font-family:var(--mono);background:#0f172a;color:#e2e8f0;border-radius:10px;padding:10px 14px;font-size:.82rem;margin:8px 0;overflow-x:auto;white-space:pre}
+.qbox{border:1px solid var(--border);border-left:5px solid var(--primary);border-radius:12px;padding:14px 16px;margin:12px 0;background:#fff}
+.qbox .qh{display:flex;justify-content:space-between;gap:10px;font-weight:700;margin-bottom:6px}
+.qbox .qh span{font-family:var(--mono);font-size:.78rem;color:var(--muted);font-weight:600;white-space:nowrap}
+.qbox p{margin:4px 0;font-size:.9rem}
+.recap{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:14px 0}
+.recap > div{background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px;font-size:.78rem}
+.recap > div b{display:block;font-family:var(--mono);color:var(--primary);font-size:.74rem}
+@media(max-width:760px){.recap{grid-template-columns:1fr 1fr}}
+
+</style>
+</head>
+<body>
+<header class="practice">
+  <div class="header-inner">
+    <span class="badge">🏢 SIRH &amp; exploitation de la Data — IA · Séance 10 · Support pratique</span>
+    <h1>Révision générale : mobiliser l&#x27;ensemble du module</h1>
+    <p class="subtitle">Réviser le vocabulaire des neuf séances, reconnaître les notions dans des situations Habitéo, déjouer les idées reçues, puis faire une répétition générale de l&#x27;étude de cas en temps limité.</p>
+    <div class="meta-pills"><span class="meta-pill">🧭 Séance 10 sur 10</span><span class="meta-pill">🛠️ Support pratique</span><span class="meta-pill">🧩 30 termes</span><span class="meta-pill">🔀 Aléatoire</span><span class="meta-pill">🔒 Glossaire verrouillé</span><span class="meta-pill">🏠 Atelier Habitéo</span></div>
+    <div class="global-progress">
+      <div class="label"><span>Progression des activités</span><span id="globalPct">0 / 4</span></div>
+      <div class="track"><div class="fill" id="globalFill"></div></div>
+    </div>
+    <div class="mode-flag">Mode formateur actif — boutons « Révéler » visibles</div>
+  </div>
+</header>
+<div class="tabs-wrap"><nav class="tabs" role="tablist" aria-label="Activités pratiques"><button class="tab active" data-tab="0" role="tab">🚀 Démarrage</button><button class="tab" data-tab="c1" data-act="cas1" role="tab">🧩 Cas 1 — Correspondance <span class="done-mark">✅</span></button><button class="tab" data-tab="c2" data-act="cas2" role="tab">🔍 Cas 2 — Situations <span class="done-mark">✅</span></button><button class="tab" data-tab="c3" data-act="cas3" role="tab">✅ Cas 3 — Vrai / Faux <span class="done-mark">✅</span></button><button class="tab" data-tab="at" data-act="atelier" role="tab">🏠 Atelier Habitéo <span class="done-mark">✅</span></button><button class="tab" data-tab="gl" role="tab">📖 Glossaire <span class="lock-mark">🔒</span></button></nav></div>
+<main>
+<section class="panel active" data-panel="0">
+  <div class="card">
+    <div class="section-title"><span class="icon-bg green">🎯</span>Mettre en pratique la séance 10</div>
+    <p class="lead">Ce support vous fait réviser l'ensemble du module en trois cas interactifs, puis vous entraîne à l'étude de cas sur un mini-cas de synthèse, avec un corrigé critérié pour vous auto-évaluer.</p>
+    <div class="objectif-box"><strong class="title">À la fin de cette séance, vous serez capable de :</strong><ul class="clean"><li>Restituer les notions clés des neuf séances et les relier entre elles, du processus à la décision ;</li><li>Mobiliser les méthodes du module (cartographie, prompt en 5 piliers, grille de risque, exigences testables, KPI, scénarios) sur une situation nouvelle ;</li><li>Citer avec précision les cadres juridiques en jeu : RGPD et article 22, AI Act et son calendrier, DSN, transparence salariale, dialogue social ;</li><li>Nommer les éditeurs et outils réels pertinents et justifier un choix ;</li><li>Structurer une réponse d&#x27;étude de cas : constat, analyse, recommandation, conditions, en l&#x27;ancrant dans le contexte ;</li><li>Gérer son temps et vérifier la cohérence de ses réponses d&#x27;une question à l&#x27;autre.</li></ul></div>
+    <div class="grid grid-3">
+      <div class="mini-card"><h4>🧩 Cas 1 — Correspondance</h4><p class="muted">Associez 30 termes à leur définition, en 3 rounds de 10 tirés au hasard.</p></div>
+      <div class="mini-card"><h4>🔍 Cas 2 — Situations</h4><p class="muted">5 groupes de 4 situations chez Habitéo : identifiez la notion commune et repérez l'intruse.</p></div>
+      <div class="mini-card"><h4>✅ Cas 3 — Vrai / Faux</h4><p class="muted">12 affirmations à trancher, avec explication pour chacune.</p></div>
+      <div class="mini-card"><h4>🏠 Atelier Habitéo</h4><p class="muted">Répétition générale : un mini-cas en cinq questions, 60 minutes, sans IA, puis auto-correction critériée.</p></div>
+      <div class="mini-card"><h4>📖 Glossaire</h4><p class="muted">Débloqué uniquement lorsque les 3 cas sont terminés.</p></div>
+    </div>
+    <h3>Les familles de notions</h3>
+    <div class="chips"><span class="famille-tag f1">SI, processus et IA générative · 6</span><span class="famille-tag f2">Automatisation et socle · 6</span><span class="famille-tag f3">Talents, IA et conformité · 6</span><span class="famille-tag f4">Marché et projet · 6</span><span class="famille-tag f5">Data et décision · 6</span></div>
+    <div class="warn-box"><strong>⛔ Règle de la séance</strong> Répétition en conditions réelles : temps limité, sans IA. Chaque réponse est ancrée dans le cas, chiffrée quand c'est possible, et cite la règle juridique précise.</div>
+    <div class="instruction-box"><strong class="title">Mode d'emploi</strong>Faites les cas dans l'ordre : chaque activité validée fait avancer la barre de progression, et tout est mélangé à chaque nouvel essai. La répétition générale se fait sans assistant IA, avec un minuteur.</div>
+    <div class="link-card"><span><strong>📚 Support théorique associé</strong><br><span class="muted">Relisez un chapitre en cas de doute.</span></span><a class="btn btn-ghost" href="seance-10-revision-theorie.html">◂ Ouvrir le support théorique</a></div>
+    <div class="nav-bottom"><span></span><button class="btn btn-primary" data-goto="c1">Commencer : Cas 1 ▸</button></div>
+  </div>
+</section>
+
+<section class="panel" data-panel="c1">
+  <div class="card">
+    <div class="section-title"><span class="icon-bg">🧩</span>Cas 1 — Correspondance termes / définitions</div>
+    <div class="objectif-box"><strong class="title">Objectif</strong>Réactiver le vocabulaire des cinq blocs du module : processus et IA générative, automatisation et socle, talents et conformité, marché et projet, data et décision.</div>
+    <div class="instruction-box"><strong class="title">Consigne</strong>Cliquez sur un terme (colonne de gauche), puis sur la définition qui lui correspond. Le numéro du terme s'affiche sur la définition choisie. Cliquez sur une définition associée pour annuler. Quand les 10 associations sont faites, vérifiez, puis passez au round suivant.</div>
+    <div class="round-pills" id="c1Rounds"></div>
+    <div class="match-grid"><div class="match-col" id="c1Terms"></div><div class="match-col" id="c1Defs"></div></div>
+    <div class="progress-wrap"><div class="progress-label"><span>Associations du round</span><span id="c1Txt">0 / 10</span></div><div class="progress-track"><div class="progress-fill" id="c1Fill"></div></div></div>
+    <div class="actions-row">
+      <button class="btn btn-primary" id="c1Check">✔ Vérifier le round</button>
+      <button class="btn btn-success" id="c1Next" style="display:none">Round suivant ▸</button>
+      <button class="btn btn-warning btn-reveal" id="c1Reveal">👁 Révéler</button>
+      <button class="btn btn-ghost" id="c1Reset">↺ Recommencer</button>
+    </div>
+    <div class="result-panel" id="c1Result"></div>
+    <div class="nav-bottom" style="margin-top:20px"><span></span><button class="btn btn-primary" data-goto="c2">Suite : Cas 2 ▸</button></div>
+  </div>
+</section>
+
+<section class="panel" data-panel="c2">
+  <div class="card">
+    <div class="section-title"><span class="icon-bg amber">🔍</span>Cas 2 — Identification de situations</div>
+    <div class="objectif-box"><strong class="title">Objectif</strong>Reconnaître dans des situations du Groupe Habitéo un gaspillage, une décision relevant de l'article 22, une exigence testable, un indicateur de climat social et un scénario décisionnel.</div>
+    <div class="instruction-box"><strong class="title">Consigne</strong>Chaque groupe contient 4 situations. Trois illustrent la même notion, <strong>une est une intruse</strong>. Pour chaque groupe : (1) choisissez la notion commune, (2) cliquez sur la situation intruse. Vérifiez, puis lisez les explications.</div>
+    <div id="c2Box"></div>
+    <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="c2Txt">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="c2Fill"></div></div></div>
+    <div class="actions-row">
+      <button class="btn btn-primary" id="c2Check">✔ Vérifier</button>
+      <button class="btn btn-warning btn-reveal" id="c2Reveal">👁 Révéler</button>
+      <button class="btn btn-ghost" id="c2Reset">↺ Recommencer</button>
+    </div>
+    <div class="result-panel" id="c2Result"></div>
+    <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c1">◂ Cas 1</button><button class="btn btn-primary" data-goto="c3">Suite : Cas 3 ▸</button></div>
+  </div>
+</section>
+
+<section class="panel" data-panel="c3">
+  <div class="card">
+    <div class="section-title"><span class="icon-bg green">✅</span>Cas 3 — Vrai ou faux ?</div>
+    <div class="objectif-box"><strong class="title">Objectif</strong>Déjouer les idées reçues les plus fréquentes dans les copies d'étude de cas, sur l'ensemble du module.</div>
+    <div class="instruction-box"><strong class="title">Consigne</strong>Répondez à chaque affirmation, puis vérifiez. Lisez attentivement les explications, y compris pour les bonnes réponses.</div>
+    <div id="vfQuiz"></div>
+    <div class="progress-wrap"><div class="progress-label"><span>Réponses données</span><span id="vfTxt">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="vfFill"></div></div></div>
+    <div class="actions-row">
+      <button class="btn btn-primary" id="vfCheck">✔ Vérifier</button>
+      <button class="btn btn-warning btn-reveal" id="vfReveal">👁 Révéler</button>
+      <button class="btn btn-ghost" id="vfReset">↺ Recommencer</button>
+    </div>
+    <div class="result-panel" id="vfResult"></div>
+    <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c2">◂ Cas 2</button><button class="btn btn-primary" data-goto="at">Suite : atelier Habitéo ▸</button></div>
+  </div>
+</section>
+
+<section class="panel" data-panel="at">
+  <div class="card">
+    <div class="section-title"><span class="icon-bg amber">🏠</span>Atelier Habitéo — Répétition générale de l&#x27;étude de cas</div>
+    <div class="objectif-box"><strong class="title">Objectif</strong>S'entraîner, en conditions réelles, à transposer les méthodes du module sur une situation nouvelle, puis s'auto-évaluer avec un corrigé critérié.</div>
+    <div class="instruction-box"><strong class="title">La demande de la DRH</strong>« Avant votre départ, je veux être sûre que l'équipe saura reprendre le flambeau. Faites-moi une synthèse de ce que nous avons construit, et montrez-moi que vous sauriez refaire la démarche dans une autre entreprise. »</div>
+    <div class="instruction-box"><strong class="title">Déroulé (individuel, 60 minutes + 20 minutes d'auto-correction)</strong><div class="steps" id="atSteps"><div class="step"><input type="checkbox" id="as0"><span class="s-num">1</span><label for="as0">Relisez la synthèse du support théorique et vos livrables Habitéo correspondant à vos QCM les plus faibles.</label></div><div class="step"><input type="checkbox" id="as1"><span class="s-num">2</span><label for="as1">Lisez entièrement le mini-cas de janvier 2028 et repérez chiffres, acteurs, outils et contraintes (5 minutes).</label></div><div class="step"><input type="checkbox" id="as2"><span class="s-num">3</span><label for="as2">Lancez un minuteur de 60 minutes et traitez les cinq questions dans le générateur, sans assistant IA.</label></div><div class="step"><input type="checkbox" id="as3"><span class="s-num">4</span><label for="as3">Relisez votre copie : calculs, dates, articles cités, cohérence entre Q3 et Q4 (5 minutes).</label></div><div class="step"><input type="checkbox" id="as4"><span class="s-num">5</span><label for="as4">Générez votre copie, puis comparez-la au corrigé critérié et attribuez-vous une note sur 20.</label></div><div class="step"><input type="checkbox" id="as5"><span class="s-num">6</span><label for="as5">Complétez la fiche de révision personnelle : acquis, points fragiles, règles de méthode.</label></div><div class="step"><input type="checkbox" id="as6"><span class="s-num">7</span><label for="as6">Optionnel : retravaillez vos points fragiles avec le prompt de révision ciblée.</label></div></div></div>
+  </div>
+  <div class="card">
+  <div class="section-title"><span class="icon-bg">🏠</span>Le mini-cas : Habitéo, janvier 2028 (fictif)</div>
+  <div class="instruction-box"><strong class="title">Situation</strong>Le pilote du lot 1 s'est achevé à Grenoble fin novembre 2027. Le double run a laissé 2 écarts de paie résiduels, expliqués et corrigés. Sur les 6 mois qui ont suivi le déploiement de HAB-RH-01 et du parcours d'intégration, le délai d'intégration est passé de 12 à 6 jours, et l'agence a enregistré 16 entrées dont 5 départs avant un an (contre 44 % sur l'année précédente). La première vague de déploiement démarre ce mois-ci.<br><br>
+  La DRH, Nadia Ferreira, prépare le lot 2 (ATS et LMS), budget 90 k€. L'éditeur B propose dans son ATS une fonction de « classement automatique des candidatures par score de compatibilité » et, dans son LMS, la recommandation de formations. Sophie, l'assistante RH, a vu sa semaine allégée d'environ 10 heures. Le CSE demande un point d'étape sur l'IA dans les outils RH.</div>
+  <p class="muted">Répétition individuelle, sans assistant IA, en 60 minutes. Répondez dans le générateur ci-dessous, puis comparez votre copie au corrigé critérié.</p>
+  <div class="qbox"><div class="qh">Q1 · Lire les premiers résultats du pilote <span>12 min · 4 pts</span></div><p>Calculez le taux de départs précoces de Grenoble sur la période du pilote et comparez-le à l'année précédente. Peut-on conclure que le parcours d'intégration est efficace ? Justifiez.</p></div>
+  <div class="qbox"><div class="qh">Q2 · Automatiser la relance des candidats <span>12 min · 4 pts</span></div><p>Décrivez un scénario d'automatisation (Make ou n8n) qui relance les candidats dont le dossier est incomplet : déclencheur, étapes, place du LLM, place de la personne, données exclues.</p></div>
+  <div class="qbox"><div class="qh">Q3 · Qualifier la fonction de classement de l'ATS <span>12 min · 4 pts</span></div><p>Qualifiez le niveau de risque de cette fonction (AI Act, avec la date d'application, et RGPD) et rendez une décision ✅ / ⚠️ / ⛔ assortie de conditions.</p></div>
+  <div class="qbox"><div class="qh">Q4 · Cadrer le lot 2 <span>12 min · 4 pts</span></div><p>Rédigez trois exigences testables (avec leur priorité MoSCoW) pour l'ATS d'Habitéo, deux cas de recette, et un critère go / no-go.</p></div>
+  <div class="qbox"><div class="qh">Q5 · Mesurer et communiquer <span>12 min · 4 pts</span></div><p>Proposez deux indicateurs de succès du lot 2 (formule, source, cible), puis rédigez le prompt en 5 piliers qui préparera la note au CSE sur l'IA dans les outils RH, y compris l'évolution du poste de Sophie.</p></div>
+</div><div class="card">
+  <div class="section-title"><span class="icon-bg purple">🤖</span>Après la répétition — le prompt de révision ciblée (optionnel)</div>
+  <p class="muted">Uniquement après l'auto-correction, pour retravailler vos points fragiles avec un assistant IA d'entreprise. Ce prompt ne contient aucune donnée personnelle.</p>
+  <pre class="prompt">Contexte : je suis étudiant·e en M2 Manager du développement des ressources humaines. Je prépare une étude de cas individuelle sur le module « SIRH et exploitation de la Data – IA » (processus RH, IA générative, automatisation avec un LLM, Core RH, GTA, paie et DSN, ATS, LMS, PMS, AI Act et RGPD, marché du SIRH, projet, KPI de climat social, scénarios décisionnels).
+
+Rôle : agis comme un examinateur exigeant et bienveillant.
+
+Mes points fragiles, issus de ma répétition générale :
+[COLLER ICI LA LISTE « Promesses fragiles » DE MA FICHE DE RÉVISION]
+
+Tâche :
+1. pose-moi une question à la fois sur ces points, sous forme de mini-situation d&#x27;entreprise (une ETI fictive que tu inventes, jamais Habitéo) ;
+2. attends ma réponse, puis corrige-la en disant ce qui manque : ancrage dans la situation, vocabulaire précis, règle juridique exacte, chiffre ou formule, cohérence ;
+3. après cinq questions, fais le bilan de mes progrès et de ce qu&#x27;il me reste à revoir.
+
+Contraintes : ne me donne pas la réponse avant que j&#x27;aie répondu ; si tu cites une date ou un texte juridique, précise que je dois la vérifier dans mon support de cours ; pas plus de 120 mots par question.</pre>
+  <div class="actions-row" style="margin-top:6px"><button class="btn btn-primary btn-sm" id="atCopyPrompt">📋 Copier le prompt</button></div>
+</div>
+<div class="card">
+  <div class="section-title"><span class="icon-bg green">🧭</span>Rappel de méthode</div>
+  <div class="grid grid-3">
+    <div class="mini-card"><h4>⏱️ Le temps</h4><p class="muted">5 minutes de lecture, 12 minutes par question, 5 minutes de relecture. Une question bloquante ? Passez, revenez-y.</p></div>
+    <div class="mini-card"><h4>🧱 La structure</h4><p class="muted">Constat chiffré → analyse avec la bonne méthode → recommandation → conditions et indicateurs.</p></div>
+    <div class="mini-card"><h4>🔎 La relecture</h4><p class="muted">Calculs refaits, dates et articles exacts, aucune contradiction entre deux réponses.</p></div>
+  </div>
+</div>
+  <div class="card">
+    <div class="section-title"><span class="icon-bg purple">📄</span>Générateur — <code>copie-repetition-generale.md</code></div>
+    <label class="f-label" for="g0_name">Nom et date</label><input class="f-input" id="g0_name" data-gen="0" placeholder="Ex. Prénom NOM — date de la séance"><label class="f-label" for="g0_q1">Q1 · Premiers résultats du pilote (calcul et lecture)</label><textarea class="f-input" id="g0_q1" data-gen="0" placeholder="Taux de départs précoces = … ; comparaison … ; peut-on conclure ? …"></textarea><label class="f-label" for="g0_q2">Q2 · Scénario de relance des candidats</label><textarea class="f-input" id="g0_q2" data-gen="0" placeholder="Déclencheur : … ; étapes : … ; LLM : … ; personne : … ; données exclues : …"></textarea><label class="f-label" for="g0_q3">Q3 · Qualification de la fonction de classement de l&#x27;ATS</label><textarea class="f-input" id="g0_q3" data-gen="0" placeholder="AI Act : … ; RGPD : … ; décision ✅ / ⚠️ / ⛔ et conditions : …"></textarea><label class="f-label" for="g0_q4">Q4 · Exigences MoSCoW, cas de recette, go / no-go (une ligne par élément)</label><textarea class="f-input" id="g0_q4" data-gen="0" placeholder="Must — …&#10;CT-A — …&#10;Go / no-go — …"></textarea><label class="f-label" for="g0_q5">Q5 · Deux indicateurs et prompt en 5 piliers</label><textarea class="f-input" id="g0_q5" data-gen="0" placeholder="Indicateur 1 : formule — source — cible&#10;…&#10;Contexte : … Tâche : … Format : … Contraintes : … Exemple : …"></textarea>
+    <div class="actions-row">
+      <button class="btn btn-success" id="gGen0">⚙️ Générer la fiche</button>
+      <button class="btn btn-ghost" id="gReset0">↺ Vider</button>
+    </div>
+    <div id="gWrap0" style="display:none">
+      <h3>Fichier généré (Markdown)</h3>
+      <pre class="prompt" id="gOut0"></pre>
+      <div class="actions-row"><button class="btn btn-primary" id="gCopy0">📋 Copier</button><button class="btn btn-ghost" id="gDl0">⬇️ Télécharger copie-repetition-generale.md</button></div>
+      <p class="muted" style="margin-top:10px">Comparez ensuite votre copie au corrigé critérié, question par question, et notez chaque point manqué dans votre fiche de révision.</p>
+    </div>
+  </div><div class="card">
+    <div class="section-title"><span class="icon-bg purple">📄</span>Générateur — <code>fiche-revision-personnelle.md</code></div>
+    <label class="f-label" for="g1_name">Nom et date</label><input class="f-input" id="g1_name" data-gen="1" placeholder="Ex. Prénom NOM — date"><label class="f-label" for="g1_acquis">Promesses que je maîtrise (une par ligne, avec une preuve)</label><textarea class="f-input" id="g1_acquis" data-gen="1" placeholder="S4 — Je sais relier les données du planning à la DSN — j&#x27;ai trouvé les 7 anomalies du fichier de Grenoble&#10;…"></textarea><label class="f-label" for="g1_fragiles">Promesses fragiles (une par ligne : notion manquée — où la revoir)</label><textarea class="f-input" id="g1_fragiles" data-gen="1" placeholder="S5 — date d&#x27;application du haut risque de l&#x27;AI Act — support théorique S5, chapitre …&#10;…"></textarea><label class="f-label" for="g1_score">Score à la répétition générale et points perdus</label><textarea class="f-input" id="g1_score" data-gen="1" placeholder="… / 20 ; Q3 : article 22 non cité ; Q4 : exigences non testables…"></textarea><label class="f-label" for="g1_methode">Mes trois règles pour l&#x27;étude de cas</label><textarea class="f-input" id="g1_methode" data-gen="1" placeholder="1. Lire tout le sujet avant d&#x27;écrire&#10;2. …&#10;3. …"></textarea>
+    <div class="actions-row">
+      <button class="btn btn-success" id="gGen1">⚙️ Générer la fiche</button>
+      <button class="btn btn-ghost" id="gReset1">↺ Vider</button>
+    </div>
+    <div id="gWrap1" style="display:none">
+      <h3>Fichier généré (Markdown)</h3>
+      <pre class="prompt" id="gOut1"></pre>
+      <div class="actions-row"><button class="btn btn-primary" id="gCopy1">📋 Copier</button><button class="btn btn-ghost" id="gDl1">⬇️ Télécharger fiche-revision-personnelle.md</button></div>
+      <p class="muted" style="margin-top:10px">Cette fiche vous servira aussi pour réviser l&#x27;examen du Dossier 4.</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-title"><span class="icon-bg green">☑️</span>Auto-contrôle</div>
+    <div class="checklist" id="atCheck"><label><input type="checkbox"> Le calcul de Q1 est posé avec sa formule et sa lecture est nuancée.</label><label><input type="checkbox"> Le scénario de Q2 place une personne avant toute décision et exclut les données identifiantes du LLM.</label><label><input type="checkbox"> Q3 cite l&#x27;AI Act avec sa date d&#x27;application et l&#x27;article 22 du RGPD.</label><label><input type="checkbox"> Les exigences de Q4 sont testables et priorisées, et un cas de recette vérifie l&#x27;absence de refus automatique.</label><label><input type="checkbox"> Chaque indicateur de Q5 a une formule, une source et une cible.</label><label><input type="checkbox"> Le prompt de Q5 contient les 5 piliers.</label><label><input type="checkbox"> La fiche de révision indique où revoir chaque point fragile.</label></div>
+    <div class="progress-wrap"><div class="progress-label"><span>Avancement de l'atelier</span><span id="atTxt">0 / 0</span></div><div class="progress-track"><div class="progress-fill" id="atFill"></div></div></div>
+    <div class="actions-row"><button class="btn btn-warning btn-reveal" id="atReveal">👁 Révéler un exemple corrigé</button></div>
+    <div class="reveal-content" id="atSolution"><h3>Exemple corrigé — Atelier séance 10</h3><pre class="prompt">## Q1 · Premiers résultats du pilote (4 pts)
+
+Calcul : 5 / 16 × 100 = 31 % de départs précoces sur 6 mois, contre 44 % sur l&#x27;année précédente (15 / 34). (1 pt)
+Lecture : tendance encourageante, mais on ne peut pas conclure à l&#x27;efficacité (1 pt pour chaque argument, 3 au maximum) :
+- période courte (6 mois) et petit effectif (16 entrées : un départ fait varier le taux de 6 points) ;
+- les entrants les plus récents n&#x27;ont pas encore un an d&#x27;ancienneté : le taux définitif sera plus élevé ;
+- plusieurs changements simultanés (nouvel outil, parcours, marché local) : corrélation n&#x27;est pas causalité ;
+- à confirmer sur 12 mois avec la même définition, en comparant avec d&#x27;autres agences et avec les entretiens de départ.
+
+## Q2 · Relance automatisée des candidats (4 pts)
+
+Déclencheur : une candidature passe au statut « incomplète » dans l&#x27;ATS (ou chaque jour à 9 h, recherche des dossiers incomplets depuis plus de 48 h). (1 pt)
+Étapes : récupérer la liste des pièces manquantes → module LLM qui rédige un message clair et bienveillant à partir de la liste des pièces et du poste, sortie JSON → envoi d&#x27;un message figé et validé à l&#x27;avance, ou brouillon soumis au recruteur → mise à jour du statut et de la date de relance → au-delà de 2 relances, file d&#x27;attente du recruteur. (1 pt)
+Place de la personne : modèles de messages validés ; le recruteur traite les cas particuliers ; aucune décision de refus automatique. (1 pt)
+Données exclues du LLM : nom, coordonnées, âge, situation familiale, santé (RQTH), pièces elles-mêmes ; minimisation RGPD et outil autorisé ; n8n auto-hébergé si l&#x27;on veut garder les données en interne. (1 pt)
+
+## Q3 · Classement automatique des candidatures (4 pts)
+
+AI Act : système utilisé pour le recrutement et la sélection = haut risque (annexe III) ; obligations applicables à partir du 2 décembre 2027 selon le calendrier du règlement omnibus 2026/1744, donc en vigueur en janvier 2028 : contrôle humain, information des candidats, surveillance du fonctionnement, conservation des journaux, coopération avec l&#x27;éditeur. (1,5 pt)
+RGPD : profilage ; article 22 si un refus était fondé exclusivement sur le score ; AIPD ; information des candidats ; critères explicables et non discriminatoires. (1,5 pt)
+Décision : ⚠️ autorisé sous conditions — le score aide à ordonner, jamais à éliminer ; examen humain de toutes les candidatures sous un seuil ; critères documentés ; test des résultats par groupe (sexe, âge) avant mise en service ; information-consultation du CSE ; revue après 6 mois. ⛔ acceptable aussi si argumenté (données insuffisantes, risque disproportionné pour le volume). (1 pt)
+
+## Q4 · Cadrage du lot 2 (4 pts)
+
+Exigences (2 pts, dont 0,5 pour les priorités) :
+- Must : l&#x27;ATS publie une offre en une seule saisie sur au moins 3 canaux (site carrière, France Travail, un jobboard du BTP) ;
+- Must : aucun refus de candidature n&#x27;est envoyé sans action d&#x27;un recruteur, et l&#x27;historique trace l&#x27;auteur de chaque décision ;
+- Should : à l&#x27;embauche, les données du candidat retenu alimentent le Core RH sans ressaisie (contrat, site, date d&#x27;entrée) ;
+- Could : le LMS propose automatiquement le parcours d&#x27;habilitation selon l&#x27;emploi.
+Cas de recette (1 pt) : CT-A — candidature notée 35 : vérifier qu&#x27;aucun refus ne part sans action humaine ; CT-B — embauche d&#x27;un technicien à Valence : vérifier la création de la fiche dans le Core RH avec le bon site et la bonne date, sans ressaisie.
+Go / no-go (1 pt) : 100 % des cas de recette « Must » passés, aucun refus automatique possible, AIPD validée et CSE consulté avant mise en service.
+
+## Q5 · Indicateurs et prompt (4 pts)
+
+Indicateurs (2 pts) :
+- délai de recrutement d&#x27;un technicien = date de signature − date d&#x27;ouverture du poste, en jours, moyenne mensuelle ; source ATS ; cible inférieure à 30 jours ;
+- taux de départ précoce = sorties à moins d&#x27;un an / entrées × 100 ; source Core RH ; cible inférieure à 25 % ; publié par agence seulement si l&#x27;effectif le permet.
+Prompt (2 pts, 0,4 par pilier) :
+Contexte : je suis chargé·e de mission SIRH chez Habitéo, ETI de rénovation énergétique de 820 salariés ; le lot 2 (ATS et LMS de l&#x27;éditeur B) intègre un classement des candidatures et des recommandations de formation ; le CSE demande un point d&#x27;étape. Tâche : rédige une note d&#x27;information au CSE sur les usages d&#x27;IA dans les outils RH et sur l&#x27;évolution du poste d&#x27;assistante RH. Format : une page, quatre parties (usages concernés ; garanties : contrôle humain, absence de refus automatique, AIPD, AI Act ; impacts sur les postes ; calendrier et prochaines consultations). Contraintes : ton factuel, sans jargon ; aucune donnée nominative ; ne rien affirmer qui ne figure pas dans mes éléments ; signaler ce qui reste à décider. Exemple : « Le score de compatibilité aide le recruteur à ordonner les candidatures ; il ne peut en aucun cas entraîner un refus. »
+
+## Points de vigilance transversaux
+
+Ancrage dans les chiffres du cas ; dates exactes de l&#x27;AI Act ; article 22 cité et appliqué ; cohérence entre Q3 (pas de refus automatique) et Q4 (exigence et cas de recette correspondants) ; éditeurs et outils nommés avec leur rôle.
+</pre></div>
+    <div class="nav-bottom" style="margin-top:20px"><button class="btn btn-ghost" data-goto="c3">◂ Cas 3</button><button class="btn btn-primary" data-goto="gl">Glossaire ▸</button></div>
+  </div>
+</section>
+
+<section class="panel" data-panel="gl">
+  <div class="card">
+    <div class="section-title"><span class="icon-bg">📖</span>Glossaire de la séance</div>
+    <div id="glossLocked" class="lock-wrap">
+      <div class="big-lock">🔒</div>
+      <h3>Glossaire verrouillé</h3>
+      <p class="muted">Terminez les trois cas pratiques pour débloquer les 30 définitions.</p>
+      <div class="lock-pills"><span class="lock-pill" data-lock="cas1">⏳ Cas 1</span><span class="lock-pill" data-lock="cas2">⏳ Cas 2</span><span class="lock-pill" data-lock="cas3">⏳ Cas 3</span></div>
+      <div class="actions-row" style="justify-content:center"><button class="btn btn-warning btn-reveal" id="glossForce">🔓 Déverrouiller (formateur)</button></div>
+    </div>
+    <div id="glossOpen" style="display:none">
+      <div class="filter-row" id="glossFilters"><button class="on" data-f="all">Tous</button><button data-f="f1">SI, processus et IA générative</button><button data-f="f2">Automatisation et socle</button><button data-f="f3">Talents, IA et conformité</button><button data-f="f4">Marché et projet</button><button data-f="f5">Data et décision</button></div>
+      <div class="gloss" id="gloss"></div>
+      <div class="key-box" style="margin-top:22px"><div class="big">Le module tient en une chaîne : observer, simplifier, outiller, sécuriser, choisir, déployer, mesurer, anticiper, avec une personne responsable de chaque décision.</div></div>
+      <div class="objectif-box"><strong class="title">Prochaine séance — Après le module : l&#x27;examen du Dossier 4</strong>Le module est aussi évalué par l'examen (MSP2, Dossier 4, coefficient 6) « SIRH et exploitation de la Data – IA ». Les supports théoriques, les glossaires et vos livrables Habitéo restent votre base de révision.</div>
+    </div>
+  </div>
+</section>
+</main>
+<footer>SIRH &amp; exploitation de la Data — IA — Séance 10 — Révision et préparation de l&#x27;étude de cas — Pratique<br>Mode formateur : ajoutez <code>?formateur</code> à l'adresse de la page.</footer>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+"use strict";
+const FAMILIES={"f1": "SI, processus et IA générative", "f2": "Automatisation et socle", "f3": "Talents, IA et conformité", "f4": "Marché et projet", "f5": "Data et décision"};
+const EXPLORERS={};
+const TERMS=[{"t": "SIRH", "f": "f1", "d": "Partie logicielle du système d'information RH, qui automatise et centralise la gestion des données et processus RH."}, {"t": "Processus AS-IS", "f": "f1", "d": "Description du processus tel qu'il se déroule réellement aujourd'hui, avant toute transformation."}, {"t": "Cartographie en couloirs", "f": "f1", "d": "Représentation d'un processus où chaque acteur dispose d'une ligne et chaque étape d'une case."}, {"t": "Gaspillage", "f": "f1", "d": "Activité qui consomme du temps ou des ressources sans apporter de valeur au client du processus."}, {"t": "LLM", "f": "f1", "d": "Grand modèle de langage, entraîné sur de vastes corpus de textes pour comprendre et générer du texte."}, {"t": "Prompt en 5 piliers", "f": "f1", "d": "Consigne structurée en contexte, tâche, format, contraintes et exemple."}, {"t": "Grille d'automatisabilité", "f": "f2", "d": "Outil qui évalue un processus selon sa fréquence, son volume, sa standardisation et sa valeur ajoutée humaine."}, {"t": "Déclencheur", "f": "f2", "d": "Événement qui lance automatiquement un scénario d'automatisation."}, {"t": "Minimisation", "f": "f2", "d": "Principe du RGPD : ne traiter que les données strictement nécessaires à la finalité."}, {"t": "Système maître", "f": "f2", "d": "Seul système autorisé à créer ou modifier une donnée, les autres la recevant par interface."}, {"t": "GTA", "f": "f2", "d": "Gestion des temps et des activités : planning, pointage, absences, heures supplémentaires."}, {"t": "DSN", "f": "f2", "d": "Déclaration sociale nominative, transmise chaque mois à partir de la paie aux organismes sociaux."}, {"t": "ATS", "f": "f3", "d": "Logiciel de gestion du recrutement, de l'offre à l'embauche."}, {"t": "LMS", "f": "f3", "d": "Logiciel de gestion de la formation : catalogue, parcours, inscriptions, traçabilité."}, {"t": "PMS", "f": "f3", "d": "Logiciel de gestion de la performance : objectifs, entretiens, feedbacks, revues de talents."}, {"t": "AI Act", "f": "f3", "d": "Règlement européen sur l'IA qui classe les usages par niveau de risque, des pratiques interdites au haut risque."}, {"t": "Article 22 du RGPD", "f": "f3", "d": "Droit de ne pas faire l'objet d'une décision fondée exclusivement sur un traitement automatisé produisant des effets significatifs."}, {"t": "Contrôle humain significatif", "f": "f3", "d": "Intervention d'une personne compétente, disposant du temps et du pouvoir de modifier le résultat d'un système."}, {"t": "SaaS", "f": "f4", "d": "Logiciel hébergé et mis à jour par l'éditeur, utilisé en ligne sur abonnement."}, {"t": "Best-of-breed", "f": "f4", "d": "Stratégie qui retient le meilleur outil pour chaque besoin, reliés par des interfaces."}, {"t": "TCO", "f": "f4", "d": "Coût total de possession d'une solution sur sa durée d'usage."}, {"t": "Exigence testable", "f": "f4", "d": "Besoin formulé de façon à pouvoir être vérifié en démonstration ou en recette."}, {"t": "Recette", "f": "f4", "d": "Phase de tests qui vérifie que la solution paramétrée répond aux exigences avant sa mise en service."}, {"t": "RACI", "f": "f4", "d": "Matrice qui précise qui réalise, approuve, est consulté et est informé pour chaque activité."}, {"t": "Dictionnaire des données", "f": "f5", "d": "Document qui définit chaque champ : signification, format, valeurs, source et propriétaire."}, {"t": "Taux de départ", "f": "f5", "d": "Nombre de sorties de la période rapporté à l'effectif moyen."}, {"t": "eNPS", "f": "f5", "d": "Pourcentage de promoteurs moins pourcentage de détracteurs parmi les salariés interrogés."}, {"t": "Seuil de confidentialité", "f": "f5", "d": "Nombre minimal de répondants ou de salariés en dessous duquel un résultat n'est pas publié."}, {"t": "Scénario décisionnel", "f": "f5", "d": "Option d'action décrite par ses hypothèses, ses coûts, ses effets attendus et ses risques."}, {"t": "Matrice de maturité", "f": "f5", "d": "Grille qui situe une organisation sur plusieurs axes et niveaux de développement."}];
+const CAS2=[{"notion": "Gaspillage", "choices": ["Gaspillage", "Système maître", "Exigence testable", "Seuil de confidentialité"], "situations": [{"s": "Sophie ressaisit le même nouvel entrant dans trois fichiers différents.", "intruse": false}, {"s": "Le dossier d'un technicien attend 4 jours la signature du responsable d'agence.", "intruse": false}, {"s": "Une DPAE est refaite après une erreur de date de naissance.", "intruse": false}, {"s": "Le Core RH est désigné comme seule source du site d'affectation.", "intruse": true}], "e": "Ressaisie, attente, reprise d'erreur : trois gaspillages. L'intruse désigne un système maître, la solution à la ressaisie."}, {"notion": "Article 22 du RGPD", "choices": ["Article 22 du RGPD", "Minimisation", "Pratique interdite par l'AI Act", "Dialogue social"], "situations": [{"s": "Un ATS rejette sans examen humain les candidatures notées sous 60.", "intruse": false}, {"s": "Une prime est supprimée automatiquement quand un score de performance baisse.", "intruse": false}, {"s": "Un candidat demande qu'une personne réexamine le refus de sa candidature.", "intruse": false}, {"s": "Un outil analyse les émotions des candidats pendant un entretien vidéo.", "intruse": true}], "e": "Décisions significatives fondées exclusivement sur un traitement automatisé : article 22. L'intruse est une pratique interdite par l'AI Act depuis le 2 février 2025."}, {"notion": "Exigence testable", "choices": ["Exigence testable", "Besoin brut", "Critère éliminatoire", "Cas de recette"], "situations": [{"s": "Le technicien pointe depuis son mobile hors connexion, avec synchronisation au retour du réseau.", "intruse": false}, {"s": "Le système alerte le chef d'équipe 60 jours avant l'expiration d'une habilitation.", "intruse": false}, {"s": "L'indemnité de petit déplacement est calculée selon les zones 1 à 5 du BTP.", "intruse": false}, {"s": "Le logiciel doit être simple et agréable à utiliser.", "intruse": true}], "e": "Trois besoins formulés de façon vérifiable. L'intruse est un besoin brut, impossible à tester tel quel."}, {"notion": "Indicateur de climat social", "choices": ["Indicateur de climat social", "Indicateur de processus", "Indicateur financier", "Indicateur de projet"], "situations": [{"s": "Part des démissions dans les sorties de l'année.", "intruse": false}, {"s": "eNPS du baromètre de septembre.", "intruse": false}, {"s": "Taux d'absentéisme par agence.", "intruse": false}, {"s": "Délai moyen entre la signature du contrat et la DPAE.", "intruse": true}], "e": "Ce que les salariés font ou disent : climat social. L'intruse mesure la performance d'un processus."}, {"notion": "Scénario décisionnel", "choices": ["Scénario décisionnel", "Tableau de bord", "Modèle prédictif", "Matrice de maturité"], "situations": [{"s": "Statu quo à Grenoble : 34 départs, 340 k€ de coût de remplacement.", "intruse": false}, {"s": "Parcours d'intégration renforcé : 32 k€, 7 départs évités supposés.", "intruse": false}, {"s": "Revalorisation de 3 % : 96 k€, rapide mais irréversible.", "intruse": false}, {"s": "Score mensuel de risque de démission attribué à chaque technicien.", "intruse": true}], "e": "Trois options décrites par leurs coûts, effets et risques. L'intruse est un modèle prédictif individuel."}];
+const CAS3=[{"q": "Le SIRH et le SI RH désignent exactement la même chose.", "a": false, "e": "Le SI RH inclut personnes, processus et données ; le SIRH n'en est que la partie logicielle."}, {"q": "On automatise d'abord, on simplifie ensuite le processus.", "a": false, "e": "Automatiser un processus mal conçu accélère ses défauts : on simplifie (TO-BE) puis on automatise."}, {"q": "Dans HAB-RH-01, le LLM reçoit le nom du salarié pour personnaliser l'e-mail.", "a": false, "e": "Minimisation : ni nom ni pièce ; la personnalisation est faite à la validation du brouillon."}, {"q": "Une erreur de pointage peut se retrouver dans la DSN.", "a": true, "e": "Pointage → GTA → paie → DSN : d'où les contrôles avant clôture de paie."}, {"q": "La reconnaissance des émotions des salariés au travail est interdite par l'AI Act depuis février 2025.", "a": true, "e": "Elle fait partie des pratiques interdites applicables depuis le 2 février 2025."}, {"q": "Un outil de tri de CV conforme à l'AI Act dispense l'employeur de tout contrôle humain.", "a": false, "e": "L'article 22 du RGPD et les obligations de l'utilisateur d'un système à haut risque imposent un contrôle humain réel."}, {"q": "L'offre la moins chère en abonnement mensuel est toujours la moins chère sur cinq ans.", "a": false, "e": "Le TCO intègre projet, interfaces, exploitation et formation : en séance 6, les écarts changeaient le classement."}, {"q": "« L'outil doit être intuitif » est une exigence testable.", "a": false, "e": "Il faut la reformuler : par exemple, un technicien saisit sa journée en moins de 2 minutes sans aide."}, {"q": "Le double run consiste à calculer la paie dans l'ancien et le nouveau système pour comparer.", "a": true, "e": "Les écarts sont expliqués avant la bascule ; leur résorption est un critère de go."}, {"q": "On peut publier l'eNPS d'une agence de 8 répondants si le résultat est positif.", "a": false, "e": "Le seuil de confidentialité s'applique quel que soit le résultat."}, {"q": "Un scénario décisionnel doit toujours être comparé au statu quo.", "a": true, "e": "Le coût de l'inaction est la référence de tous les gains."}, {"q": "Dans une étude de cas, citer des éditeurs sans justifier leur pertinence rapporte autant qu'un choix argumenté.", "a": false, "e": "Un nom d'éditeur vaut par le lien établi avec le besoin, la taille et les contraintes de l'entreprise."}];
+const ATELIER={"prompt": "Contexte : je suis étudiant·e en M2 Manager du développement des ressources humaines. Je prépare une étude de cas individuelle sur le module « SIRH et exploitation de la Data – IA » (processus RH, IA générative, automatisation avec un LLM, Core RH, GTA, paie et DSN, ATS, LMS, PMS, AI Act et RGPD, marché du SIRH, projet, KPI de climat social, scénarios décisionnels).\n\nRôle : agis comme un examinateur exigeant et bienveillant.\n\nMes points fragiles, issus de ma répétition générale :\n[COLLER ICI LA LISTE « Promesses fragiles » DE MA FICHE DE RÉVISION]\n\nTâche :\n1. pose-moi une question à la fois sur ces points, sous forme de mini-situation d'entreprise (une ETI fictive que tu inventes, jamais Habitéo) ;\n2. attends ma réponse, puis corrige-la en disant ce qui manque : ancrage dans la situation, vocabulaire précis, règle juridique exacte, chiffre ou formule, cohérence ;\n3. après cinq questions, fais le bilan de mes progrès et de ce qu'il me reste à revoir.\n\nContraintes : ne me donne pas la réponse avant que j'aie répondu ; si tu cites une date ou un texte juridique, précise que je dois la vérifier dans mon support de cours ; pas plus de 120 mots par question.", "generators": [{"filename": "copie-repetition-generale.md", "heading": "Répétition générale — Habitéo, janvier 2028 — {name}", "fields": [{"id": "name", "label": "Nom et date", "ph": "Ex. Prénom NOM — date de la séance", "type": "input"}, {"id": "q1", "label": "Q1 · Premiers résultats du pilote (calcul et lecture)", "ph": "Taux de départs précoces = … ; comparaison … ; peut-on conclure ? …", "type": "textarea", "list": false}, {"id": "q2", "label": "Q2 · Scénario de relance des candidats", "ph": "Déclencheur : … ; étapes : … ; LLM : … ; personne : … ; données exclues : …", "type": "textarea", "list": false}, {"id": "q3", "label": "Q3 · Qualification de la fonction de classement de l'ATS", "ph": "AI Act : … ; RGPD : … ; décision ✅ / ⚠️ / ⛔ et conditions : …", "type": "textarea", "list": false}, {"id": "q4", "label": "Q4 · Exigences MoSCoW, cas de recette, go / no-go (une ligne par élément)", "ph": "Must — …\nCT-A — …\nGo / no-go — …", "type": "textarea", "list": true}, {"id": "q5", "label": "Q5 · Deux indicateurs et prompt en 5 piliers", "ph": "Indicateur 1 : formule — source — cible\n…\nContexte : … Tâche : … Format : … Contraintes : … Exemple : …", "type": "textarea", "list": false}], "note": "Comparez ensuite votre copie au corrigé critérié, question par question, et notez chaque point manqué dans votre fiche de révision."}, {"filename": "fiche-revision-personnelle.md", "heading": "Fiche de révision personnelle — {name}", "fields": [{"id": "name", "label": "Nom et date", "ph": "Ex. Prénom NOM — date", "type": "input"}, {"id": "acquis", "label": "Promesses que je maîtrise (une par ligne, avec une preuve)", "ph": "S4 — Je sais relier les données du planning à la DSN — j'ai trouvé les 7 anomalies du fichier de Grenoble\n…", "type": "textarea", "list": true}, {"id": "fragiles", "label": "Promesses fragiles (une par ligne : notion manquée — où la revoir)", "ph": "S5 — date d'application du haut risque de l'AI Act — support théorique S5, chapitre …\n…", "type": "textarea", "list": true}, {"id": "score", "label": "Score à la répétition générale et points perdus", "ph": "… / 20 ; Q3 : article 22 non cité ; Q4 : exigences non testables…", "type": "textarea", "list": false}, {"id": "methode", "label": "Mes trois règles pour l'étude de cas", "ph": "1. Lire tout le sujet avant d'écrire\n2. …\n3. …", "type": "textarea", "list": true}], "note": "Cette fiche vous servira aussi pour réviser l'examen du Dossier 4."}]};
+const ACTS=["cas1", "cas2", "cas3", "atelier"];
+const params = new URLSearchParams(location.search);
+if (params.has('formateur') || location.hash === '#formateur') document.body.classList.add('formateur');
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const shuffle = a => { const b=a.slice(); for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];} return b; };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2400); }
+function copyText(txt){
+  if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(txt).then(()=>toast('Copié dans le presse-papiers ✅')).catch(()=>fallbackCopy(txt)); }
+  else fallbackCopy(txt);
+}
+function fallbackCopy(txt){ const ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); toast('Copié dans le presse-papiers ✅');}catch(e){toast('Copie impossible : sélectionnez le texte manuellement');} ta.remove(); }
+function download(name, txt){ const blob=new Blob([txt],{type:'text/markdown;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); }
+function setProgress(fillId, txtId, done, total, suffix){ const p = total ? Math.round(done/total*100) : 0; $('#'+fillId).style.width = p+'%'; $('#'+txtId).textContent = done+' / '+total+(suffix||''); }
+function scoreMsg(pct){ if(pct>=90) return 'Excellent : les notions sont acquises.'; if(pct>=70) return 'Bon résultat. Relisez les explications des erreurs pour consolider.'; if(pct>=50) return 'Des bases, mais plusieurs confusions. Relisez le chapitre puis recommencez.'; return 'Reprenez le chapitre, puis recommencez l\'activité.'; }
+const done = new Set();
+function markDone(act){
+  if(done.has(act)) return false;
+  done.add(act);
+  $$('.tab[data-act="'+act+'"]').forEach(t=>t.classList.add('done'));
+  const n = done.size;
+  $('#globalFill').style.width = Math.round(n/ACTS.length*100)+'%';
+  $('#globalPct').textContent = n+' / '+ACTS.length;
+  toast(n===ACTS.length ? '🎉 Toutes les activités sont validées !' : 'Activité validée ✅');
+  if(typeof onDone==='function') onDone(act);
+  return true;
+}
+function openTab(i){
+  $$('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab==i));
+  $$('.panel').forEach(p=>p.classList.toggle('active', p.dataset.panel==i));
+  const tw = $('.tabs-wrap'); window.scrollTo({top: tw.offsetTop, behavior: 'smooth'});
+  const at = $('.tab[data-tab="'+i+'"]'); if(at) at.scrollIntoView({inline:'center', block:'nearest'});
+}
+$$('.tab').forEach(t=>t.addEventListener('click',()=>openTab(t.dataset.tab)));
+$$('[data-goto]').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.goto)));
+
+/* Explorateurs */
+$$('[data-explorer]').forEach(box=>{
+  const E = EXPLORERS[box.dataset.explorer]; const seen=new Set();
+  const chain=$('.chain',box), detail=$('.concept-detail',box);
+  E.items.forEach((k,i)=>{
+    const b=document.createElement('button'); b.className='chain-node'; b.textContent=k.id; b.dataset.i=i;
+    b.addEventListener('click',()=>show(i)); chain.appendChild(b);
+  });
+  function show(i){
+    const k=E.items[i]; seen.add(i);
+    $$('.chain-node',box).forEach(n=>{ n.classList.toggle('active', n.dataset.i==i); if(seen.has(+n.dataset.i)) n.classList.add('seen'); });
+    detail.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap"><span class="term-item">'+esc(k.id)+'</span><span class="famille-tag '+k.fam+'">'+esc(FAMILIES[k.fam]||'')+'</span></div>'+
+      k.rows.map(r=>'<div class="row"><span class="k">'+esc(r[0])+'</span><span>'+esc(r[1])+'</span></div>').join('');
+    const f=$('.progress-fill',box), t=$('.progress-label span:last-child',box);
+    f.style.width=Math.round(seen.size/E.items.length*100)+'%'; t.textContent=seen.size+' / '+E.items.length;
+  }
+  show(0);
+});
+/* ================= CAS 1 — CORRESPONDANCE ================= */
+const RSIZE = 10;
+let c1 = null;
+function initCas1(){
+  const order = shuffle(TERMS);
+  const rounds=[]; for(let i=0;i<order.length;i+=RSIZE) rounds.push(order.slice(i,i+RSIZE));
+  c1 = {rounds, r:0, scores:[], pairs:{}, active:null, checked:false, defOrder:[]};
+  $('#c1Result').classList.remove('show');
+  renderRound();
+}
+function renderRound(){
+  const R=c1.rounds[c1.r]; c1.pairs={}; c1.active=null; c1.checked=false; c1.defOrder=shuffle(R.map((_,i)=>i));
+  $('#c1Rounds').innerHTML=c1.rounds.map((_,i)=>'<span class="round-pill '+(i===c1.r?'cur':(i<c1.r?'ok':''))+'">Round '+(i+1)+(c1.scores[i]!==undefined?' · '+c1.scores[i]+'/'+c1.rounds[i].length:'')+'</span>').join('');
+  const tc=$('#c1Terms'), dc=$('#c1Defs'); tc.innerHTML='<h4>Termes</h4>'; dc.innerHTML='<h4>Définitions</h4>';
+  R.forEach((t,i)=>{ const b=document.createElement('button'); b.className='m-term'; b.dataset.i=i; b.innerHTML='<span>'+esc(t.t)+'</span><span class="pair-badge">'+(i+1)+'</span>'; b.addEventListener('click',()=>pickTerm(i)); tc.appendChild(b); });
+  c1.defOrder.forEach(di=>{ const b=document.createElement('button'); b.className='m-def'; b.dataset.d=di; b.innerHTML='<span class="pair-badge">·</span><span>'+esc(R[di].d)+'</span>'; b.addEventListener('click',()=>pickDef(di)); dc.appendChild(b); });
+  $('#c1Next').style.display='none'; $('#c1Check').disabled=false;
+  paintPairs();
+}
+function pickTerm(i){ if(c1.checked) return; c1.active = c1.active===i ? null : i; paintPairs(); }
+function pickDef(di){
+  if(c1.checked) return;
+  if(c1.active===null){ const owner=Object.keys(c1.pairs).find(k=>c1.pairs[k]===di); if(owner!==undefined){ delete c1.pairs[owner]; paintPairs(); } else toast('Sélectionnez d\'abord un terme à gauche.'); return; }
+  Object.keys(c1.pairs).forEach(k=>{ if(c1.pairs[k]===di) delete c1.pairs[k]; });
+  c1.pairs[c1.active]=di; c1.active=null; paintPairs();
+}
+function paintPairs(){
+  $$('#c1Terms .m-term').forEach(b=>{ const i=+b.dataset.i; b.classList.toggle('active',c1.active===i); b.classList.toggle('paired',c1.pairs[i]!==undefined); });
+  $$('#c1Defs .m-def').forEach(b=>{ const di=+b.dataset.d; const owner=Object.keys(c1.pairs).find(k=>c1.pairs[k]===di); b.classList.toggle('paired',owner!==undefined); $('.pair-badge',b).textContent= owner!==undefined ? (+owner+1) : '·'; });
+  const n=Object.keys(c1.pairs).length, tot=c1.rounds[c1.r].length;
+  setProgress('c1Fill','c1Txt',n,tot,' associations');
+}
+function checkRound(silent){
+  const R=c1.rounds[c1.r];
+  if(!silent && Object.keys(c1.pairs).length<R.length){ toast('Associez les '+R.length+' termes avant de vérifier.'); return; }
+  let ok=0;
+  $$('#c1Terms .m-term').forEach(b=>{ const i=+b.dataset.i; const g=c1.pairs[i]===i; if(g) ok++; b.classList.remove('active'); b.classList.add(g?'good':'bad'); });
+  $$('#c1Defs .m-def').forEach(b=>{ const di=+b.dataset.d; const owner=Object.keys(c1.pairs).find(k=>c1.pairs[k]===di); const g= owner!==undefined && +owner===di; b.classList.add(g?'good':'bad'); if(!g){ $('.pair-badge',b).textContent='→'+(di+1); } });
+  c1.checked=true; c1.scores[c1.r]=ok; $('#c1Check').disabled=true;
+  const last = c1.r===c1.rounds.length-1;
+  const tot=c1.scores.reduce((a,b)=>a+b,0), max=c1.rounds.slice(0,c1.r+1).reduce((a,r)=>a+r.length,0);
+  $('#c1Result').innerHTML='<div class="score">'+ok+' / '+R.length+'</div><div class="msg">Round '+(c1.r+1)+' sur '+c1.rounds.length+'. Les définitions en rouge indiquent le numéro du bon terme. '+(last?'<br><strong style="color:#34d399">Score total : '+tot+' / '+max+'</strong> — '+scoreMsg(Math.round(tot/max*100)):'Score cumulé : '+tot+' / '+max+'.')+'</div>';
+  $('#c1Result').classList.add('show');
+  if(last){ if(!silent) markDone('cas1'); }
+  else $('#c1Next').style.display='inline-flex';
+}
+$('#c1Check').addEventListener('click',()=>checkRound(false));
+$('#c1Next').addEventListener('click',()=>{ c1.r++; $('#c1Result').classList.remove('show'); renderRound(); });
+$('#c1Reveal').addEventListener('click',()=>{ if(c1.checked) return; c1.rounds[c1.r].forEach((_,i)=>c1.pairs[i]=i); paintPairs(); checkRound(true); });
+$('#c1Reset').addEventListener('click',initCas1);
+initCas1();
+
+/* ================= CAS 2 — IDENTIFICATION + INTRUSE ================= */
+let c2=[];
+function initCas2(){
+  c2 = shuffle(CAS2).map(g=>({g, choices:shuffle(g.choices), sits:shuffle(g.situations)}));
+  const box=$('#c2Box'); box.innerHTML='';
+  c2.forEach((G,gi)=>{
+    const d=document.createElement('div'); d.className='group';
+    d.innerHTML='<div class="group-head"><strong><span class="q-num">G'+(gi+1)+'</span>Groupe '+(gi+1)+'</strong><span class="famille-tag f3">4 situations · 1 intruse</span></div>'+
+      G.sits.map((s,si)=>'<button type="button" class="sit" data-si="'+si+'"><span class="tag">S'+(si+1)+'</span><span>'+esc(s.s)+'</span></button>').join('')+
+      '<div class="g-label">1 · Quelle notion illustrent la majorité de ces situations ?</div><div class="choice-row">'+
+      G.choices.map((c,ci)=>'<button type="button" class="choice" data-ci="'+ci+'">'+esc(c)+'</button>').join('')+'</div>'+
+      '<div class="g-label">2 · Cliquez sur la situation intruse ci-dessus.</div><div class="expl"></div>';
+    $$('.choice',d).forEach(b=>b.addEventListener('click',()=>{ if(d.classList.contains('checked')) return; $$('.choice',d).forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); d.dataset.ch=b.dataset.ci; upd2(); }));
+    $$('.sit',d).forEach(b=>b.addEventListener('click',()=>{ if(d.classList.contains('checked')) return; $$('.sit',d).forEach(x=>{x.classList.remove('sel');$('.tag',x).textContent='S'+(+x.dataset.si+1);}); b.classList.add('sel'); $('.tag',b).textContent='Intruse ?'; d.dataset.si=b.dataset.si; upd2(); }));
+    box.appendChild(d);
+  });
+  $('#c2Result').classList.remove('show'); upd2();
+}
+function upd2(){ const gs=$$('#c2Box .group'); let n=0; gs.forEach(g=>{ if(g.dataset.ch!==undefined) n++; if(g.dataset.si!==undefined) n++; }); setProgress('c2Fill','c2Txt',n,gs.length*2,' réponses'); }
+function check2(silent){
+  const gs=$$('#c2Box .group');
+  if(!silent && gs.some(g=>g.dataset.ch===undefined||g.dataset.si===undefined)){ toast('Choisissez une notion et une intruse pour chaque groupe.'); return; }
+  let ok=0;
+  gs.forEach((d,gi)=>{
+    const G=c2[gi]; const goodCi=G.choices.indexOf(G.g.notion); const goodSi=G.sits.findIndex(s=>s.intruse);
+    const a=+d.dataset.ch===goodCi, b=+d.dataset.si===goodSi; ok+=(a?1:0)+(b?1:0);
+    $$('.choice',d).forEach((x,ci)=>{ x.classList.toggle('good',ci===goodCi); x.classList.toggle('bad',ci===+d.dataset.ch&&!a); });
+    $$('.sit',d).forEach((x,si)=>{ x.classList.remove('sel'); x.classList.toggle('good',si===goodSi); x.classList.toggle('bad',si===+d.dataset.si&&!b); $('.tag',x).textContent= si===goodSi?'Intruse':(si===+d.dataset.si&&!b?'Pas l\'intruse':'S'+(si+1)); });
+    d.classList.remove('correct','wrong','half'); d.classList.add('checked', a&&b?'correct':(a||b?'half':'wrong'));
+    $('.expl',d).innerHTML=(a?'✅':'❌')+' Notion : <strong>'+esc(G.g.notion)+'</strong> · '+(b?'✅':'❌')+' Intruse : <strong>S'+(goodSi+1)+'</strong><br>'+esc(G.g.e);
+  });
+  const max=gs.length*2;
+  $('#c2Result').innerHTML='<div class="score">'+ok+' / '+max+'</div><div class="msg">1 point par notion identifiée, 1 point par intruse repérée. '+scoreMsg(Math.round(ok/max*100))+'</div>';
+  $('#c2Result').classList.add('show');
+  if(!silent) markDone('cas2');
+}
+$('#c2Check').addEventListener('click',()=>check2(false));
+$('#c2Reveal').addEventListener('click',()=>{ $$('#c2Box .group').forEach((d,gi)=>{ const G=c2[gi]; d.dataset.ch=G.choices.indexOf(G.g.notion); d.dataset.si=G.sits.findIndex(s=>s.intruse); }); upd2(); check2(true); });
+$('#c2Reset').addEventListener('click',initCas2);
+initCas2();
+
+/* ================= CAS 3 — VRAI / FAUX ================= */
+let vfOrder=[];
+function renderVF(){
+  vfOrder=shuffle(CAS3); const box=$('#vfQuiz'); box.innerHTML='';
+  vfOrder.forEach((it,i)=>{
+    const r=document.createElement('div'); r.className='vf-row';
+    r.innerHTML='<div class="vf-q"><span class="q-num">'+String(i+1).padStart(2,'0')+'</span>'+esc(it.q)+'</div><div class="vf-btns"><button class="vf-btn" data-v="true">Vrai</button><button class="vf-btn" data-v="false">Faux</button></div><div class="expl"></div>';
+    $$('.vf-btn',r).forEach(b=>b.addEventListener('click',()=>{ if(r.classList.contains('checked')) return; $$('.vf-btn',r).forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); r.dataset.ans=b.dataset.v; updateVF(); }));
+    box.appendChild(r);
+  });
+  $('#vfResult').classList.remove('show'); updateVF();
+}
+function updateVF(){ const rows=$$('#vfQuiz .vf-row'); setProgress('vfFill','vfTxt',rows.filter(r=>r.dataset.ans).length,rows.length); }
+function checkVF(silent){
+  const rows=$$('#vfQuiz .vf-row');
+  if(!silent && rows.some(r=>!r.dataset.ans)){ toast('Répondez à toutes les affirmations avant de vérifier.'); return; }
+  let ok=0;
+  rows.forEach((r,i)=>{
+    const it=vfOrder[i]; const good=(r.dataset.ans==='true')===it.a; if(good) ok++;
+    r.classList.remove('correct','wrong'); r.classList.add('checked',good?'correct':'wrong');
+    $('.expl',r).innerHTML=(good?'✅ ':'❌ ')+'<strong>'+(it.a?'Vrai':'Faux')+'.</strong> '+esc(it.e);
+  });
+  $('#vfResult').innerHTML='<div class="score">'+ok+' / '+rows.length+'</div><div class="msg">'+scoreMsg(Math.round(ok/rows.length*100))+'</div>';
+  $('#vfResult').classList.add('show');
+  if(!silent) markDone('cas3');
+}
+$('#vfCheck').addEventListener('click',()=>checkVF(false));
+$('#vfReveal').addEventListener('click',()=>{ $$('#vfQuiz .vf-row').forEach((r,i)=>{ r.dataset.ans=String(vfOrder[i].a); $$('.vf-btn',r).forEach(b=>b.classList.toggle('sel',b.dataset.v===r.dataset.ans)); }); updateVF(); checkVF(true); });
+$('#vfReset').addEventListener('click',renderVF);
+renderVF();
+
+/* ================= ATELIER ================= */
+const generated = new Set();
+function genMd(gi){
+  const G=ATELIER.generators[gi]; const v=id=>{ const el=$('#g'+gi+'_'+id); return el?el.value.trim():''; };
+  const title=G.heading.replace('{name}', v('name')||'Projet');
+  let md='# '+title+'\n';
+  G.fields.forEach(f=>{
+    if(f.id==='name') return;
+    let val=v(f.id);
+    if(f.list) val=val.split('\n').map(s=>s.trim()).filter(Boolean).map(s=>'- '+s.replace(/^[-*•]\s*/,'')).join('\n');
+    md+='\n## '+f.label.replace(/\s*\(.*?\)\s*$/,'')+'\n'+(val||'_À compléter_')+'\n';
+  });
+  return md;
+}
+function updAtelier(){
+  const s=$$('#atSteps input').filter(c=>c.checked).length, c=$$('#atCheck input').filter(c=>c.checked).length;
+  const tot=$$('#atSteps input').length+$$('#atCheck input').length+ATELIER.generators.length;
+  const n=s+c+generated.size; setProgress('atFill','atTxt',n,tot);
+  if(n===tot) markDone('atelier');
+}
+ATELIER.generators.forEach((G,gi)=>{
+  const inputs=()=>$$('[data-gen="'+gi+'"]');
+  $('#gGen'+gi).addEventListener('click',()=>{
+    const filled=inputs().filter(f=>f.value.trim().length>=2).length, need=Math.ceil(inputs().length*0.6);
+    if(filled<need){ toast('Complétez au moins '+need+' champs ('+filled+' / '+inputs().length+').'); return; }
+    $('#gOut'+gi).textContent=genMd(gi); $('#gWrap'+gi).style.display='block'; generated.add(gi); updAtelier();
+  });
+  $('#gCopy'+gi).addEventListener('click',()=>copyText(genMd(gi)));
+  $('#gDl'+gi).addEventListener('click',()=>download(G.filename,genMd(gi)));
+  $('#gReset'+gi).addEventListener('click',()=>{ inputs().forEach(f=>f.value=''); $('#gWrap'+gi).style.display='none'; generated.delete(gi); updAtelier(); });
+});
+$$('#atSteps input, #atCheck input').forEach(c=>c.addEventListener('change',updAtelier));
+$('#atCopyPrompt').addEventListener('click',()=>copyText(ATELIER.prompt));
+$('#atReveal').addEventListener('click',()=>$('#atSolution').classList.toggle('shown'));
+updAtelier();
+
+/* ================= GLOSSAIRE VERROUILLÉ ================= */
+let glossFilter='all';
+function renderGloss(){
+  const items=TERMS.slice().sort((a,b)=>a.t.localeCompare(b.t,'fr')).filter(t=>glossFilter==='all'||t.f===glossFilter);
+  $('#gloss').innerHTML=items.map(g=>'<div class="gloss-item"><div class="gt"><span class="term-item">'+esc(g.t)+'</span><span class="famille-tag '+g.f+'">'+esc(FAMILIES[g.f])+'</span></div><div>'+esc(g.d)+'</div></div>').join('');
+}
+function unlockGloss(){
+  $('#glossLocked').style.display='none'; $('#glossOpen').style.display='block';
+  const t=$('.tab[data-tab="gl"] .lock-mark'); if(t) t.textContent='🔓';
+  renderGloss();
+}
+function onDone(act){
+  const p=$('.lock-pill[data-lock="'+act+'"]'); if(p){ p.classList.add('ok'); p.textContent=p.textContent.replace('⏳','✅'); }
+  if(['cas1','cas2','cas3'].every(a=>done.has(a))){ unlockGloss(); toast('📖 Glossaire débloqué !'); }
+}
+$$('#glossFilters button').forEach(b=>b.addEventListener('click',()=>{ glossFilter=b.dataset.f; $$('#glossFilters button').forEach(x=>x.classList.toggle('on',x===b)); renderGloss(); }));
+$('#glossForce').addEventListener('click',unlockGloss);
+
+})();
+
+</script>
+</body>
+</html>
