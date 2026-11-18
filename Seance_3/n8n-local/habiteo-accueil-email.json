@@ -1,0 +1,140 @@
+{
+  "id": "habiteoAccueil01",
+  "name": "Habitéo - Message d'accueil par e-mail (prise en main)",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Mon premier workflow avec un e-mail\n\n**1. Formulaire** : on saisit un prénom, une adresse e-mail et un poste.\n**2. Préparer le message** : on compose l'objet et le texte avec les données saisies.\n**3. Envoyer l'e-mail** : le message part vers le nouvel embauché, avec le service RH en copie.\n\nEn local, les e-mails arrivent dans une **boîte factice (Mailpit)** : rien n'est envoyé sur internet.",
+        "height": 280,
+        "width": 440,
+        "color": 7
+      },
+      "id": "6c2e1b20-0000-4000-8000-000000000001",
+      "name": "Légende",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-120, -320]
+    },
+    {
+      "parameters": {
+        "path": "habiteo-accueil",
+        "formTitle": "Accueillir un nouvel embauché - Groupe Habitéo",
+        "formDescription": "Saisissez le prénom, l'adresse e-mail et le poste : un message de bienvenue est envoyé automatiquement.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Prénom",
+              "placeholder": "Ex : Camille",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Adresse e-mail",
+              "fieldType": "email",
+              "placeholder": "camille.durand@exemple.fr",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Poste",
+              "placeholder": "Ex : Technicien chauffagiste",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "respondWithOptions": {
+            "values": {
+              "respondWith": "text",
+              "formSubmittedText": "Formulaire reçu : le message de bienvenue est en cours d'envoi."
+            }
+          }
+        }
+      },
+      "id": "6c2e1b20-0000-4000-8000-000000000002",
+      "name": "1. Formulaire (déclencheur)",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [0, 0],
+      "webhookId": "habiteo-accueil"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e0000000-0000-4000-8000-000000000001",
+              "name": "email",
+              "value": "={{ $json['Adresse e-mail'] }}",
+              "type": "string"
+            },
+            {
+              "id": "e0000000-0000-4000-8000-000000000002",
+              "name": "objet",
+              "value": "=Bienvenue chez Habitéo, {{ $json['Prénom'] }} !",
+              "type": "string"
+            },
+            {
+              "id": "e0000000-0000-4000-8000-000000000003",
+              "name": "message",
+              "value": "=Bonjour {{ $json['Prénom'] }},\n\nBienvenue chez Habitéo ! Nous sommes ravis de vous accueillir au poste de {{ $json['Poste'] }}.\n\nVotre référent RH vous contactera très bientôt pour préparer votre arrivée.\n\nÀ très vite,\nLe service RH - Groupe Habitéo",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": false,
+        "options": {}
+      },
+      "id": "6c2e1b20-0000-4000-8000-000000000003",
+      "name": "2. Préparer le message",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [260, 0]
+    },
+    {
+      "parameters": {
+        "fromEmail": "Service RH Habitéo <rh@habiteo.example>",
+        "toEmail": "={{ $json.email }}",
+        "subject": "={{ $json.objet }}",
+        "emailFormat": "text",
+        "text": "={{ $json.message }}",
+        "options": {
+          "ccEmail": "rh@habiteo.example",
+          "appendAttribution": false
+        }
+      },
+      "id": "6c2e1b20-0000-4000-8000-000000000004",
+      "name": "3. Envoyer l'e-mail",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [520, 0]
+    }
+  ],
+  "connections": {
+    "1. Formulaire (déclencheur)": {
+      "main": [
+        [
+          {
+            "node": "2. Préparer le message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2. Préparer le message": {
+      "main": [
+        [
+          {
+            "node": "3. Envoyer l'e-mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Paris"
+  },
+  "pinData": {}
+}

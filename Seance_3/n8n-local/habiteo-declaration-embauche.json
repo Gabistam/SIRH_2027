@@ -1,0 +1,233 @@
+{
+  "id": "habiteoEmbauche01",
+  "name": "Habitéo - Déclaration d'embauche (exemple simple)",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Scénario Habitéo simplifié\n\n**1. Déclencheur** : le manager remplit le formulaire.\n**2. Mapping** : on renomme les champs et on calcule les jours avant l'arrivée (une règle, pas de LLM).\n**3. Routeur** : arrivée dans moins de 5 jours ?\n**4. Sortie** : alerte RH urgente ou dossier standard.\n\nTout tourne en local : aucune donnée ne quitte la machine.",
+        "height": 260,
+        "width": 420,
+        "color": 7
+      },
+      "id": "5b1d0a10-0000-4000-8000-000000000001",
+      "name": "Légende",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-120, -300]
+    },
+    {
+      "parameters": {
+        "path": "habiteo-embauche",
+        "formTitle": "Déclarer une embauche - Groupe Habitéo",
+        "formDescription": "Le manager renseigne l'arrivée d'un nouveau technicien.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Nom",
+              "placeholder": "Ex : Camille Durand",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Poste",
+              "placeholder": "Ex : Technicien chauffagiste",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Agence",
+              "placeholder": "Ex : Lyon",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Date arrivée",
+              "fieldType": "date",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5b1d0a10-0000-4000-8000-000000000002",
+      "name": "1. Formulaire (déclencheur)",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [0, 0],
+      "webhookId": "habiteo-embauche"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a0000000-0000-4000-8000-000000000001",
+              "name": "nom",
+              "value": "={{ $json['Nom'] }}",
+              "type": "string"
+            },
+            {
+              "id": "a0000000-0000-4000-8000-000000000002",
+              "name": "poste",
+              "value": "={{ $json['Poste'] }}",
+              "type": "string"
+            },
+            {
+              "id": "a0000000-0000-4000-8000-000000000003",
+              "name": "agence",
+              "value": "={{ $json['Agence'] }}",
+              "type": "string"
+            },
+            {
+              "id": "a0000000-0000-4000-8000-000000000004",
+              "name": "date_arrivee",
+              "value": "={{ $json['Date arrivée'] }}",
+              "type": "string"
+            },
+            {
+              "id": "a0000000-0000-4000-8000-000000000005",
+              "name": "jours_avant_arrivee",
+              "value": "={{ Math.round(DateTime.fromISO($json['Date arrivée']).diff($now.startOf('day'), 'days').days) }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": false,
+        "options": {}
+      },
+      "id": "5b1d0a10-0000-4000-8000-000000000003",
+      "name": "2. Mapping et calcul",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [240, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b0000000-0000-4000-8000-000000000001",
+              "leftValue": "={{ $json.jours_avant_arrivee }}",
+              "rightValue": 5,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "5b1d0a10-0000-4000-8000-000000000004",
+      "name": "3. Urgent ? (moins de 5 jours)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [480, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c0000000-0000-4000-8000-000000000001",
+              "name": "statut",
+              "value": "URGENT",
+              "type": "string"
+            },
+            {
+              "id": "c0000000-0000-4000-8000-000000000002",
+              "name": "message_rh",
+              "value": "=ALERTE RH : {{ $json.nom }} ({{ $json.poste }}, agence {{ $json.agence }}) arrive le {{ $json.date_arrivee }}, dans {{ $json.jours_avant_arrivee }} jour(s). À traiter aujourd'hui : badge, matériel, habilitations.",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "5b1d0a10-0000-4000-8000-000000000005",
+      "name": "4a. Alerte RH",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [740, -120]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d0000000-0000-4000-8000-000000000001",
+              "name": "statut",
+              "value": "Nouveau",
+              "type": "string"
+            },
+            {
+              "id": "d0000000-0000-4000-8000-000000000002",
+              "name": "message_rh",
+              "value": "=Nouvelle embauche enregistrée : {{ $json.nom }} ({{ $json.poste }}, agence {{ $json.agence }}) arrive le {{ $json.date_arrivee }}, dans {{ $json.jours_avant_arrivee }} jour(s). Préparation habituelle.",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "5b1d0a10-0000-4000-8000-000000000006",
+      "name": "4b. Dossier standard",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [740, 120]
+    }
+  ],
+  "connections": {
+    "1. Formulaire (déclencheur)": {
+      "main": [
+        [
+          {
+            "node": "2. Mapping et calcul",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2. Mapping et calcul": {
+      "main": [
+        [
+          {
+            "node": "3. Urgent ? (moins de 5 jours)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "3. Urgent ? (moins de 5 jours)": {
+      "main": [
+        [
+          {
+            "node": "4a. Alerte RH",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "4b. Dossier standard",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Paris"
+  },
+  "pinData": {}
+}
